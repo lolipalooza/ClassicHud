@@ -10,6 +10,16 @@
 #include "CMenuManager.h"
 #include "CPad.h"
 
+static void __declspec(naked) RadarAlpha() {
+	RwRenderStateSet(rwRENDERSTATEVERTEXALPHAENABLE, reinterpret_cast<void *>(TRUE));
+	_asm {
+		mov     ecx, 586420h
+		mov     al, [esp + 140h - 12Dh]
+		test    al, al
+		jmp     ecx
+	}
+}
+
 class Radar {
 public:
 	static void InstallPatches();

@@ -11,7 +11,7 @@ public:
 	static void InstallPatches();
 	static void Draw(float x, float y, char* str);
 	static void VehicleNameColor(CRGBA value);
-	static void TestVehicleName();
+	static void Test();
 };
 
 void VehicleName::InstallPatches() {
@@ -40,7 +40,7 @@ void VehicleName::VehicleNameColor(CRGBA value)
 	AreaCRGBA = value;
 }
 
-void VehicleName::TestVehicleName()
+void VehicleName::Test()
 {
 	CText text;
 	CFont::SetBackground(0, 0);

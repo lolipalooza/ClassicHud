@@ -18,14 +18,18 @@
   <ItemGroup>
     <ClInclude Include="ClassicHud\AreaName.h" />
     <ClInclude Include="ClassicHud\Clock.h" />
+    <ClInclude Include="ClassicHud\GarageMessages.h" />
     <ClInclude Include="ClassicHud\HelpText.h" />
     <ClInclude Include="ClassicHud\HudIcons.h" />
     <ClInclude Include="ClassicHud\IniReader.h" />
+    <ClInclude Include="ClassicHud\MissionTimers.h" />
     <ClInclude Include="ClassicHud\Money.h" />
     <ClInclude Include="ClassicHud\Radar.h" />
+    <ClInclude Include="ClassicHud\RadioStation.h" />
     <ClInclude Include="ClassicHud\Settings.h" />
     <ClInclude Include="ClassicHud\StyledTexts.h" />
     <ClInclude Include="ClassicHud\Subtitles.h" />
+    <ClInclude Include="ClassicHud\TestMessage.h" />
     <ClInclude Include="ClassicHud\Utility.h" />
     <ClInclude Include="ClassicHud\VehicleName.h" />
     <ClInclude Include="ClassicHud\Wanted.h" />

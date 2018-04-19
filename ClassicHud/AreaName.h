@@ -13,7 +13,7 @@ public:
 	static void InstallPatches();
 	static void Draw(float x, float y, char* str);
 	static void AreaNameColor(CRGBA value);
-	static void TestAreaName();
+	static void Test();
 };
 
 void AreaName::InstallPatches() {
@@ -42,7 +42,7 @@ void AreaName::AreaNameColor(CRGBA value)
 	AreaCRGBA = value;
 }
 
-void AreaName::TestAreaName()
+void AreaName::Test()
 {
 	CFont::SetBackground(0, 0);
 	CFont::SetScale(SCREEN_MULTIPLIER(settings.AREA_SIZE_X), SCREEN_MULTIPLIER(settings.AREA_SIZE_Y));

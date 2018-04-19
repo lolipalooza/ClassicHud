@@ -2,7 +2,7 @@
 
 #include <plugin.h>
 #include "Settings.h"
-#include "Utility.h"
+#include "TestMessage.h"
 
 #include "CFont.h"
 #include "CHud.h"
@@ -134,7 +134,7 @@ void StyledTexts::TestSuccessFailedMessage()
 {
 	float pos_y = SCREEN_COORD(settings.STYLED1_Y) + settings.STYLED1_Y2,
 		pos_x = (float)(RsGlobal.maximumWidth / 2);
-	DrawTestString(pos_x, pos_y, settings.STYLED1_SIZE_X, settings.STYLED1_SIZE_Y, ALIGN_CENTER,
+	TestMessage::Draw(pos_x, pos_y, settings.STYLED1_SIZE_X, settings.STYLED1_SIZE_Y, ALIGN_CENTER,
 		RsGlobal.maximumWidth * 0.0015625f * 590.0f,
 		settings.STYLED1_SHADOW, settings.STYLED1_OUTLINE, FONT_PRICEDOWN,
 		CRGBA(settings.STYLED1_R, settings.STYLED1_G, settings.STYLED1_B, 255), (char *)TheText.Get("M_FAIL")); // MISSION FAILED!
@@ -142,7 +142,7 @@ void StyledTexts::TestSuccessFailedMessage()
 
 void StyledTexts::TestMissionTitle()
 {
-	DrawTestString(RsGlobal.maximumWidth - SCREEN_COORD(settings.MT_POS_X),
+	TestMessage::Draw(RsGlobal.maximumWidth - SCREEN_COORD(settings.MT_POS_X),
 		SCREEN_COORD(settings.MT_POS_Y), settings.MT_SIZE_X, settings.MT_SIZE_Y, ALIGN_RIGHT,
 		RsGlobal.maximumWidth * 0.0015625f * 590.0f,
 		settings.MT_SHADOW, settings.MT_OUTLINE, settings.MT_FONTSTYLE,
@@ -151,7 +151,7 @@ void StyledTexts::TestMissionTitle()
 
 void StyledTexts::TestBustedWastedMessage()
 {
-	DrawTestString(RsGlobal.maximumWidth - SCREEN_COORD(settings.WB_POS_X),
+	TestMessage::Draw(RsGlobal.maximumWidth - SCREEN_COORD(settings.WB_POS_X),
 		SCREEN_COORD(settings.WB_POS_Y), settings.WB_SIZE_X, settings.WB_SIZE_Y, (eFontAlignment)settings.WB_ALIGN,
 		RsGlobal.maximumWidth * 0.0015625f * 590.0f,
 		settings.WB_SHADOW, settings.WB_OUTLINE, settings.WB_FONTSTYLE,

@@ -15,6 +15,10 @@
 #include "HelpText.h"
 #include "Radar.h"
 #include "StyledTexts.h"
+#include "MissionTimers.h"
+#include "RadioStation.h"
+#include "GarageMessages.h"
+#include "TestMessage.h"
 
 #include "CHud.h"
 #include "CTimer.h"
@@ -33,9 +37,7 @@
 #include "CCutsceneMgr.h"
 #include "CTheScripts.h"
 #include "CMenuManager.h"
-#include "CAERadioTrackManager.h"
 #include "CPad.h"
-
 
 using namespace plugin;
 
@@ -101,151 +103,7 @@ public:
 		return rgba;
 	}
 
-	static void SetRadarPosAndSize()
-	{
-		static float radar[5][4] = {
-			{ 40.0f, 104.0f, 94.0f, 76.0f }, // SA
-			{ 27.0f, 121.0f, 90.0f, 72.0f }, // III
-			{ 22.0f, 114.0f, 90.0f, 72.0f }, // VC
-			{ 40.0f, 104.0f, 94.0f, 76.0f }, // LCS
-			{ 0.0f, 0.0f, 0.0f, 0.0f }, // VCS
-		};
-		static float pos_x, pos_y, size_x, size_y;
-		//pos_x = radar[style][0]; pos_y = radar[style][1];
-		//size_x = radar[style][2]; size_y = radar[style][3];
-		pos_x = RADAR_X, pos_y = RADAR_Y, size_x = RADAR_SIZE_X, size_y = RADAR_SIZE_Y;
-
-		// Radar Pos X
-		patch::Set<const void*>(0x5834D4, &pos_x);
-		patch::Set<const void*>(0x58A469, &pos_x);
-		patch::Set<const void*>(0x58A5E2, &pos_x);
-		patch::Set<const void*>(0x58A6E6, &pos_x);
-		patch::Set<const void*>(0x58A79B, &pos_x);
-		patch::Set<const void*>(0x58A836, &pos_x);
-		patch::Set<const void*>(0x58A8E9, &pos_x);
-		patch::Set<const void*>(0x58A98A, &pos_x);
-		// Radar Pos Y
-		patch::Set<const void*>(0x583500, &pos_y);
-		patch::Set<const void*>(0x58A1A7, &pos_y);
-		patch::Set<const void*>(0x58A2D6, &pos_y);
-		patch::Set<const void*>(0x58A499, &pos_y);
-		patch::Set<const void*>(0x58A60E, &pos_y);
-		patch::Set<const void*>(0x58A71E, &pos_y);
-		patch::Set<const void*>(0x58A7C7, &pos_y);
-		patch::Set<const void*>(0x58A868, &pos_y);
-		patch::Set<const void*>(0x58A913, &pos_y);
-		patch::Set<const void*>(0x58A9C7, &pos_y);
-		// Radar Size X
-		patch::Set<const void*>(0x5834C2, &size_x);
-		patch::Set<const void*>(0x58A449, &size_x);
-		patch::Set<const void*>(0x58A7E9, &size_x);
-		patch::Set<const void*>(0x58A840, &size_x);
-		patch::Set<const void*>(0x58A943, &size_x);
-		patch::Set<const void*>(0x58A99D, &size_x);
-		// Radar Size Y
-		patch::Set<const void*>(0x5834F6, &size_y);
-		patch::Set<const void*>(0x58A47D, &size_y);
-		patch::Set<const void*>(0x58A632, &size_y);
-		patch::Set<const void*>(0x58A6AB, &size_y);
-		patch::Set<const void*>(0x58A70E, &size_y);
-		patch::Set<const void*>(0x58A801, &size_y);
-		patch::Set<const void*>(0x58A8AB, &size_y);
-		patch::Set<const void*>(0x58A921, &size_y);
-		patch::Set<const void*>(0x58A9D5, &size_y);
-	}
-
-	static void DrawMissionTimers_Timer(float x, float y, char* str)
-	{
-		CFont::SetScale(SCREEN_MULTIPLIER(M_TIMERS_SIZE_X), SCREEN_MULTIPLIER(M_TIMERS_SIZE_Y));
-		CFont::SetAlignment(ALIGN_RIGHT);
-		CFont::SetFontStyle(M_TIMERS_FONTSTYLE); // default FONT_MENU: 2
-		CFont::SetDropShadowPosition(M_TIMERS_SHADOW);
-		if (M_TIMERS_OUTLINE != 0)
-			CFont::SetOutlinePosition(M_TIMERS_OUTLINE);
-		CFont::SetColor(CRGBA(M_TIMERS_R, M_TIMERS_G, M_TIMERS_B, 255));
-		CFont::PrintString(RsGlobal.maximumWidth - SCREEN_COORD(M_TIMER_X), SCREEN_COORD(M_TIMER_Y), str);
-	}
-
-	static void DrawMissionTimers_TimerText(float x, float y, char* str)
-	{
-		CFont::SetScale(SCREEN_MULTIPLIER(M_TIMERS_SIZE_X), SCREEN_MULTIPLIER(M_TIMERS_SIZE_Y));
-		CFont::SetAlignment(ALIGN_RIGHT);
-		CFont::SetFontStyle(M_TIMERS_FONTSTYLE); // default FONT_MENU: 2
-		CFont::SetDropShadowPosition(M_TIMERS_SHADOW);
-		if (M_TIMERS_OUTLINE != 0)
-			CFont::SetOutlinePosition(M_TIMERS_OUTLINE);
-		CFont::SetColor(CRGBA(M_TIMERS_R, M_TIMERS_G, M_TIMERS_B, 255));
-		CFont::PrintString(RsGlobal.maximumWidth - SCREEN_COORD(M_TIMER_DESC_X), SCREEN_COORD(M_TIMER_Y), str);
-	}
-
-	static void DrawMissionTimers_StatusTextChartBar(float x, float y, WORD width, WORD height, float fPercentage,
-		BYTE drawBlueLine, BYTE drawPercentage, BYTE drawBorder, CRGBA dwColor, CRGBA dwForeColor)
-	{
-		float OFFSET_Y = y * M_STATUSTEXT_SPACE;
-		CSprite2d::DrawBarChart(
-			RsGlobal.maximumWidth - SCREEN_COORD(M_STATUSBAR_X),
-			SCREEN_COORD(M_STATUSBAR_Y + OFFSET_Y),
-			(unsigned short)SCREEN_MULTIPLIER(M_STATUSBAR_SIZE_X),
-			(unsigned char)SCREEN_MULTIPLIER(M_STATUSBAR_SIZE_Y),
-			(unsigned char)fPercentage, 0, 0, M_STATUSBAR_BORDER,
-			CRGBA(M_STATUSBAR_R, M_STATUSBAR_G, M_STATUSBAR_B, M_STATUSBAR_A),
-			CRGBA(0, 0, 0, M_STATUSBAR_A));
-	}
-
-	static void DrawMissionTimers_StatusTextValue(float x, float y, char* str)
-	{
-		float OFFSET_Y = y * M_STATUSTEXT_SPACE;
-		CFont::SetScale(SCREEN_MULTIPLIER(M_TIMERS_SIZE_X), SCREEN_MULTIPLIER(M_TIMERS_SIZE_Y));
-		CFont::SetAlignment(ALIGN_RIGHT);
-		CFont::SetFontStyle(M_TIMERS_FONTSTYLE); // default FONT_MENU: 2
-		CFont::SetDropShadowPosition(M_TIMERS_SHADOW);
-		if (M_TIMERS_OUTLINE != 0)
-			CFont::SetOutlinePosition(M_TIMERS_OUTLINE);
-		CFont::SetColor(CRGBA(M_STATUSBAR_R, M_STATUSBAR_G, M_STATUSBAR_B, 255));
-		CFont::PrintString(RsGlobal.maximumWidth - SCREEN_COORD(M_STATUSTEXT_X), SCREEN_COORD(M_STATUSTEXT_Y + OFFSET_Y), str);
-	}
-
-	static void DrawMissionTimers_StatusTextDescription(float x, float y, char* str)
-	{
-		float OFFSET_Y = y * M_STATUSTEXT_SPACE;
-		CFont::SetScale(SCREEN_MULTIPLIER(M_TIMERS_SIZE_X), SCREEN_MULTIPLIER(M_TIMERS_SIZE_Y));
-		CFont::SetAlignment(ALIGN_RIGHT);
-		CFont::SetFontStyle(M_TIMERS_FONTSTYLE); // default FONT_MENU: 2
-		CFont::SetDropShadowPosition(M_TIMERS_SHADOW);
-		if (M_TIMERS_OUTLINE != 0)
-			CFont::SetOutlinePosition(M_TIMERS_OUTLINE);
-		CFont::SetColor(CRGBA(M_STATUSBAR_R, M_STATUSBAR_G, M_STATUSBAR_B, 255));
-		CFont::PrintString(RsGlobal.maximumWidth - SCREEN_COORD(M_STATUSTEXT_DESC_X), SCREEN_COORD(M_STATUSTEXT_Y + OFFSET_Y), str);
-	}
-
-	static void DisplayRadioStationName(float x, float y, char* str)
-	{
-		auto &trackMgr = *reinterpret_cast<CAERadioTrackManager *>(0x8CB6F8);
-
-		CFont::SetCentreSize(RsGlobal.maximumWidth * 0.0015625f * 590.0f);
-		CFont::SetFontStyle(RS_FONTSTYLE); // default FONT_MENU: 2
-		CFont::SetScale(SCREEN_MULTIPLIER(RS_SIZE_X), SCREEN_MULTIPLIER(RS_SIZE_Y));
-		CFont::SetDropShadowPosition(RS_SHADOW);
-		if (RS_OUTLINE != 0)
-			CFont::SetOutlinePosition(RS_OUTLINE);
-		if (trackMgr.m_nStationsListed || trackMgr.m_nStationsListDown)
-			CFont::SetColor(CRGBA(RS_RED1, RS_GREEN1, RS_BLUE1, 255));
-		else
-			CFont::SetColor(CRGBA(RS_RED2, RS_GREEN2, RS_BLUE2, 255));
-		CFont::PrintString((float)(RsGlobal.maximumWidth / 2), SCREEN_COORD(RS_POS_Y), str);
-	}
-
-	static void CGarages__PrintMessages(float x, float y, char* str)
-	{
-		CFont::SetScale(SCREEN_MULTIPLIER(GARAGES_SIZE_X), SCREEN_MULTIPLIER(GARAGES_SIZE_Y));
-		CFont::SetCentreSize(RsGlobal.maximumWidth * (1.0f - 0.0015625f * GARAGES_LINEWIDTH));	// defaulf: 230.0f
-		CFont::SetFontStyle(GARAGES_FONTSTYLE); // default FONT_MENU: 2
-		CFont::SetColor(CRGBA(GARAGES_R, GARAGES_G, GARAGES_B, 255));
-		CFont::SetDropShadowPosition(GARAGES_SHADOW);
-		if (GARAGES_OUTLINE != 0)
-			CFont::SetOutlinePosition(GARAGES_OUTLINE);
-		CFont::PrintString((float)(RsGlobal.maximumWidth / 2), SCREEN_COORD(GARAGES_Y), str);
-	}*/
+*/
 
 	ClassicHud() {
 
@@ -296,38 +154,22 @@ public:
 				Subtitles::InstallPatches();
 				HelpText::InstallPatches();
 
-				/* // Set Radar Range
+				/*
+				// Set Radar Range
 				patch::SetFloat(0x586C9B, RADAR_RANGE);
 				patch::Set<const void*>(0x586C66, &RADAR_RANGE);
 
 				// Transparent Radar
 				patch::Set<DWORD>(0x5864BD, RADAR_A);
 				plugin::patch::RedirectJump(0x58641A, RadarAlpha);
-
-				//Radar Disc RGBA
-				patch::RedirectCall(0x58A8BD, &SetRadarDisc);
-				patch::RedirectCall(0x58A813, &SetRadarDisc);
-				patch::RedirectCall(0x58A967, &SetRadarDisc);
-				patch::RedirectCall(0x58AA15, &SetRadarDisc);
-
-				SetRadarPosAndSize();*/
+				*/
 
 				Radar::InstallPatches();
 				
-				/*
-				// Mission Timers (Timer and Status Text)
-				patch::RedirectCall(0x58B420, ClassicHud::DrawMissionTimers_TimerText);
-				patch::RedirectCall(0x58B3D2, ClassicHud::DrawMissionTimers_Timer);
-				patch::RedirectCall(0x58B657, ClassicHud::DrawMissionTimers_StatusTextChartBar);
-				patch::RedirectCall(0x58B58D, ClassicHud::DrawMissionTimers_StatusTextValue);
-				patch::RedirectCall(0x58B6A6, ClassicHud::DrawMissionTimers_StatusTextDescription);
-
-				patch::RedirectCall(0x4E9FF1, ClassicHud::DisplayRadioStationName);
-
-				// Garage Messages
-				patch::RedirectCall(0x4478D6, ClassicHud::CGarages__PrintMessages);
-				patch::RedirectCall(0x447940, ClassicHud::CGarages__PrintMessages);
-				patch::RedirectCall(0x44797E, ClassicHud::CGarages__PrintMessages);*/
+				StyledTexts::InstallPatches();
+				MissionTimers::InstallPatches();
+				RadioStation::InstallPatches();
+				GarageMessages::InstallPatches();
 			}
 		};
 	}
@@ -358,26 +200,26 @@ public:
 		iniReader.WriteFloat((char*)s_section.c_str(), key, value);
 
 		settings.Init(STYLE);
-		/*if ((std::string)section == "MONEY")
-			patch::RedirectCall(0x58F607, ClassicHud::DrawMoney);
+		if ((std::string)section == "MONEY")
+			Money::InstallPatches();
 		else if ((std::string)section == "CLOCK")
-			patch::RedirectCall(0x58EC21, ClassicHud::DrawClock);
+			Clock::InstallPatches();
 		else if ((std::string)section == "HEALTH")
-			patch::RedirectCall(0x589395, ClassicHud::DrawHealth);
+			patch::RedirectCall(0x589395, HudIcons::DrawHealth);
 		else if ((std::string)section == "ARMOUR")
-			patch::RedirectCall(0x58917A, ClassicHud::DrawArmour);
+			patch::RedirectCall(0x58917A, HudIcons::DrawArmour);
 		else if ((std::string)section == "BREATH")
-			patch::RedirectCall(0x589252, ClassicHud::DrawBreath);
+			patch::RedirectCall(0x589252, HudIcons::DrawBreath);
 		else if ((std::string)section == "WEAPON")
-			patch::RedirectJump(0x58D7D0, ClassicHud::DrawWeaponIcon);
+			patch::RedirectJump(0x58D7D0, Weapon::DrawWeaponIcon);
 		else if ((std::string)section == "AMMO")
-			patch::RedirectCall(0x58962A, ClassicHud::DrawWeaponAmmo);
+			patch::RedirectCall(0x58962A, Weapon::DrawWeaponAmmo);
 		else if ((std::string)section == "WANTED")
-			patch::RedirectCall(0x58FBDB, ClassicHud::DrawWanted);
+			Wanted::InstallPatches();
 		else if ((std::string)section == "HELP_TEXT")
-			patch::RedirectCall(0x58FCFA, ClassicHud::DrawHelpText);
+			HelpText::InstallPatches();
 		else if ((std::string)section == "RADAR")
-			ClassicHud::SetRadarPosAndSize();*/
+			Radar::InstallPatches();
 
 		char str[200];
 		_snprintf(str, sizeof(str), "section: %s ~n~key: %s ~n~value: %f ~n~incr: %f",
@@ -398,13 +240,13 @@ public:
 		{
 			if (enable) {
 				if (section == "AREA")
-					AreaName::TestAreaName();
+					AreaName::Test();
 				else if (section == "VEHICLE")
-					VehicleName::TestVehicleName();
+					VehicleName::Test();
 				else if (section == "SUBTITLES")
-					Subtitles::TestSubtitles();
+					Subtitles::Test();
 				else if (section == "SUBTITLES_VITALSTATS")
-					Subtitles::TestSubtitlesVitalstats();
+					Subtitles::Test_VitalStats();
 				else if (section == "STYLED1")
 					StyledTexts::TestSuccessFailedMessage();
 				else if (section == "STYLED2")
@@ -419,24 +261,28 @@ public:
 					StyledTexts::TestOddJobMessage6();
 				else if (section == "STYLED7")
 					StyledTexts::TestOddJobMessage7();
-				/*else if (section == "RADIO_STATION")
-					DisplayRadioStationName();
+				else if (section == "RADIO_STATION")
+					RadioStation::Test();
 				else if (section == "GARAGE_MESSAGES")
-					CGarages__PrintMessages();
+					GarageMessages::Test();
 				else if (section == "MISSION_TIMERS"
 					|| section == "STATUS_TEXT"
 					|| section == "STATUS_TEXT_BAR")
-					DrawMissionTimers();*/
+					MissionTimers::Test();
 
-				DrawTestString(SCREEN_COORD(settings.CUSTOM_X), SCREEN_COORD(settings.CUSTOM_Y),
-					settings.CUSTOM_SIZE_X, settings.CUSTOM_SIZE_Y, (eFontAlignment)settings.CUSTOM_ALIGN,
-					settings.CUSTOM_LINEWIDTH, settings.CUSTOM_SHADOW, settings.CUSTOM_OUTLINE, settings.CUSTOM_FONTSTYLE,
-					CRGBA(settings.CUSTOM_R, settings.CUSTOM_G, settings.CUSTOM_B, settings.CUSTOM_A), custom_text);
+				TestMessage::Draw(SCREEN_COORD(settings.CUSTOM_X),
+					SCREEN_COORD(settings.CUSTOM_Y), settings.CUSTOM_SIZE_X, settings.CUSTOM_SIZE_Y,
+					(eFontAlignment)settings.CUSTOM_ALIGN, settings.CUSTOM_LINEWIDTH,
+					settings.CUSTOM_SHADOW, settings.CUSTOM_OUTLINE, settings.CUSTOM_FONTSTYLE,
+					CRGBA(settings.CUSTOM_R, settings.CUSTOM_G, settings.CUSTOM_B, settings.CUSTOM_A),
+					custom_text);
 				
 				if (menu_level == 1)
-					DrawTestString(SCREEN_COORD(settings.CUSTOM_X), SCREEN_COORD(settings.CUSTOM_Y - 30.0f),
-						settings.CUSTOM_SIZE_X, settings.CUSTOM_SIZE_Y, (eFontAlignment)settings.CUSTOM_ALIGN,
-						settings.CUSTOM_LINEWIDTH, settings.CUSTOM_SHADOW, settings.CUSTOM_OUTLINE, settings.CUSTOM_FONTSTYLE,
+					TestMessage::Draw(SCREEN_COORD(settings.CUSTOM_X),
+						SCREEN_COORD(settings.CUSTOM_Y - 30.0f), settings.CUSTOM_SIZE_X,
+						settings.CUSTOM_SIZE_Y, (eFontAlignment)settings.CUSTOM_ALIGN,
+						settings.CUSTOM_LINEWIDTH, settings.CUSTOM_SHADOW, settings.CUSTOM_OUTLINE,
+						settings.CUSTOM_FONTSTYLE,
 						CRGBA(255, 255, 255, settings.CUSTOM_A), "Edit mode");
 			}
 		};
@@ -476,8 +322,8 @@ public:
 					sprintf(custom_text, labels[chosen].c_str());
 						break;
 				case 1:
-					//HudEditor::ModifyValueInIni((char*)sections[chosen].c_str(),
-						//(char*)keys[chosen].c_str(), incr[chosen]);
+					HudEditor::ModifyValueInIni((char*)sections[chosen].c_str(),
+						(char*)keys[chosen].c_str(), incr[chosen]);
 					break;
 				}
 
@@ -486,106 +332,4 @@ public:
 
 		};
 	}
-
-	/*
-	static void DisplayRadioStationName()
-	{
-		CText text;
-		CRGBA color1 = CRGBA(RS_RED1, RS_GREEN1, RS_BLUE1, 255);
-		CRGBA color2 = CRGBA(RS_RED2, RS_GREEN2, RS_BLUE2, 255);
-		DrawTestString((float)(RsGlobal.maximumWidth / 2), SCREEN_COORD(RS_POS_Y),
-			RS_SIZE_X, RS_SIZE_Y, ALIGN_CENTER, RsGlobal.maximumWidth * 0.0015625f * 590.0f,
-			RS_SHADOW, RS_OUTLINE, RS_FONTSTYLE, color1, text.Get("FEA_R0")); // Playback FM
-	}
-
-	static void CGarages__PrintMessages()
-	{
-		CText text;
-		DrawTestString((float)(RsGlobal.maximumWidth / 2), SCREEN_COORD(GARAGES_Y),
-			GARAGES_SIZE_X, GARAGES_SIZE_Y, ALIGN_CENTER,
-			RsGlobal.maximumWidth * (1.0f - 0.0015625f * GARAGES_LINEWIDTH),
-			GARAGES_SHADOW, GARAGES_OUTLINE, GARAGES_FONTSTYLE,
-			CRGBA(GARAGES_R, GARAGES_G, GARAGES_B, 255), text.Get("GA_15")); // Hope you like the new color
-	}
-
-	static void DrawMissionTimers()
-	{
-		// Timer Counter
-		CFont::SetScale(SCREEN_MULTIPLIER(M_TIMERS_SIZE_X), SCREEN_MULTIPLIER(M_TIMERS_SIZE_Y));
-		CFont::SetAlignment(ALIGN_RIGHT);
-		CFont::SetCentreSize(RsGlobal.maximumWidth * 0.0015625f * 590.0f);
-		CFont::SetFontStyle(M_TIMERS_FONTSTYLE);
-		CFont::SetDropShadowPosition(M_TIMERS_SHADOW);
-		if (M_TIMERS_OUTLINE != 0)
-			CFont::SetOutlinePosition(M_TIMERS_OUTLINE);
-		CFont::SetColor(CRGBA(M_TIMERS_R, M_TIMERS_G, M_TIMERS_B, 255));
-		CFont::SetSlantRefPoint(0.0, 0.0);
-		CFont::SetSlant(0.0);
-		CFont::PrintString(RsGlobal.maximumWidth - SCREEN_COORD(M_TIMER_X), SCREEN_COORD(M_TIMER_Y), "00:00");
-
-		// Timer Desc
-		CText text;
-		CFont::SetScale(SCREEN_MULTIPLIER(M_TIMERS_SIZE_X), SCREEN_MULTIPLIER(M_TIMERS_SIZE_Y));
-		CFont::SetAlignment(ALIGN_RIGHT);
-		CFont::SetCentreSize(RsGlobal.maximumWidth * 0.0015625f * 590.0f);
-		CFont::SetFontStyle(M_TIMERS_FONTSTYLE);
-		CFont::SetDropShadowPosition(M_TIMERS_SHADOW);
-		if (M_TIMERS_OUTLINE != 0)
-			CFont::SetOutlinePosition(M_TIMERS_OUTLINE);
-		CFont::SetColor(CRGBA(M_TIMERS_R, M_TIMERS_G, M_TIMERS_B, 255));
-		CFont::SetSlantRefPoint(0.0, 0.0);
-		CFont::SetSlant(0.0);
-		CFont::PrintString(
-			RsGlobal.maximumWidth - SCREEN_COORD(M_TIMER_DESC_X),
-			SCREEN_COORD(M_TIMER_Y), text.Get("BB_19")); // Time
-
-		std::string gxt[3] = { "ZER2_43", "BB_18", "TX_ADDS" };
-		bool type[3] = { false, true, true };
-
-		for (int i = 0; i < 3; i++) {
-			float OFFSET_Y = (329.0f + (float)i*105.0f) * M_STATUSTEXT_SPACE;
-
-			// Status Text Desc
-			CFont::SetScale(SCREEN_MULTIPLIER(M_TIMERS_SIZE_X), SCREEN_MULTIPLIER(M_TIMERS_SIZE_Y));
-			CFont::SetAlignment(ALIGN_RIGHT);
-			CFont::SetCentreSize(RsGlobal.maximumWidth * 0.0015625f * 590.0f);
-			CFont::SetFontStyle(M_TIMERS_FONTSTYLE);
-			CFont::SetDropShadowPosition(M_TIMERS_SHADOW);
-			if (M_TIMERS_OUTLINE != 0)
-				CFont::SetOutlinePosition(M_TIMERS_OUTLINE);
-			CFont::SetColor(CRGBA(M_STATUSBAR_R, M_STATUSBAR_G, M_STATUSBAR_B, 255));
-			CFont::SetSlantRefPoint(0.0, 0.0);
-			CFont::SetSlant(0.0);
-			CFont::PrintString(RsGlobal.maximumWidth - SCREEN_COORD(M_STATUSTEXT_DESC_X),
-				SCREEN_COORD(M_STATUSTEXT_Y + OFFSET_Y), text.Get((char*)gxt[i].c_str()));
-
-			if (!type[i]) {
-				// Status Text Value
-				CFont::SetScale(SCREEN_MULTIPLIER(M_TIMERS_SIZE_X), SCREEN_MULTIPLIER(M_TIMERS_SIZE_Y));
-				CFont::SetAlignment(ALIGN_RIGHT);
-				CFont::SetCentreSize(RsGlobal.maximumWidth * 0.0015625f * 590.0f);
-				CFont::SetFontStyle(M_TIMERS_FONTSTYLE);
-				CFont::SetDropShadowPosition(M_TIMERS_SHADOW);
-				if (M_TIMERS_OUTLINE != 0)
-					CFont::SetOutlinePosition(M_TIMERS_OUTLINE);
-				CFont::SetColor(CRGBA(M_STATUSBAR_R, M_STATUSBAR_G, M_STATUSBAR_B, 255));
-				CFont::SetSlantRefPoint(0.0, 0.0);
-				CFont::SetSlant(0.0);
-				CFont::PrintString(
-					RsGlobal.maximumWidth - SCREEN_COORD(M_STATUSTEXT_X),
-					SCREEN_COORD(M_STATUSTEXT_Y + OFFSET_Y), "50");
-			}
-			else {
-				// Status Text Progressbar
-				CSprite2d::DrawBarChart(
-					RsGlobal.maximumWidth - SCREEN_COORD(M_STATUSBAR_X),
-					SCREEN_COORD(M_STATUSBAR_Y + OFFSET_Y + 14.0f*M_STATUSTEXT_SPACE),
-					(unsigned short)SCREEN_MULTIPLIER(M_STATUSBAR_SIZE_X),
-					(unsigned char)SCREEN_MULTIPLIER(M_STATUSBAR_SIZE_Y),
-					(unsigned char)50.0, 0, 0, M_STATUSBAR_BORDER,
-					CRGBA(M_STATUSBAR_R, M_STATUSBAR_G, M_STATUSBAR_B, M_STATUSBAR_A),
-					CRGBA(0, 0, 0, M_STATUSBAR_A));
-			}
-		}
-	}*/
 }editHud;

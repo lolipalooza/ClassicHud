@@ -20,5 +20,9 @@
     <ClInclude Include="ClassicHud\HelpText.h" />
     <ClInclude Include="ClassicHud\Radar.h" />
     <ClInclude Include="ClassicHud\StyledTexts.h" />
+    <ClInclude Include="ClassicHud\MissionTimers.h" />
+    <ClInclude Include="ClassicHud\RadioStation.h" />
+    <ClInclude Include="ClassicHud\GarageMessages.h" />
+    <ClInclude Include="ClassicHud\TestMessage.h" />
   </ItemGroup>
 </Project>

@@ -13,8 +13,8 @@ public:
 	static void InstallPatches();
 	static void DrawSubtitlesUnused(float x, float y, char *str);
 	static void DrawSubtitles(float x, float y, char *str);
-	static void TestSubtitles();
-	static void TestSubtitlesVitalstats();
+	static void Test();
+	static void Test_VitalStats();
 };
 
 void Subtitles::InstallPatches() {
@@ -92,7 +92,7 @@ void Subtitles::DrawSubtitles(float x, float y, char *str)
 	CFont::PrintString(x, y, CHud::m_Message);
 }
 
-void Subtitles::TestSubtitles()
+void Subtitles::Test()
 {
 	CFont::SetBackground(0, 0);
 	CFont::SetScaleForCurrentlanguage(
@@ -120,7 +120,7 @@ void Subtitles::TestSubtitles()
 		(char *)TheText.Get("IE23")); // ~s~This vehicle is not required for export.
 }
 
-void Subtitles::TestSubtitlesVitalstats()
+void Subtitles::Test_VitalStats()
 {
 	CFont::SetBackground(0, 0);
 	CFont::SetScaleForCurrentlanguage(
