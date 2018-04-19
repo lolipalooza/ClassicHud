@@ -3,6 +3,6 @@
 /.vs
 /ClassicHud/.obj
 
-.sln
-.vcxproj
-.vcxproj.filters
+*.sln
+*.vcxproj
+*.vcxproj.filters
