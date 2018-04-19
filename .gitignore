@@ -2,3 +2,7 @@
 /DEBUG
 /.vs
 /ClassicHud/.obj
+
+.sln
+.vcxproj
+.vcxproj.filters
