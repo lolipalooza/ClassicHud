@@ -19,6 +19,7 @@
     <ClInclude Include="ClassicHud\IniReader.h" />
     <ClInclude Include="ClassicHud\Money.h" />
     <ClInclude Include="ClassicHud\Settings.h" />
+    <ClInclude Include="ClassicHud\Weapon.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{B212DDA4-2A8E-45B2-914D-7BEEB31D06B1}</ProjectGuid>

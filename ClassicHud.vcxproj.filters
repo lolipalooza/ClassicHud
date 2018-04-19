@@ -9,5 +9,6 @@
     <ClInclude Include="ClassicHud\IniReader.h" />
     <ClInclude Include="ClassicHud\Money.h" />
     <ClInclude Include="ClassicHud\Settings.h" />
+    <ClInclude Include="ClassicHud\Weapon.h" />
   </ItemGroup>
 </Project>
