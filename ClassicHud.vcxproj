@@ -24,6 +24,7 @@
     <ClInclude Include="ClassicHud\Money.h" />
     <ClInclude Include="ClassicHud\Radar.h" />
     <ClInclude Include="ClassicHud\Settings.h" />
+    <ClInclude Include="ClassicHud\StyledTexts.h" />
     <ClInclude Include="ClassicHud\Subtitles.h" />
     <ClInclude Include="ClassicHud\Utility.h" />
     <ClInclude Include="ClassicHud\VehicleName.h" />

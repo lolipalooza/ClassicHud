@@ -19,5 +19,6 @@
     <ClInclude Include="ClassicHud\Subtitles.h" />
     <ClInclude Include="ClassicHud\HelpText.h" />
     <ClInclude Include="ClassicHud\Radar.h" />
+    <ClInclude Include="ClassicHud\StyledTexts.h" />
   </ItemGroup>
 </Project>

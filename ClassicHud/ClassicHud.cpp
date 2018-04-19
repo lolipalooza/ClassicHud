@@ -1,8 +1,9 @@
 #include <plugin.h>
 
-//#include "Radar.h"
 #include "Settings.h"
 #include "IniReader.h"
+#include "Utility.h"
+
 #include "Money.h"
 #include "Clock.h"
 #include "HudIcons.h"
@@ -13,6 +14,7 @@
 #include "Subtitles.h"
 #include "HelpText.h"
 #include "Radar.h"
+#include "StyledTexts.h"
 
 #include "CHud.h"
 #include "CTimer.h"
@@ -150,100 +152,6 @@ public:
 		patch::Set<const void*>(0x58A8AB, &size_y);
 		patch::Set<const void*>(0x58A921, &size_y);
 		patch::Set<const void*>(0x58A9D5, &size_y);
-	}
-
-	static void DrawSuccessFailedMessage(float x, float y, char* str)
-	{
-		float pos_y = SCREEN_COORD(STYLED1_Y),
-			pos_x = (float)(RsGlobal.maximumWidth / 2);
-
-		if (CHud::m_BigMessage[3][0] || CHud::m_BigMessage[5][0]) // Styled 4 or 6
-			pos_y += STYLED1_Y1;
-		else if (!CHud::m_BigMessage[2][0] && CFont::GetNumberLinesNoPrint(pos_x, pos_y, str) > 1) // Styled 3
-			pos_y += STYLED1_Y2;
-		CFont::SetScale(SCREEN_MULTIPLIER(STYLED1_SIZE_X), SCREEN_MULTIPLIER(STYLED1_SIZE_Y));
-		CFont::SetCentreSize(RsGlobal.maximumWidth * 0.0015625f * 590.0f);
-		CFont::SetFontStyle(FONT_PRICEDOWN);
-		CFont::SetDropShadowPosition(STYLED1_SHADOW);
-		if (STYLED1_OUTLINE != 0)
-			CFont::SetOutlinePosition(STYLED1_OUTLINE);
-		CFont::SetColor(CRGBA(STYLED1_R, STYLED1_G, STYLED1_B, (unsigned char)BigMessageAlpha[0]));
-		CFont::PrintString(pos_x, pos_y, str);
-	}
-
-	static void DrawMissionTitle(float x, float y, char* str)
-	{
-		CFont::SetAlignment(ALIGN_RIGHT);
-		CFont::SetFontStyle(MT_FONTSTYLE);
-		CFont::SetScale(SCREEN_MULTIPLIER(MT_SIZE_X), SCREEN_MULTIPLIER(MT_SIZE_Y));
-		CFont::SetDropShadowPosition(MT_SHADOW);
-		if (MT_OUTLINE != 0)
-			CFont::SetOutlinePosition(MT_OUTLINE);
-		CFont::SetColor(CRGBA(MT_R, MT_G, MT_B, (unsigned char)BigMessageAlpha[1]));
-		CFont::PrintStringFromBottom(RsGlobal.maximumWidth - SCREEN_COORD(MT_POS_X), SCREEN_COORD(MT_POS_Y), str);
-	}
-
-	static void DrawBustedWastedMessage(float x, float y, char *str) {
-		CFont::SetAlignment((eFontAlignment)WB_ALIGN);
-		CFont::SetDropShadowPosition(WB_SHADOW);
-		if (WB_OUTLINE != 0)
-			CFont::SetOutlinePosition(WB_OUTLINE);
-		CFont::SetFontStyle(WB_FONTSTYLE);
-		CFont::SetScale(SCREEN_MULTIPLIER(WB_SIZE_X), SCREEN_MULTIPLIER(WB_SIZE_Y));
-		CFont::SetColor(CRGBA(WB_R, WB_G, WB_B, (unsigned char)BigMessageAlpha[2]));
-		CFont::PrintStringFromBottom(RsGlobal.maximumWidth - SCREEN_COORD(WB_POS_X), SCREEN_COORD(WB_POS_Y), str);
-	}
-
-	void static DrawOddJobMessage4(float x, float y, char* str)
-	{
-		CFont::SetScaleForCurrentlanguage(SCREEN_MULTIPLIER(STYLED4_SIZE_X), SCREEN_MULTIPLIER(STYLED4_SIZE_Y));
-		CFont::SetAlignment((eFontAlignment)STYLED4_ALIGN);
-		CFont::SetCentreSize(RsGlobal.maximumWidth * 0.0015625f * 500.0f);
-		CFont::SetFontStyle(STYLED4_FONTSTYLE);
-		CFont::SetDropShadowPosition(STYLED4_SHADOW);
-		if (STYLED4_OUTLINE != 0)
-			CFont::SetOutlinePosition(STYLED4_OUTLINE);
-		CFont::SetColor(CRGBA(STYLED4_R, STYLED4_G, STYLED4_B, 255));
-		CFont::PrintString(RsGlobal.maximumWidth - SCREEN_COORD(STYLED4_X), SCREEN_COORD(STYLED4_Y), str);
-	}
-
-	void static DrawOddJobMessage5(float x, float y, char* str)
-	{
-		CFont::SetScaleForCurrentlanguage(SCREEN_MULTIPLIER(STYLED5_SIZE_X), SCREEN_MULTIPLIER(STYLED5_SIZE_Y));
-		CFont::SetAlignment(ALIGN_CENTER);
-		CFont::SetCentreSize(RsGlobal.maximumWidth * 0.0015625f * 600.0f);
-		CFont::SetFontStyle(STYLED5_FONTSTYLE);
-		CFont::SetDropShadowPosition(STYLED5_SHADOW);
-		if (STYLED5_OUTLINE != 0)
-			CFont::SetOutlinePosition(STYLED5_OUTLINE);
-		CFont::SetColor(CRGBA(STYLED5_R, STYLED5_G, STYLED5_B, 255));
-		CFont::PrintStringFromBottom((float)(RsGlobal.maximumWidth / 2), SCREEN_COORD(STYLED5_Y), str);
-	}
-
-	void static DrawOddJobMessage6(float x, float y, char* str)
-	{
-		CFont::SetScaleForCurrentlanguage(SCREEN_MULTIPLIER(STYLED6_SIZE_X), SCREEN_MULTIPLIER(STYLED6_SIZE_Y));
-		CFont::SetAlignment(ALIGN_CENTER);
-		CFont::SetCentreSize(RsGlobal.maximumWidth * 0.0015625f * 500.0f);
-		CFont::SetFontStyle(STYLED6_FONTSTYLE);
-		CFont::SetDropShadowPosition(STYLED6_SHADOW);
-		if (STYLED6_OUTLINE != 0)
-			CFont::SetOutlinePosition(STYLED6_OUTLINE);
-		CFont::SetColor(CRGBA(STYLED6_R, STYLED6_G, STYLED6_B, 255));
-		CFont::PrintString((float)(RsGlobal.maximumWidth / 2), SCREEN_COORD(STYLED6_Y), str);
-	}
-
-	void static DrawOddJobMessage7(float x, float y, char* str)
-	{
-		CFont::SetScaleForCurrentlanguage(SCREEN_MULTIPLIER(STYLED7_SIZE_X), SCREEN_MULTIPLIER(STYLED7_SIZE_Y));
-		CFont::SetAlignment(ALIGN_CENTER);
-		CFont::SetCentreSize(RsGlobal.maximumWidth * 0.0015625f * 500.0f);
-		CFont::SetFontStyle(STYLED7_FONTSTYLE);
-		CFont::SetDropShadowPosition(STYLED7_SHADOW);
-		if (STYLED7_OUTLINE != 0)
-			CFont::SetOutlinePosition(STYLED7_OUTLINE);
-		CFont::SetColor(CRGBA(STYLED7_R, STYLED7_G, STYLED7_B, 255));
-		CFont::PrintString((float)(RsGlobal.maximumWidth / 2), SCREEN_COORD(STYLED7_Y), str);
 	}
 
 	static void DrawMissionTimers_Timer(float x, float y, char* str)
@@ -407,15 +315,6 @@ public:
 				Radar::InstallPatches();
 				
 				/*
-				// Styled Texts
-				patch::RedirectCall(0x58CA30, ClassicHud::DrawSuccessFailedMessage);
-				patch::RedirectCall(0x58D470, ClassicHud::DrawMissionTitle);
-				patch::RedirectCall(0x58CC6A, ClassicHud::DrawBustedWastedMessage);
-				patch::RedirectCall(0x58CFA0, ClassicHud::DrawOddJobMessage4);
-				patch::RedirectCall(0x58CD99, ClassicHud::DrawOddJobMessage5);
-				patch::RedirectCall(0x58D21A, ClassicHud::DrawOddJobMessage6);
-				patch::RedirectCall(0x58CE9E, ClassicHud::DrawOddJobMessage7);
-
 				// Mission Timers (Timer and Status Text)
 				patch::RedirectCall(0x58B420, ClassicHud::DrawMissionTimers_TimerText);
 				patch::RedirectCall(0x58B3D2, ClassicHud::DrawMissionTimers_Timer);
@@ -440,25 +339,6 @@ public:
 class HudEditor
 {
 public:
-	static void DrawTestString(float x, float y, float w, float h, eFontAlignment align,
-		float linewidth, int shadow, int outline, int fontstyle, CRGBA color, char* str)
-	{
-		CFont::SetBackground(0, 0);
-		CFont::SetScale(SCREEN_MULTIPLIER(w), SCREEN_MULTIPLIER(h));
-		CFont::SetProp(1);
-		CFont::SetJustify(0);
-		CFont::SetAlignment(align);
-		CFont::SetCentreSize(linewidth);
-		CFont::SetFontStyle(fontstyle);
-		CFont::SetDropColor(CRGBA(0, 0, 0, 255));
-		CFont::SetDropShadowPosition(shadow);
-		if (outline != 0) CFont::SetOutlinePosition(outline);
-		CFont::SetSlantRefPoint(x, y);
-		CFont::SetSlant(0.0);
-		CFont::SetColor(color);
-		CFont::PrintString(x, y, str);
-	}
-
 	static char* ModifyValueInIni(char* section, char* key, float incr)
 	{
 		std::string prefix[5] = { "SA_", "III_", "VC_", "LCS_", "VCS_" };
@@ -523,24 +403,24 @@ public:
 					VehicleName::TestVehicleName();
 				else if (section == "SUBTITLES")
 					Subtitles::TestSubtitles();
+				else if (section == "SUBTITLES_VITALSTATS")
+					Subtitles::TestSubtitlesVitalstats();
+				else if (section == "STYLED1")
+					StyledTexts::TestSuccessFailedMessage();
+				else if (section == "STYLED2")
+					StyledTexts::TestMissionTitle();
+				else if (section == "STYLED3")
+					StyledTexts::TestBustedWastedMessage();
+				else if (section == "STYLED4")
+					StyledTexts::TestOddJobMessage4();
+				else if (section == "STYLED5")
+					StyledTexts::TestOddJobMessage5();
+				else if (section == "STYLED6")
+					StyledTexts::TestOddJobMessage6();
+				else if (section == "STYLED7")
+					StyledTexts::TestOddJobMessage7();
 				/*else if (section == "RADIO_STATION")
 					DisplayRadioStationName();
-				else if (section == "SUBTITLES_VITALSTATS")
-					DrawSubtitles_Vitalstats();
-				else if (section == "STYLED1")
-					DrawSuccessFailedMessage();
-				else if (section == "STYLED2")
-					DrawMissionTitle();
-				else if (section == "STYLED3")
-					DrawBustedWastedMessage();
-				else if (section == "STYLED4")
-					DrawOddJobMessage4();
-				else if (section == "STYLED5")
-					DrawOddJobMessage5();
-				else if (section == "STYLED6")
-					DrawOddJobMessage6();
-				else if (section == "STYLED7")
-					DrawOddJobMessage7();
 				else if (section == "GARAGE_MESSAGES")
 					CGarages__PrintMessages();
 				else if (section == "MISSION_TIMERS"
@@ -608,151 +488,6 @@ public:
 	}
 
 	/*
-
-	static void DrawSubtitles_Vitalstats()
-	{
-		CText text;
-		CFont::SetBackground(0, 0);
-		CFont::SetScaleForCurrentlanguage(
-			SCREEN_MULTIPLIER(SUBTITLES_SIZE_X * SUBTITLES_VITALSTATS_SIZE_X),
-			SCREEN_MULTIPLIER(SUBTITLES_SIZE_Y));
-		CFont::SetProp(1);
-		CFont::SetJustify(0);
-		CFont::SetAlignment(ALIGN_CENTER);
-		CFont::SetCentreSize((RsGlobal.maximumWidth
-			- 0.0015625f * RsGlobal.maximumWidth * SUBTITLES_LINEWIDTH
-			- 8.0f * (0.0015625f * RsGlobal.maximumWidth)
-			- (0.0015625f * RsGlobal.maximumWidth * 140.0f
-				+ 8.0f * (0.0015625f * RsGlobal.maximumWidth))) * SUBTITLES_VITALSTATS_SIZE_X);
-		CFont::SetFontStyle(FONT_SUBTITLES);
-		CFont::SetDropColor(CRGBA(0, 0, 0, 255));
-		CFont::SetDropShadowPosition(SUBTITLES_SHADOW);
-		if (SUBTITLES_OUTLINE != 0)
-			CFont::SetOutlinePosition(SUBTITLES_OUTLINE);
-		CFont::SetColor(CRGBA(SUBTITLES_R, SUBTITLES_G, SUBTITLES_B, 255));
-		CFont::SetSlantRefPoint(0.0, 0.0);
-		CFont::SetSlant(0.0);
-		CFont::PrintString(
-			SCREEN_COORD_CENTER_LEFT(SUBTITLES_X + SUBTITLES_VITALSTATS_X),
-			SCREEN_COORD_BOTTOM(SUBTITLES_Y),
-			text.Get("IE23")); // ~s~This vehicle is not required for export.
-	}
-
-	static void DrawSuccessFailedMessage()
-	{
-		CText text;
-		float pos_y = SCREEN_COORD(STYLED1_Y) + STYLED1_Y2,
-			pos_x = (float)(RsGlobal.maximumWidth / 2);
-		DrawTestString(pos_x, pos_y, STYLED1_SIZE_X, STYLED1_SIZE_Y, ALIGN_CENTER,
-			RsGlobal.maximumWidth * 0.0015625f * 590.0f,
-			STYLED1_SHADOW, STYLED1_OUTLINE, FONT_PRICEDOWN,
-			CRGBA(STYLED1_R, STYLED1_G, STYLED1_B, 255), text.Get("M_FAIL")); // MISSION FAILED!
-	}
-
-	static void DrawMissionTitle()
-	{
-		CText text;
-		DrawTestString(RsGlobal.maximumWidth - SCREEN_COORD(MT_POS_X),
-			SCREEN_COORD(MT_POS_Y), MT_SIZE_X, MT_SIZE_Y, ALIGN_RIGHT,
-			RsGlobal.maximumWidth * 0.0015625f * 590.0f,
-			MT_SHADOW, MT_OUTLINE, MT_FONTSTYLE,
-			CRGBA(MT_R, MT_G, MT_B, 255), text.Get("BEEFY")); // Beefy Baron
-	}
-
-	static void DrawBustedWastedMessage()
-	{
-		CText text;
-		DrawTestString(RsGlobal.maximumWidth - SCREEN_COORD(WB_POS_X),
-			SCREEN_COORD(WB_POS_Y), WB_SIZE_X, WB_SIZE_Y, (eFontAlignment)WB_ALIGN,
-			RsGlobal.maximumWidth * 0.0015625f * 590.0f,
-			WB_SHADOW, WB_OUTLINE, WB_FONTSTYLE,
-			CRGBA(WB_R, WB_G, WB_B, 255), text.Get("DEAD")); // Wasted
-	}
-
-	static void DrawOddJobMessage4()
-	{
-		CText text;
-		CFont::SetBackground(0, 0);
-		CFont::SetScaleForCurrentlanguage(SCREEN_MULTIPLIER(STYLED4_SIZE_X), SCREEN_MULTIPLIER(STYLED4_SIZE_Y));
-		CFont::SetProp(1);
-		CFont::SetJustify(0);
-		CFont::SetAlignment((eFontAlignment)STYLED4_ALIGN);
-		CFont::SetCentreSize(RsGlobal.maximumWidth * 0.0015625f * 500.0f);
-		CFont::SetFontStyle(STYLED4_FONTSTYLE);
-		CFont::SetDropColor(CRGBA(0, 0, 0, 255));
-		CFont::SetDropShadowPosition(STYLED4_SHADOW);
-		if (STYLED4_OUTLINE != 0)
-			CFont::SetOutlinePosition(STYLED4_OUTLINE);
-		CFont::SetColor(CRGBA(STYLED4_R, STYLED4_G, STYLED4_B, 255));
-		CFont::SetSlantRefPoint(0.0, 0.0);
-		CFont::SetSlant(0.0);
-		CFont::PrintString(RsGlobal.maximumWidth - SCREEN_COORD(STYLED4_X),
-			SCREEN_COORD(STYLED4_Y), text.Get("TAXI_M")); // ~y~'TAXI DRIVER'
-	}
-
-	void static DrawOddJobMessage5()
-	{
-		CText text;
-		CFont::SetBackground(0, 0);
-		CFont::SetScaleForCurrentlanguage(SCREEN_MULTIPLIER(STYLED5_SIZE_X), SCREEN_MULTIPLIER(STYLED5_SIZE_Y));
-		CFont::SetProp(1);
-		CFont::SetJustify(0);
-		CFont::SetAlignment(ALIGN_CENTER);
-		CFont::SetCentreSize(RsGlobal.maximumWidth * 0.0015625f * 600.0f);
-		CFont::SetFontStyle(STYLED5_FONTSTYLE);
-		CFont::SetDropColor(CRGBA(0, 0, 0, 255));
-		CFont::SetDropShadowPosition(STYLED5_SHADOW);
-		if (STYLED5_OUTLINE != 0)
-			CFont::SetOutlinePosition(STYLED5_OUTLINE);
-		CFont::SetColor(CRGBA(STYLED5_R, STYLED5_G, STYLED5_B, 255));
-		CFont::SetSlantRefPoint(0.0, 0.0);
-		CFont::SetSlant(0.0);
-		CFont::PrintStringFromBottom((float)(RsGlobal.maximumWidth / 2),
-			SCREEN_COORD(STYLED5_Y), text.Get("RACES_7")); // GO!
-	}
-
-	void static DrawOddJobMessage6()
-	{
-		CText text;
-		CFont::SetBackground(0, 0);
-		CFont::SetScaleForCurrentlanguage(SCREEN_MULTIPLIER(STYLED6_SIZE_X), SCREEN_MULTIPLIER(STYLED6_SIZE_Y));
-		CFont::SetProp(1);
-		CFont::SetJustify(0);
-		CFont::SetAlignment(ALIGN_CENTER);
-		CFont::SetCentreSize(RsGlobal.maximumWidth * 0.0015625f * 500.0f);
-		CFont::SetFontStyle(STYLED6_FONTSTYLE);
-		CFont::SetDropColor(CRGBA(0, 0, 0, 255));
-		CFont::SetDropShadowPosition(STYLED6_SHADOW);
-		if (STYLED6_OUTLINE != 0)
-			CFont::SetOutlinePosition(STYLED6_OUTLINE);
-		CFont::SetColor(CRGBA(STYLED6_R, STYLED6_G, STYLED6_B, 255));
-		CFont::SetSlantRefPoint(0.0, 0.0);
-		CFont::SetSlant(0.0);
-		CFont::PrintString((float)(RsGlobal.maximumWidth / 2),
-			SCREEN_COORD(STYLED6_Y), text.Get("ASS_ACQ")); // Asset acquired!
-	}
-
-	void static DrawOddJobMessage7()
-	{
-		CText text;
-		CFont::SetBackground(0, 0);
-		CFont::SetScaleForCurrentlanguage(SCREEN_MULTIPLIER(STYLED7_SIZE_X), SCREEN_MULTIPLIER(STYLED7_SIZE_Y));
-		CFont::SetProp(1);
-		CFont::SetJustify(0);
-		CFont::SetAlignment(ALIGN_CENTER);
-		CFont::SetCentreSize(RsGlobal.maximumWidth * 0.0015625f * 500.0f);
-		CFont::SetFontStyle(STYLED7_FONTSTYLE);
-		CFont::SetDropColor(CRGBA(0, 0, 0, 255));
-		CFont::SetDropShadowPosition(STYLED7_SHADOW);
-		if (STYLED7_OUTLINE != 0)
-			CFont::SetOutlinePosition(STYLED7_OUTLINE);
-		CFont::SetColor(CRGBA(STYLED7_R, STYLED7_G, STYLED7_B, 255));
-		CFont::SetSlantRefPoint(0.0, 0.0);
-		CFont::SetSlant(0.0);
-		CFont::PrintString((float)(RsGlobal.maximumWidth / 2),
-			SCREEN_COORD(STYLED7_Y), text.Get("DNC_002")); // ~y~PERFECT
-	}
-
 	static void DisplayRadioStationName()
 	{
 		CText text;

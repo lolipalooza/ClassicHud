@@ -14,6 +14,7 @@ public:
 	static void DrawSubtitlesUnused(float x, float y, char *str);
 	static void DrawSubtitles(float x, float y, char *str);
 	static void TestSubtitles();
+	static void TestSubtitlesVitalstats();
 };
 
 void Subtitles::InstallPatches() {
@@ -118,3 +119,32 @@ void Subtitles::TestSubtitles()
 		SCREEN_COORD_BOTTOM(settings.SUBTITLES_Y),
 		(char *)TheText.Get("IE23")); // ~s~This vehicle is not required for export.
 }
+
+void Subtitles::TestSubtitlesVitalstats()
+{
+	CFont::SetBackground(0, 0);
+	CFont::SetScaleForCurrentlanguage(
+		SCREEN_MULTIPLIER(settings.SUBTITLES_SIZE_X * settings.SUBTITLES_VITALSTATS_SIZE_X),
+		SCREEN_MULTIPLIER(settings.SUBTITLES_SIZE_Y));
+	CFont::SetProp(1);
+	CFont::SetJustify(0);
+	CFont::SetAlignment(ALIGN_CENTER);
+	CFont::SetCentreSize((RsGlobal.maximumWidth
+		- 0.0015625f * RsGlobal.maximumWidth * settings.SUBTITLES_LINEWIDTH
+		- 8.0f * (0.0015625f * RsGlobal.maximumWidth)
+		- (0.0015625f * RsGlobal.maximumWidth * 140.0f
+			+ 8.0f * (0.0015625f * RsGlobal.maximumWidth))) * settings.SUBTITLES_VITALSTATS_SIZE_X);
+	CFont::SetFontStyle(FONT_SUBTITLES);
+	CFont::SetDropColor(CRGBA(0, 0, 0, 255));
+	CFont::SetDropShadowPosition(settings.SUBTITLES_SHADOW);
+	if (settings.SUBTITLES_OUTLINE != 0)
+		CFont::SetOutlinePosition(settings.SUBTITLES_OUTLINE);
+	CFont::SetColor(CRGBA(settings.SUBTITLES_R, settings.SUBTITLES_G, settings.SUBTITLES_B, 255));
+	CFont::SetSlantRefPoint(0.0, 0.0);
+	CFont::SetSlant(0.0);
+	CFont::PrintString(
+		SCREEN_COORD_CENTER_LEFT(settings.SUBTITLES_X + settings.SUBTITLES_VITALSTATS_X),
+		SCREEN_COORD_BOTTOM(settings.SUBTITLES_Y),
+		(char *)TheText.Get("IE23")); // ~s~This vehicle is not required for export.
+}
+
