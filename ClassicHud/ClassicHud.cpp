@@ -2,7 +2,6 @@
 
 #include "Settings.h"
 #include "IniReader.h"
-#include "Utility.h"
 
 #include "Money.h"
 #include "Clock.h"
@@ -20,30 +19,11 @@
 #include "GarageMessages.h"
 #include "TestMessage.h"
 
-#include "CHud.h"
-#include "CTimer.h"
-#include "CFont.h"
-#include "CWorld.h"
-#include "CTxdStore.h"
 #include "CFileMgr.h"
-#include "CSprite2d.h"
-#include "CClock.h"
-#include "CStats.h"
-#include "CMessages.h"
-#include "CText.h"
-#include "CHudColours.h"
-
-#include "CCamera.h"
-#include "CCutsceneMgr.h"
-#include "CTheScripts.h"
-#include "CMenuManager.h"
-#include "CPad.h"
 
 using namespace plugin;
 
 static int STYLE;
-static float HUD_POS_X, HUD_POS_Y;
-
 
 class ClassicHud {
 public:
