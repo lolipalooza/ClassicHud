@@ -14,5 +14,7 @@
     <ClInclude Include="ClassicHud\Wanted.h" />
     <ClInclude Include="ClassicHud\Utility.h" />
     <ClInclude Include="ClassicHud\HudIcons.h" />
+    <ClInclude Include="ClassicHud\AreaName.h" />
+    <ClInclude Include="ClassicHud\VehicleName.h" />
   </ItemGroup>
 </Project>

@@ -16,12 +16,14 @@
     <ClCompile Include="ClassicHud\Utility.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ClassicHud\AreaName.h" />
     <ClInclude Include="ClassicHud\Clock.h" />
     <ClInclude Include="ClassicHud\HudIcons.h" />
     <ClInclude Include="ClassicHud\IniReader.h" />
     <ClInclude Include="ClassicHud\Money.h" />
     <ClInclude Include="ClassicHud\Settings.h" />
     <ClInclude Include="ClassicHud\Utility.h" />
+    <ClInclude Include="ClassicHud\VehicleName.h" />
     <ClInclude Include="ClassicHud\Wanted.h" />
     <ClInclude Include="ClassicHud\Weapon.h" />
   </ItemGroup>

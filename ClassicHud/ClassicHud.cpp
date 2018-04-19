@@ -8,6 +8,8 @@
 #include "HudIcons.h"
 #include "Weapon.h"
 #include "Wanted.h"
+#include "AreaName.h"
+#include "VehicleName.h"
 
 #include "CHud.h"
 #include "CTimer.h"
@@ -59,7 +61,6 @@ using namespace plugin;
 static int STYLE;
 static float HUD_POS_X, HUD_POS_Y;
 
-CRGBA AreaCRGBA;
 
 class ClassicHud {
 public:
@@ -111,48 +112,6 @@ public:
 	}
 
 	/*
-
-	static void AreaName(float x, float y, char* str) {
-		CFont::SetFontStyle(AREA_FONTSTYLE);
-		CFont::SetBackground(0, 0);
-		CFont::SetScale(SCREEN_MULTIPLIER(AREA_SIZE_X), SCREEN_MULTIPLIER(AREA_SIZE_Y));
-		CFont::SetAlignment(ALIGN_RIGHT);
-		CFont::SetDropShadowPosition(AREA_SHADOW);
-		if (AREA_OUTLINE != 0)
-			CFont::SetOutlinePosition(AREA_OUTLINE);
-		CFont::SetSlantRefPoint(RsGlobal.maximumWidth - SCREEN_COORD(AREA_X), SCREEN_COORD_BOTTOM(AREA_Y));
-		CFont::SetSlant(AREA_SLANT);
-		CFont::PrintString(
-			RsGlobal.maximumWidth - SCREEN_COORD(HUD_POS_X + AREA_X),
-			SCREEN_COORD_BOTTOM(HUD_POS_Y + AREA_Y), str);
-	}
-
-	static void AreaNameColor(CRGBA value)
-	{
-		CFont::SetColor(CRGBA(AREA_R, AREA_G, AREA_B, value.alpha));
-		AreaCRGBA = value;
-	}
-
-	static void VehicleName(float x, float y, char* str) {
-		CFont::SetFontStyle(VEHICLE_FONTSTYLE);
-		CFont::SetBackground(0, 0);
-		CFont::SetScale(SCREEN_MULTIPLIER(VEHICLE_SIZE_X), SCREEN_MULTIPLIER(VEHICLE_SIZE_Y));
-		CFont::SetAlignment(ALIGN_RIGHT);
-		CFont::SetDropShadowPosition(VEHICLE_SHADOW);
-		if (VEHICLE_OUTLINE != 0)
-			CFont::SetOutlinePosition(VEHICLE_OUTLINE);
-		CFont::SetSlantRefPoint(RsGlobal.maximumWidth - SCREEN_COORD(VEHICLE_X), SCREEN_COORD_BOTTOM(VEHICLE_Y));
-		CFont::SetSlant(VEHICLE_SLANT);
-		CFont::PrintString(
-			RsGlobal.maximumWidth - SCREEN_COORD(HUD_POS_X + VEHICLE_X),
-			SCREEN_COORD_BOTTOM(HUD_POS_Y + VEHICLE_Y), str);
-	}
-
-	static void VehicleNameColor(CRGBA value)
-	{
-		CFont::SetColor(CRGBA(VEHICLE_R, VEHICLE_G, VEHICLE_B, value.alpha));
-		AreaCRGBA = value;
-	}
 
 	static void DrawSubtitlesUnused(float x, float y, char *str)
 	{
@@ -731,15 +690,10 @@ public:
 				Weapon::InstallPatches();
 				Wanted::InstallPatches();
 
+				AreaName::InstallPatches();
+				VehicleName::InstallPatches();
+
 				/*
-
-
-
-				patch::RedirectCall(0x58AE5D, ClassicHud::AreaName);
-				patch::RedirectCall(0x58AE02, ClassicHud::AreaNameColor);
-				patch::RedirectCall(0x58B156, ClassicHud::VehicleName);
-				patch::RedirectCall(0x58B0ED, ClassicHud::VehicleNameColor);
-
 				patch::RedirectCall(0x58C68A, ClassicHud::DrawSubtitles);
 				patch::RedirectCall(0x58FCFA, ClassicHud::DrawHelpText);
 
@@ -791,7 +745,7 @@ public:
 
 
 
-/*
+
 class HudEditor
 {
 public:
@@ -832,8 +786,8 @@ public:
 		}
 		iniReader.WriteFloat((char*)s_section.c_str(), key, value);
 
-		Settings::Init(STYLE);
-		if ((std::string)section == "MONEY")
+		settings.Init(STYLE);
+		/*if ((std::string)section == "MONEY")
 			patch::RedirectCall(0x58F607, ClassicHud::DrawMoney);
 		else if ((std::string)section == "CLOCK")
 			patch::RedirectCall(0x58EC21, ClassicHud::DrawClock);
@@ -852,7 +806,7 @@ public:
 		else if ((std::string)section == "HELP_TEXT")
 			patch::RedirectCall(0x58FCFA, ClassicHud::DrawHelpText);
 		else if ((std::string)section == "RADAR")
-			ClassicHud::SetRadarPosAndSize();
+			ClassicHud::SetRadarPosAndSize();*/
 
 		char str[200];
 		_snprintf(str, sizeof(str), "section: %s ~n~key: %s ~n~value: %f ~n~incr: %f",
@@ -871,47 +825,49 @@ public:
 
 		Events::drawingEvent += []
 		{
-			if (section == "AREA")
-				AreaName();
-			else if (section == "VEHICLE")
-				VehicleName();
-			else if (section == "RADIO_STATION")
-				DisplayRadioStationName();
-			else if (section == "SUBTITLES")
-				DrawSubtitles();
-			else if (section == "SUBTITLES_VITALSTATS")
-				DrawSubtitles_Vitalstats();
-			else if (section == "STYLED1")
-				DrawSuccessFailedMessage();
-			else if (section == "STYLED2")
-				DrawMissionTitle();
-			else if (section == "STYLED3")
-				DrawBustedWastedMessage();
-			else if (section == "STYLED4")
-				DrawOddJobMessage4();
-			else if (section == "STYLED5")
-				DrawOddJobMessage5();
-			else if (section == "STYLED6")
-				DrawOddJobMessage6();
-			else if (section == "STYLED7")
-				DrawOddJobMessage7();
-			else if (section == "GARAGE_MESSAGES")
-				CGarages__PrintMessages();
-			else if (section == "MISSION_TIMERS"
-				|| section == "STATUS_TEXT"
-				|| section == "STATUS_TEXT_BAR")
-				DrawMissionTimers();
+			if (enable) {
+				if (section == "AREA")
+					AreaName::TestAreaName();
+				else if (section == "VEHICLE")
+					VehicleName::TestVehicleName();
+				/*else if (section == "RADIO_STATION")
+					DisplayRadioStationName();
+				else if (section == "SUBTITLES")
+					DrawSubtitles();
+				else if (section == "SUBTITLES_VITALSTATS")
+					DrawSubtitles_Vitalstats();
+				else if (section == "STYLED1")
+					DrawSuccessFailedMessage();
+				else if (section == "STYLED2")
+					DrawMissionTitle();
+				else if (section == "STYLED3")
+					DrawBustedWastedMessage();
+				else if (section == "STYLED4")
+					DrawOddJobMessage4();
+				else if (section == "STYLED5")
+					DrawOddJobMessage5();
+				else if (section == "STYLED6")
+					DrawOddJobMessage6();
+				else if (section == "STYLED7")
+					DrawOddJobMessage7();
+				else if (section == "GARAGE_MESSAGES")
+					CGarages__PrintMessages();
+				else if (section == "MISSION_TIMERS"
+					|| section == "STATUS_TEXT"
+					|| section == "STATUS_TEXT_BAR")
+					DrawMissionTimers();*/
 
-			if (enable)
-				DrawTestString(SCREEN_COORD(CUSTOM_X), SCREEN_COORD(CUSTOM_Y),
-					CUSTOM_SIZE_X, CUSTOM_SIZE_Y, (eFontAlignment)CUSTOM_ALIGN,
-					CUSTOM_LINEWIDTH, CUSTOM_SHADOW, CUSTOM_OUTLINE, CUSTOM_FONTSTYLE,
-					CRGBA(CUSTOM_R, CUSTOM_G, CUSTOM_B, CUSTOM_A), custom_text);
-			if (enable && menu_level == 1)
-				DrawTestString(SCREEN_COORD(CUSTOM_X), SCREEN_COORD(CUSTOM_Y - 30.0f),
-					CUSTOM_SIZE_X, CUSTOM_SIZE_Y, (eFontAlignment)CUSTOM_ALIGN,
-					CUSTOM_LINEWIDTH, CUSTOM_SHADOW, CUSTOM_OUTLINE, CUSTOM_FONTSTYLE,
-					CRGBA(255, 255, 255, CUSTOM_A), "Edit mode");
+				DrawTestString(SCREEN_COORD(settings.CUSTOM_X), SCREEN_COORD(settings.CUSTOM_Y),
+					settings.CUSTOM_SIZE_X, settings.CUSTOM_SIZE_Y, (eFontAlignment)settings.CUSTOM_ALIGN,
+					settings.CUSTOM_LINEWIDTH, settings.CUSTOM_SHADOW, settings.CUSTOM_OUTLINE, settings.CUSTOM_FONTSTYLE,
+					CRGBA(settings.CUSTOM_R, settings.CUSTOM_G, settings.CUSTOM_B, settings.CUSTOM_A), custom_text);
+				
+				if (menu_level == 1)
+					DrawTestString(SCREEN_COORD(settings.CUSTOM_X), SCREEN_COORD(settings.CUSTOM_Y - 30.0f),
+						settings.CUSTOM_SIZE_X, settings.CUSTOM_SIZE_Y, (eFontAlignment)settings.CUSTOM_ALIGN,
+						settings.CUSTOM_LINEWIDTH, settings.CUSTOM_SHADOW, settings.CUSTOM_OUTLINE, settings.CUSTOM_FONTSTYLE,
+						CRGBA(255, 255, 255, settings.CUSTOM_A), "Edit mode");
+			}
 		};
 
 		Events::gameProcessEvent += [] {
@@ -949,8 +905,8 @@ public:
 					sprintf(custom_text, labels[chosen].c_str());
 						break;
 				case 1:
-					HudEditor::ModifyValueInIni((char*)sections[chosen].c_str(),
-						(char*)keys[chosen].c_str(), incr[chosen]);
+					//HudEditor::ModifyValueInIni((char*)sections[chosen].c_str(),
+						//(char*)keys[chosen].c_str(), incr[chosen]);
 					break;
 				}
 
@@ -960,50 +916,7 @@ public:
 		};
 	}
 
-	static void AreaName()
-	{
-		CText text;
-		CFont::SetBackground(0, 0);
-		CFont::SetScale(SCREEN_MULTIPLIER(AREA_SIZE_X), SCREEN_MULTIPLIER(AREA_SIZE_Y));
-		CFont::SetProp(1);
-		CFont::SetJustify(0);
-		CFont::SetAlignment(ALIGN_RIGHT);
-		CFont::SetCentreSize(RsGlobal.maximumWidth * 0.0015625f * 590.0f);
-		CFont::SetFontStyle(AREA_FONTSTYLE);
-		CFont::SetDropColor(CRGBA(0, 0, 0, 255));
-		CFont::SetSlantRefPoint(RsGlobal.maximumWidth - SCREEN_COORD(AREA_X), SCREEN_COORD_BOTTOM(AREA_Y));
-		CFont::SetSlant(AREA_SLANT);
-		CFont::SetDropShadowPosition(AREA_SHADOW);
-		if (AREA_OUTLINE != 0)
-			CFont::SetOutlinePosition(AREA_OUTLINE);
-		CFont::SetColor(CRGBA(AREA_R, AREA_G, AREA_B, 255));
-		CFont::PrintString(
-			RsGlobal.maximumWidth - SCREEN_COORD(HUD_POS_X + AREA_X),
-			SCREEN_COORD_BOTTOM(HUD_POS_Y + AREA_Y), text.Get("GAN")); // Ganton
-	}
-
-	static void VehicleName()
-	{
-		CText text;
-		CFont::SetBackground(0, 0);
-		CFont::SetScale(SCREEN_MULTIPLIER(VEHICLE_SIZE_X), SCREEN_MULTIPLIER(VEHICLE_SIZE_Y));
-		CFont::SetProp(1);
-		CFont::SetJustify(0);
-		CFont::SetAlignment(ALIGN_RIGHT);
-		CFont::SetCentreSize(RsGlobal.maximumWidth * 0.0015625f * 590.0f);
-		CFont::SetFontStyle(VEHICLE_FONTSTYLE);
-		CFont::SetDropColor(CRGBA(0, 0, 0, 255));
-		CFont::SetSlantRefPoint(RsGlobal.maximumWidth - SCREEN_COORD(VEHICLE_X), SCREEN_COORD_BOTTOM(VEHICLE_Y));
-		CFont::SetSlant(VEHICLE_SLANT);
-		CFont::SetDropShadowPosition(VEHICLE_SHADOW);
-		if (VEHICLE_OUTLINE != 0)
-			CFont::SetOutlinePosition(VEHICLE_OUTLINE);
-		CFont::SetColor(CRGBA(VEHICLE_R, VEHICLE_G, VEHICLE_B, 255));
-		CFont::PrintString(
-			RsGlobal.maximumWidth - SCREEN_COORD(HUD_POS_X + VEHICLE_X),
-			SCREEN_COORD_BOTTOM(HUD_POS_Y + VEHICLE_Y), text.Get("BMX")); // BMX
-	}
-
+	/*
 	static void DrawSubtitles()
 	{
 		CText text;
@@ -1276,6 +1189,5 @@ public:
 					CRGBA(0, 0, 0, M_STATUSBAR_A));
 			}
 		}
-	}
+	}*/
 }editHud;
-*/
