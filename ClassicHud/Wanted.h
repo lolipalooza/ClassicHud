@@ -6,8 +6,6 @@
 #include "CSprite2d.h"
 #include "CTimer.h"
 
-static CSprite2d hudIcons[10];
-
 class Wanted {
 public:
 	static void InstallPatches();

@@ -5,7 +5,7 @@
 #include "IniReader.h"
 #include "Money.h"
 #include "Clock.h"
-
+#include "HudIcons.h"
 #include "Weapon.h"
 #include "Wanted.h"
 
@@ -53,8 +53,6 @@
 #define byte_96C014 ((char *)0x96C014)
 #define Menu_WidescreenOn (*(unsigned __int8 *)0xBA6793)
 #define ZoneToPrint ((char *)0xBAB1D0)
-
-short& m_ItemToFlash = *(short*)0xBAB1DC;
 
 using namespace plugin;
 
@@ -154,318 +152,6 @@ public:
 	{
 		CFont::SetColor(CRGBA(VEHICLE_R, VEHICLE_G, VEHICLE_B, value.alpha));
 		AreaCRGBA = value;
-	}
-
-	static void PrintHealthString(float posX, float posY, WORD wWidth, WORD wHeight, float fPercentage, BYTE drawBlueLine,
-		BYTE drawPercentage, BYTE drawBorder, CRGBA dwColor, CRGBA dwForeColor) {
-		int Percentage = 0;
-		
-		CFont::SetFontStyle(FONT_PRICEDOWN);
-		CFont::SetBackground(0, 0);
-		CFont::SetScale(SCREEN_MULTIPLIER(HEALTH_WIDTH), SCREEN_MULTIPLIER(HEALTH_HEIGHT));
-		CFont::SetColor(CRGBA(HEALTH_R, HEALTH_G, HEALTH_B, HEALTH_A));
-		CFont::SetDropColor(CRGBA(0, 0, 0, HEALTH_A));
-		CFont::SetDropShadowPosition(1);
-		//CFont::SetOutlinePosition(HUD_GLOBAL_OUTLINE);
-		char str[10];
-		CPed *playa = FindPlayerPed(0);
-
-		if (Percentage == 1)
-			sprintf(str, "%03d", (int)fPercentage);
-		else
-			sprintf(str, "%03d", (int)playa->m_fHealth);
-
-		if (m_ItemToFlash != 3 || ShowFlashingItem(300, 300)) {
-			if (CWorld::Players[0].m_nLastTimeArmourLost == CWorld::Players[0].m_nLastTimeEnergyLost || CWorld::Players[0].m_nLastTimeEnergyLost + 1000 < CTimer::m_snTimeInMilliseconds || ShowFlashingItem(150, 150))
-			{
-				CFont::PrintString(
-					RsGlobal.maximumWidth - SCREEN_COORD(HUD_POS_X + HEALTH_X),
-					SCREEN_COORD(HUD_POS_Y + HEALTH_Y),
-					str);
-
-				RwEngineInstance->dOpenDevice.fpRenderStateSet(rwRENDERSTATEZTESTENABLE, 0);
-				hudIcons[0].Draw(
-					RsGlobal.maximumWidth - SCREEN_COORD(HUD_POS_X + HEALTHICON_X + -2.0f),
-					SCREEN_COORD(HUD_POS_Y + HEALTHICON_Y + 2.0f),
-					SCREEN_MULTIPLIER(HEALTHICON_WIDTH), SCREEN_MULTIPLIER(HEALTHICON_HEIGHT),
-					CRGBA(0, 0, 0, HEALTH_A));
-				hudIcons[0].Draw(
-					RsGlobal.maximumWidth - SCREEN_COORD(HUD_POS_X + HEALTHICON_X),
-					SCREEN_COORD(HUD_POS_Y + HEALTHICON_Y),
-					SCREEN_MULTIPLIER(HEALTHICON_WIDTH), SCREEN_MULTIPLIER(HEALTHICON_HEIGHT),
-					CRGBA(HEALTH_R, HEALTH_G, HEALTH_B, HEALTH_A));
-				RwEngineInstance->dOpenDevice.fpRenderStateSet(rwRENDERSTATEZWRITEENABLE, 0);
-			}
-		}
-	}
-
-	static void PrintArmourString(float posX, float posY, WORD wWidth, WORD wHeight, float fPercentage, BYTE drawBlueLine,
-		BYTE drawPercentage, BYTE drawBorder, CRGBA dwColor, CRGBA dwForeColor) {
-		int Percentage = 0;
-		CFont::SetFontStyle(FONT_PRICEDOWN);
-		CFont::SetBackground(0, 0);
-		CFont::SetScale(SCREEN_MULTIPLIER(ARMOUR_SIZE_X), SCREEN_MULTIPLIER(ARMOUR_SIZE_Y));
-		CFont::SetColor(CRGBA(ARMOUR_R, ARMOUR_G, ARMOUR_B, ARMOUR_A));
-		CFont::SetDropColor(CRGBA(0, 0, 0, ARMOUR_A));
-		CFont::SetDropShadowPosition(1);
-		//CFont::SetOutlinePosition(HUD_GLOBAL_OUTLINE);
-		char str[10];
-		CPed *playa = FindPlayerPed(0);
-		if (Percentage == 1)
-			sprintf(str, "%03d", (int)fPercentage);
-		else
-			sprintf(str, "%03d", (int)playa->m_fArmour);
-
-		if (m_ItemToFlash != 4 || ShowFlashingItem(300, 300)) {
-			if (CWorld::Players[0].m_nLastTimeArmourLost == 0 || CWorld::Players[0].m_nLastTimeArmourLost + 1000 < CTimer::m_snTimeInMilliseconds || ShowFlashingItem(150, 150))
-			{
-				CFont::PrintString(
-					RsGlobal.maximumWidth - SCREEN_COORD(HUD_POS_X + ARMOUR_X),
-					SCREEN_COORD(HUD_POS_Y + ARMOUR_Y), str);
-
-				RwEngineInstance->dOpenDevice.fpRenderStateSet(rwRENDERSTATEZTESTENABLE, 0);
-				hudIcons[1].Draw(
-					RsGlobal.maximumWidth - SCREEN_COORD(HUD_POS_X + ARMOURICON_X + -2.0f),
-					SCREEN_COORD(HUD_POS_Y + ARMOURICON_Y + 2.0f),
-					SCREEN_MULTIPLIER(ARMOURICON_SIZE_X),
-					SCREEN_MULTIPLIER(ARMOURICON_SIZE_Y),
-					CRGBA(0, 0, 0, ARMOUR_A));
-				hudIcons[1].Draw(
-					RsGlobal.maximumWidth - SCREEN_COORD(HUD_POS_X + ARMOURICON_X),
-					SCREEN_COORD(HUD_POS_Y + ARMOURICON_Y),
-					SCREEN_MULTIPLIER(ARMOURICON_SIZE_X),
-					SCREEN_MULTIPLIER(ARMOURICON_SIZE_Y),
-					CRGBA(ARMOUR_R, ARMOUR_G, ARMOUR_B, ARMOUR_A));
-				RwEngineInstance->dOpenDevice.fpRenderStateSet(rwRENDERSTATEZWRITEENABLE, 0);
-			}
-		}
-	}
-
-	static void PrintBreathString(float posX, float posY, WORD wWidth, WORD wHeight, float fPercentage, BYTE drawBlueLine,
-		BYTE drawPercentage, BYTE drawBorder, CRGBA dwColor, CRGBA dwForeColor)
-	{
-		CFont::SetFontStyle(FONT_PRICEDOWN);
-		CFont::SetBackground(0, 0);
-		CFont::SetScale(SCREEN_MULTIPLIER(BREATH_SIZE_X), SCREEN_MULTIPLIER(BREATH_SIZE_Y));
-		CFont::SetColor(CRGBA(BREATH_R, BREATH_G, BREATH_B, BREATH_A));
-		CFont::SetDropColor(CRGBA(0, 0, 0, BREATH_A));
-		CFont::SetDropShadowPosition(1);
-		char str[10];
-		sprintf(str, "%03d", (int)fPercentage);
-
-		CFont::PrintString(
-			RsGlobal.maximumWidth - SCREEN_COORD(HUD_POS_X + BREATH_X),
-			SCREEN_COORD(HUD_POS_Y + BREATH_Y), str);
-
-		RwEngineInstance->dOpenDevice.fpRenderStateSet(rwRENDERSTATEZTESTENABLE, 0);
-		hudIcons[2].Draw(
-			RsGlobal.maximumWidth - SCREEN_COORD(HUD_POS_X + BREATHICON_X + -2.0f),
-			SCREEN_COORD(HUD_POS_Y + BREATHICON_Y + 2.0f), SCREEN_MULTIPLIER(BREATHICON_SIZE_X),
-			SCREEN_MULTIPLIER(BREATHICON_SIZE_Y), CRGBA(0, 0, 0, 255));
-		hudIcons[2].Draw(
-			RsGlobal.maximumWidth - SCREEN_COORD(HUD_POS_X + BREATHICON_X),
-			SCREEN_COORD(HUD_POS_Y + BREATHICON_Y), SCREEN_MULTIPLIER(BREATHICON_SIZE_X),
-			SCREEN_MULTIPLIER(BREATHICON_SIZE_Y),
-			CRGBA(BREATH_R, BREATH_G, BREATH_B, 255));
-		RwEngineInstance->dOpenDevice.fpRenderStateSet(rwRENDERSTATEZWRITEENABLE, 0);
-	}
-
-	static void PrintHealthBar(float posX, float posY, WORD wWidth, WORD wHeight, float fPercentage, BYTE drawBlueLine,
-		BYTE drawPercentage, BYTE drawBorder, CRGBA dwColor, CRGBA dwForeColor)
-	{
-		int SquareBar = 1;
-		if (m_ItemToFlash != 3 || ShowFlashingItem(300, 300)) {
-			if (CWorld::Players[0].m_nLastTimeArmourLost == CWorld::Players[0].m_nLastTimeEnergyLost || CWorld::Players[0].m_nLastTimeEnergyLost + 1000 < CTimer::m_snTimeInMilliseconds || ShowFlashingItem(150, 150))
-			{
-				RwEngineInstance->dOpenDevice.fpRenderStateSet(rwRENDERSTATEZTESTENABLE, 0);
-				switch (HEALTH_TYPE) {
-				case 0: default: // Default Bar
-					CSprite2d::DrawBarChart(
-						RsGlobal.maximumWidth - SCREEN_COORD(HUD_POS_X + HEALTHBAR_X),
-						SCREEN_COORD(HUD_POS_Y + HEALTHBAR_Y),
-						(unsigned short)SCREEN_MULTIPLIER(HEALTHBAR_SIZE_X),
-						(unsigned char)SCREEN_MULTIPLIER(HEALTHBAR_SIZE_Y),
-						(unsigned char)fPercentage, 0, 0, HEALTHBAR_BORDER, CRGBA(HEALTH_R, HEALTH_G, HEALTH_B, HEALTH_A), CRGBA(0, 0, 0, HEALTH_A));
-					break;
-				case 1: // Square Bar
-					CSprite2d::DrawBarChart(
-						RsGlobal.maximumWidth - SCREEN_COORD(HUD_POS_X + HEALTHBAR_X),
-						SCREEN_COORD(HUD_POS_Y + HEALTHBAR_Y),
-						(unsigned short)SCREEN_MULTIPLIER(HEALTHBAR_SIZE_X),
-						(unsigned char)SCREEN_MULTIPLIER(HEALTHBAR_SIZE_Y),
-						(unsigned char)fPercentage, 0, 0, HEALTHBAR_BORDER, CRGBA(HEALTH_R, HEALTH_G, HEALTH_B, HEALTH_A), CRGBA(0, 0, 0, HEALTH_A));
-					hudIcons[5].Draw(
-						RsGlobal.maximumWidth - SCREEN_COORD(HUD_POS_X + HEALTHBAR_X),
-						SCREEN_COORD(HUD_POS_Y + HEALTHBAR_Y),
-						SCREEN_MULTIPLIER(HEALTHBAR_SIZE_X),
-						SCREEN_MULTIPLIER(HEALTHBAR_SIZE_Y),
-						CRGBA(0, 0, 0, 255));
-					break;
-				case 2: // Rounded Bar
-					CSprite2d::DrawBarChart(
-						RsGlobal.maximumWidth - SCREEN_COORD(HUD_POS_X + HEALTHBAR_X + -5.0f),
-						SCREEN_COORD(HUD_POS_Y + HEALTHBAR_Y + 6.0f),
-						(unsigned short)SCREEN_MULTIPLIER(HEALTHBAR_SIZE_X + -9.0f),
-						(unsigned char)SCREEN_MULTIPLIER(HEALTHBAR_SIZE_Y + -11.0f),
-						(unsigned char)fPercentage, 0, 0, 0, CRGBA(HEALTH_R, HEALTH_G, HEALTH_B, HEALTH_A),
-						CRGBA(0, 0, 0, HEALTH_A));
-					hudIcons[6].Draw(
-						RsGlobal.maximumWidth - SCREEN_COORD(HUD_POS_X + HEALTHBAR_X),
-						SCREEN_COORD(HUD_POS_Y + HEALTHBAR_Y),
-						SCREEN_MULTIPLIER(HEALTHBAR_SIZE_X),
-						SCREEN_MULTIPLIER(HEALTHBAR_SIZE_Y),
-						CRGBA(0, 0, 0, 255));
-					break;
-				}
-				RwEngineInstance->dOpenDevice.fpRenderStateSet(rwRENDERSTATEZWRITEENABLE, 0);
-			}
-		}
-	}
-
-	static void PrintArmourBar(float posX, float posY, WORD wWidth, WORD wHeight, float fPercentage, BYTE drawBlueLine,
-		BYTE drawPercentage, BYTE drawBorder, CRGBA dwColor, CRGBA dwForeColor)
-	{
-		int SquareBar = 1;
-		if (m_ItemToFlash != 4 || ShowFlashingItem(300, 300)) {
-			if (CWorld::Players[0].m_nLastTimeArmourLost == 0 || CWorld::Players[0].m_nLastTimeArmourLost + 1000 < CTimer::m_snTimeInMilliseconds || ShowFlashingItem(150, 150))
-			{
-				RwEngineInstance->dOpenDevice.fpRenderStateSet(rwRENDERSTATEZTESTENABLE, 0);
-				switch (ARMOUR_TYPE) {
-				default: case 0: // Default Bar
-					CSprite2d::DrawBarChart(
-						RsGlobal.maximumWidth - SCREEN_COORD(HUD_POS_X + ARMOURBAR_X),
-						SCREEN_COORD(HUD_POS_Y + ARMOURBAR_Y),
-						(unsigned short)SCREEN_MULTIPLIER(ARMOURBAR_SIZE_X),
-						(unsigned char)SCREEN_MULTIPLIER(ARMOURBAR_SIZE_Y),
-						(unsigned char)fPercentage, 0, 0, ARMOURBAR_BORDER, CRGBA(ARMOUR_R, ARMOUR_G, ARMOUR_B, ARMOUR_A),
-						CRGBA(0, 0, 0, ARMOUR_A));
-					break;
-				case 1: // Square Bar
-					CSprite2d::DrawBarChart(
-						RsGlobal.maximumWidth - SCREEN_COORD(HUD_POS_X + ARMOURBAR_X),
-						SCREEN_COORD(HUD_POS_Y + ARMOURBAR_Y),
-						(unsigned short)SCREEN_MULTIPLIER(ARMOURBAR_SIZE_X),
-						(unsigned char)SCREEN_MULTIPLIER(ARMOURBAR_SIZE_Y),
-						(unsigned char)fPercentage, 0, 0, ARMOURBAR_BORDER, CRGBA(ARMOUR_R, ARMOUR_G, ARMOUR_B, ARMOUR_A),
-						CRGBA(0, 0, 0, ARMOUR_A));
-					hudIcons[5].Draw(
-					RsGlobal.maximumWidth - SCREEN_COORD(HUD_POS_X + ARMOURBAR_X),
-					SCREEN_COORD(HUD_POS_Y + ARMOURBAR_Y),
-					SCREEN_MULTIPLIER(ARMOURBAR_SIZE_X),
-					SCREEN_MULTIPLIER(ARMOURBAR_SIZE_Y),
-					CRGBA(0, 0, 0, 255));
-					break;
-				case 2: // Rounded Bar
-					CSprite2d::DrawBarChart(
-						RsGlobal.maximumWidth - SCREEN_COORD(HUD_POS_X + ARMOURBAR_X + -5.0f),
-						SCREEN_COORD(HUD_POS_Y + ARMOURBAR_Y + 6.0f),
-						(unsigned short)SCREEN_MULTIPLIER(ARMOURBAR_SIZE_X + -9.0f),
-						(unsigned char)SCREEN_MULTIPLIER(ARMOURBAR_SIZE_Y + -11.0f),
-						(unsigned char)fPercentage, 0, 0, 0, CRGBA(ARMOUR_R, ARMOUR_G, ARMOUR_B, ARMOUR_A),
-						CRGBA(0, 0, 0, ARMOUR_A));
-					hudIcons[6].Draw(
-						RsGlobal.maximumWidth - SCREEN_COORD(HUD_POS_X + ARMOURBAR_X),
-						SCREEN_COORD(HUD_POS_Y + ARMOURBAR_Y),
-						SCREEN_MULTIPLIER(ARMOURBAR_SIZE_X),
-						SCREEN_MULTIPLIER(ARMOURBAR_SIZE_Y),
-						CRGBA(0, 0, 0, 255));
-					break;
-				}
-				RwEngineInstance->dOpenDevice.fpRenderStateSet(rwRENDERSTATEZWRITEENABLE, 0);
-			}
-		}
-	}
-
-	static void PrintBreathBar(float posX, float posY, WORD wWidth, WORD wHeight, float fPercentage, BYTE drawBlueLine,
-		BYTE drawPercentage, BYTE drawBorder, CRGBA dwColor, CRGBA dwForeColor)
-	{
-		CPed *playa = FindPlayerPed(0);
-		RwEngineInstance->dOpenDevice.fpRenderStateSet(rwRENDERSTATEZTESTENABLE, 0);
-		switch (BREATH_TYPE) {
-		default: case 0: // Default Bar
-			CSprite2d::DrawBarChart(
-				RsGlobal.maximumWidth - SCREEN_COORD(HUD_POS_X + BREATHBAR_X),
-				SCREEN_COORD(HUD_POS_Y + BREATHBAR_Y),
-				(unsigned short)SCREEN_MULTIPLIER(BREATHBAR_SIZE_X),
-				(unsigned char)SCREEN_MULTIPLIER(BREATHBAR_SIZE_Y),
-				(unsigned char)fPercentage, 0, 0, BREATHBAR_BORDER, CRGBA(BREATH_R, BREATH_G, BREATH_B, BREATH_A),
-				CRGBA(0, 0, 0, BREATH_A));
-			break;
-		case 1: // Square Bar
-			CSprite2d::DrawBarChart(
-				RsGlobal.maximumWidth - SCREEN_COORD(HUD_POS_X + BREATHBAR_X),
-				SCREEN_COORD(HUD_POS_Y + BREATHBAR_Y),
-				(unsigned short)SCREEN_MULTIPLIER(BREATHBAR_SIZE_X),
-				(unsigned char)SCREEN_MULTIPLIER(BREATHBAR_SIZE_Y),
-				(unsigned char)fPercentage, 0, 0, BREATHBAR_BORDER, CRGBA(BREATH_R, BREATH_G, BREATH_B, BREATH_A),
-				CRGBA(0, 0, 0, BREATH_A));
-			hudIcons[5].Draw(
-				RsGlobal.maximumWidth - SCREEN_COORD(HUD_POS_X + BREATHBAR_X),
-				SCREEN_COORD(HUD_POS_Y + BREATHBAR_Y),
-				SCREEN_MULTIPLIER(BREATHBAR_SIZE_X),
-				SCREEN_MULTIPLIER(BREATHBAR_SIZE_Y), CRGBA(0, 0, 0, 255));
-			break;
-		case 2: // Rounded Bar
-			CSprite2d::DrawBarChart(
-				RsGlobal.maximumWidth - SCREEN_COORD(HUD_POS_X + BREATHBAR_X + -5.0f),
-				SCREEN_COORD(HUD_POS_Y + BREATHBAR_Y + 6.0f),
-				(unsigned short)SCREEN_MULTIPLIER(BREATHBAR_SIZE_X + -9.0f),
-				(unsigned char)SCREEN_MULTIPLIER(BREATHBAR_SIZE_Y + -11.0f),
-				(unsigned char)fPercentage, 0, 0, 0, CRGBA(BREATH_R, BREATH_G, BREATH_B, BREATH_A),
-				CRGBA(0, 0, 0, BREATH_A));
-			hudIcons[6].Draw(
-				RsGlobal.maximumWidth - SCREEN_COORD(HUD_POS_X + BREATHBAR_X),
-				SCREEN_COORD(HUD_POS_Y + BREATHBAR_Y),
-				SCREEN_MULTIPLIER(BREATHBAR_SIZE_X), SCREEN_MULTIPLIER(BREATHBAR_SIZE_Y), CRGBA(0, 0, 0, 255));
-			break;
-		}
-		RwEngineInstance->dOpenDevice.fpRenderStateSet(rwRENDERSTATEZWRITEENABLE, 0);
-	}
-
-	static void DrawHealth(float posX, float posY, WORD wWidth, WORD wHeight, float fPercentage, BYTE drawBlueLine,
-		BYTE drawPercentage, BYTE drawBorder, CRGBA dwColor, CRGBA dwForeColor)
-	{
-		switch (HEALTH_TYPE)
-		{
-		default: case 0: case 1: case 2:
-			PrintHealthBar(posX, posY, wWidth, wHeight, fPercentage, drawBlueLine,
-				drawPercentage, drawBorder, dwColor, dwForeColor);
-			break;
-		case 3:
-			PrintHealthString(posX, posY, wWidth, wHeight, fPercentage, drawBlueLine,
-				drawPercentage, drawBorder, dwColor, dwForeColor);
-			break;
-		}
-	}
-	
-	static void DrawArmour(float posX, float posY, WORD wWidth, WORD wHeight, float fPercentage, BYTE drawBlueLine,
-		BYTE drawPercentage, BYTE drawBorder, CRGBA dwColor, CRGBA dwForeColor)
-	{
-		switch (ARMOUR_TYPE) {
-		default: case 0: case 1: case 2:
-			PrintArmourBar(posX, posY, wWidth, wHeight, fPercentage, drawBlueLine,
-				drawPercentage, drawBorder, dwColor, dwForeColor);
-			break;
-		case 3:
-			PrintArmourString(posX, posY, wWidth, wHeight, fPercentage, drawBlueLine,
-				drawPercentage, drawBorder, dwColor, dwForeColor);
-			break;
-		}
-	}
-
-	static void DrawBreath(float posX, float posY, WORD wWidth, WORD wHeight, float fPercentage, BYTE drawBlueLine,
-		BYTE drawPercentage, BYTE drawBorder, CRGBA dwColor, CRGBA dwForeColor)
-	{
-		switch (BREATH_TYPE) {
-		default: case 0: case 1: case 2:
-			PrintBreathBar(posX, posY, wWidth, wHeight, fPercentage, drawBlueLine,
-				drawPercentage, drawBorder, dwColor, dwForeColor);
-			break;
-		case 3:
-			PrintBreathString(posX, posY, wWidth, wHeight, fPercentage, drawBlueLine,
-				drawPercentage, drawBorder, dwColor, dwForeColor);
-			break;
-		}
 	}
 
 	static void DrawSubtitlesUnused(float x, float y, char *str)
@@ -1040,15 +726,13 @@ public:
 
 				Money::InstallPatches();
 				Clock::InstallPatches();
+				HudIcons::InstallPatches();
 
 				Weapon::InstallPatches();
 				Wanted::InstallPatches();
 
 				/*
 
-				patch::RedirectCall(0x589395, ClassicHud::DrawHealth);
-				patch::RedirectCall(0x58917A, ClassicHud::DrawArmour);
-				patch::RedirectCall(0x589252, ClassicHud::DrawBreath);
 
 
 				patch::RedirectCall(0x58AE5D, ClassicHud::AreaName);

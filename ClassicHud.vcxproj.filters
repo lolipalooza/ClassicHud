@@ -13,5 +13,6 @@
     <ClInclude Include="ClassicHud\Weapon.h" />
     <ClInclude Include="ClassicHud\Wanted.h" />
     <ClInclude Include="ClassicHud\Utility.h" />
+    <ClInclude Include="ClassicHud\HudIcons.h" />
   </ItemGroup>
 </Project>

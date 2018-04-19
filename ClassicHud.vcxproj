@@ -17,6 +17,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ClassicHud\Clock.h" />
+    <ClInclude Include="ClassicHud\HudIcons.h" />
     <ClInclude Include="ClassicHud\IniReader.h" />
     <ClInclude Include="ClassicHud\Money.h" />
     <ClInclude Include="ClassicHud\Settings.h" />
