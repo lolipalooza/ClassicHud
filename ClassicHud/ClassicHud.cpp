@@ -89,7 +89,7 @@ public:
 
 		static int keyPressTime = 0;
 		static int show_splash = 0;
-		
+
 		CIniReader iniReader(CLASSICHUD_DAT_PATH);
 		settings.WEAPONS_TXD = iniReader.ReadString("SA_FILES", "WEAPONS_TXD", DEFAULT_WEAPONS_TXD);
 
