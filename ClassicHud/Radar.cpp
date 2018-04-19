@@ -7,23 +7,6 @@
 #include "CMenuManager.h"
 #include "CPad.h"
 
-void RotateVertices(CVector2D *rect, unsigned int numVerts, float x, float y, float angle) {
-	float xold, yold;
-	// angle /= 57.2957795;
-	float _cos = cosf(angle);
-	float _sin = sinf(angle);
-	for (unsigned int i = 0; i < numVerts; i++) {
-		xold = rect[i].x;
-		yold = rect[i].y;
-		rect[i].x = x + (xold - x) * _cos + (yold - y) * _sin;
-		rect[i].y = y - (xold - x) * _sin + (yold - y) * _cos;
-	}
-}
-
-float BilinearOffset(float coord) {
-	return static_cast<float>(static_cast<int>(coord)) - 0.5f;
-}
-
 void Radar::InstallPatches() {
 	plugin::patch::RedirectCall(0x58AA25, MyDrawRadarCircle);
 	//plugin::patch::RedirectCall(0x58A551, MyDrawRadarPlane);
@@ -78,7 +61,7 @@ void Radar::MyTransformRadarPointToScreenSpace(CVector2D *out, CVector2D *in) {
 	__asm pop edx
 }
 
-/*static void __fastcall Radar::MyDrawRadarPlane(CSprite2d *sprite, int, float x1, float y1, float x2, float y2, float x3,
+static void __fastcall Radar::MyDrawRadarPlane(CSprite2d *sprite, int, float x1, float y1, float x2, float y2, float x3,
 	float y3, float x4, float y4, CRGBA const &color)
 {
 	CVector2D posn[4];
@@ -175,4 +158,4 @@ void Radar::MyDrawPlaneHeight(CRect const& rect, CRGBA const& color) {
 			BilinearOffset(blackLineBaseY), BilinearOffset(SCREEN_COORD(settings.vecPlaneRadarPosn.x + 270.0f) + SCREEN_COORD(settings.vecPlaneRadarSize.x) + SCREEN_COORD(3.0f)),
 			BilinearOffset(blackLineBaseY + SCREEN_COORD(4.0f))), CRGBA(0, 0, 0, 255));
 	}
-}*/
+}

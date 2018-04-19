@@ -16,5 +16,8 @@
     <ClInclude Include="ClassicHud\HudIcons.h" />
     <ClInclude Include="ClassicHud\AreaName.h" />
     <ClInclude Include="ClassicHud\VehicleName.h" />
+    <ClInclude Include="ClassicHud\Subtitles.h" />
+    <ClInclude Include="ClassicHud\HelpText.h" />
+    <ClInclude Include="ClassicHud\Radar.h" />
   </ItemGroup>
 </Project>

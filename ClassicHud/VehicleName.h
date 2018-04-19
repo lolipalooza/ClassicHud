@@ -59,6 +59,6 @@ void VehicleName::TestVehicleName()
 	CFont::SetColor(CRGBA(settings.VEHICLE_R, settings.VEHICLE_G, settings.VEHICLE_B, 255));
 	CFont::PrintString(
 		RsGlobal.maximumWidth - SCREEN_COORD(settings.VEHICLE_X),
-		SCREEN_COORD_BOTTOM(settings.VEHICLE_Y), text.Get("BMX")); // BMX
+		SCREEN_COORD_BOTTOM(settings.VEHICLE_Y), (char *)TheText.Get("BMX")); // BMX
 }
 

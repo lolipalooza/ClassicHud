@@ -44,7 +44,6 @@ void AreaName::AreaNameColor(CRGBA value)
 
 void AreaName::TestAreaName()
 {
-	CText text;
 	CFont::SetBackground(0, 0);
 	CFont::SetScale(SCREEN_MULTIPLIER(settings.AREA_SIZE_X), SCREEN_MULTIPLIER(settings.AREA_SIZE_Y));
 	CFont::SetProp(1);
@@ -61,6 +60,6 @@ void AreaName::TestAreaName()
 	CFont::SetColor(CRGBA(settings.AREA_R, settings.AREA_G, settings.AREA_B, 255));
 	CFont::PrintString(
 		RsGlobal.maximumWidth - SCREEN_COORD(settings.AREA_X),
-		SCREEN_COORD_BOTTOM(settings.AREA_Y), text.Get("GAN")); // Ganton
+		SCREEN_COORD_BOTTOM(settings.AREA_Y), (char *)TheText.Get("GAN")); // Ganton
 }
 
