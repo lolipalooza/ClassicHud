@@ -7,6 +7,7 @@
 #include "Clock.h"
 
 #include "Weapon.h"
+#include "Wanted.h"
 
 #include "CHud.h"
 #include "CTimer.h"
@@ -62,8 +63,6 @@ static float HUD_POS_X, HUD_POS_Y;
 
 CRGBA AreaCRGBA;
 
-CSprite2d hudIcons[10];
-
 class ClassicHud {
 public:
 
@@ -78,8 +77,6 @@ public:
 	static void FontData() {
 		CFileMgr::OpenFile(settings.FONTS_DAT, "rb");
 	}
-
-	/*
 
 	static void ClassicHudTextures() {
 		int v0 = CTxdStore::AddTxdSlot("classichud");
@@ -115,100 +112,7 @@ public:
 		CTxdStore::RemoveTxdSlot(v0);
 	}
 
-	static void PrintStar(float x, float y, float width, float height, CRGBA color) {
-		int id = (STAR_STYLE < 0 || STAR_STYLE > 2) ? 0 : STAR_STYLE;
-		int star[3] = { 8, 3, 9 };
-		RwEngineInstance->dOpenDevice.fpRenderStateSet(rwRENDERSTATEZTESTENABLE, 0);
-		hudIcons[star[id]].Draw((x), (y), (width), (height), CRGBA(color));
-		RwEngineInstance->dOpenDevice.fpRenderStateSet(rwRENDERSTATEZWRITEENABLE, 0);
-	}
-
-	static void DrawWanted() {
-		int nWantedLevel = FindPlayerWanted(-1)->m_nWantedLevel;
-		int nTimeOfWLChange = FindPlayerWanted(-1)->m_nLastTimeWantedLevelChanged;
-		int nWantedLevelBeforeParole = FindPlayerWanted(-1)->m_nWantedLevelBeforeParole;
-
-		float fCurrentPos = RsGlobal.maximumWidth - SCREEN_COORD(HUD_POS_X + STAR_X);
-		float off_x1, off_x2, off_y1, off_y2, off_w1, off_w2, off_h1, off_h2;
-		if (STAR_STYLE == 0) {
-			off_x1 = -SCREEN_COORD(STAR_X_OFFSET), off_x2 = -off_x1;
-			off_y1 = -SCREEN_COORD(STAR_Y_OFFSET), off_y2 = -off_y1;
-			off_w1 = -off_x1*2.0f, off_w2 = off_x1*2.0f;
-			off_h1 = -off_y1*2.0f, off_h2 = off_y1*2.0f;
-		}
-		else {
-			off_x1 = 2.0f, off_x2 = 0.0f;
-			off_y1 = SCREEN_COORD(2.0f), off_y2 = 0.0f;
-			off_w1 = 0.0f, off_w2 = 0.0f;
-			off_h1 = 0.0f, off_h2 = 0.0f;
-		}
-
-		if (nWantedLevel) { // Active Stars
-			for (int i = 0; i < 6; ++i, fCurrentPos -= SCREEN_MULTIPLIER(STAR_SPACE)) {
-				if (nWantedLevel > i && (CTimer::m_snTimeInMilliseconds > nTimeOfWLChange + 2000 || ShowFlashingItem(150, 150))) {
-					PrintStar(
-						fCurrentPos + off_x1, SCREEN_COORD(HUD_POS_Y + STAR_Y) + off_y1,
-						SCREEN_MULTIPLIER(STAR_SIZE_X) + off_w1,
-						SCREEN_MULTIPLIER(STAR_SIZE_Y) + off_h1,
-						CRGBA(0, 0, 0, SHADOWSTAR_A)); // Shadow
-					PrintStar(
-						fCurrentPos + off_x2, SCREEN_COORD(HUD_POS_Y + STAR_Y) + off_y2,
-						SCREEN_MULTIPLIER(STAR_SIZE_X) + off_w2,
-						SCREEN_MULTIPLIER(STAR_SIZE_Y) + off_h2,
-						CRGBA(STAR_R, STAR_G, STAR_B, 255));
-				}
-				else { // Inactive Stars during wanted level > 0
-					PrintStar(
-						fCurrentPos + 2.0f, SCREEN_COORD(HUD_POS_Y + STAR_Y + 2.0f),
-						SCREEN_MULTIPLIER(STAR_SIZE_X),
-						SCREEN_MULTIPLIER(STAR_SIZE_Y),
-						CRGBA(0, 0, 0, SHADOWSTAR_A2)); // Shadow
-					PrintStar(fCurrentPos, SCREEN_COORD(HUD_POS_Y + STAR_Y),
-						SCREEN_MULTIPLIER(STAR_SIZE_X), SCREEN_MULTIPLIER(STAR_SIZE_Y),
-						CRGBA(STARBACK_R, STARBACK_G, STARBACK_B, STAR_A2));
-				}
-			}
-		}
-		else if (nWantedLevelBeforeParole) { // Flashing stars during suspended wanted level
-			for (int i = 0; i < 6; ++i, fCurrentPos -= SCREEN_MULTIPLIER(STAR_SPACE)) {
-				if (nWantedLevelBeforeParole > i && CTimer::m_FrameCounter & 4) {
-					PrintStar(
-						fCurrentPos + off_x1, SCREEN_COORD(HUD_POS_Y + STAR_Y) + off_y1,
-						SCREEN_MULTIPLIER(STAR_SIZE_X) + off_w1,
-						SCREEN_MULTIPLIER(STAR_SIZE_Y) + off_h1,
-						CRGBA(0, 0, 0, SHADOWSTAR_A)); // Shadow
-					PrintStar(
-						fCurrentPos + off_x2, SCREEN_COORD(HUD_POS_Y + STAR_Y) + off_y2,
-						SCREEN_MULTIPLIER(STAR_SIZE_X) + off_w2,
-						SCREEN_MULTIPLIER(STAR_SIZE_Y) + off_h2,
-						CRGBA(FLASHSTAR_R, FLASHSTAR_G, FLASHSTAR_B, 255));
-				}
-				else {
-					PrintStar(
-						fCurrentPos + 2.0f, SCREEN_COORD(HUD_POS_Y + STAR_Y + 2.0f),
-						SCREEN_MULTIPLIER(STAR_SIZE_X),
-						SCREEN_MULTIPLIER(STAR_SIZE_Y),
-						CRGBA(0, 0, 0, SHADOWSTAR_A2)); // Shadow
-					PrintStar(fCurrentPos, SCREEN_COORD(HUD_POS_Y + STAR_Y),
-						SCREEN_MULTIPLIER(STAR_SIZE_X), SCREEN_MULTIPLIER(STAR_SIZE_Y),
-						CRGBA(STARBACK_R, STARBACK_G, STARBACK_B, STAR_A2));
-				}
-			}
-		}
-		else { // Inactive stars
-			float fCurrentPos = RsGlobal.maximumWidth - SCREEN_COORD(HUD_POS_X + STAR_X);
-			for (int i = 0; i < 6; ++i, fCurrentPos -= SCREEN_MULTIPLIER(STAR_SPACE)) {
-				PrintStar(fCurrentPos + 2.0f, SCREEN_COORD(HUD_POS_Y + STAR_Y + 2.0f),
-					SCREEN_MULTIPLIER(STAR_SIZE_X),
-					SCREEN_MULTIPLIER(STAR_SIZE_Y),
-					CRGBA(0, 0, 0, SHADOWSTAR_A3)); // Shadow
-				PrintStar(fCurrentPos, SCREEN_COORD(HUD_POS_Y + STAR_Y),
-					SCREEN_MULTIPLIER(STAR_SIZE_X),
-					SCREEN_MULTIPLIER(STAR_SIZE_Y),
-					CRGBA(STARBACK_R, STARBACK_G, STARBACK_B, STAR_A3));
-			}
-		}
-	}
+	/*
 
 	static void AreaName(float x, float y, char* str) {
 		CFont::SetFontStyle(AREA_FONTSTYLE);
@@ -516,11 +420,6 @@ public:
 			break;
 		}
 		RwEngineInstance->dOpenDevice.fpRenderStateSet(rwRENDERSTATEZWRITEENABLE, 0);
-	}
-
-	static inline bool ShowFlashingItem(signed int nOnDuration, signed int nOffDuration)
-	{
-		return CTimer::m_snTimeInMillisecondsPauseMode % (nOnDuration + nOffDuration) < nOnDuration;
 	}
 
 	static void DrawHealth(float posX, float posY, WORD wWidth, WORD wHeight, float fPercentage, BYTE drawBlueLine,
@@ -1111,8 +1010,8 @@ public:
 		CIniReader iniReader(CLASSICHUD_DAT_PATH);
 		settings.WEAPONS_TXD = iniReader.ReadString("SA_FILES", "WEAPONS_TXD", DEFAULT_WEAPONS_TXD);
 
-		//Events::initRwEvent += ClassicHud::ClassicHudTextures;
-		//Events::shutdownRwEvent += ClassicHud::ClassicHudTextureShutdown;
+		Events::initRwEvent += ClassicHud::ClassicHudTextures;
+		Events::shutdownRwEvent += ClassicHud::ClassicHudTextureShutdown;
 
 		Events::initRwEvent += Weapon::WeaponTextures;
 		Events::shutdownRwEvent += Weapon::WeaponTexturesShutdown;
@@ -1143,6 +1042,7 @@ public:
 				Clock::InstallPatches();
 
 				Weapon::InstallPatches();
+				Wanted::InstallPatches();
 
 				/*
 
@@ -1150,7 +1050,6 @@ public:
 				patch::RedirectCall(0x58917A, ClassicHud::DrawArmour);
 				patch::RedirectCall(0x589252, ClassicHud::DrawBreath);
 
-				patch::RedirectCall(0x58FBDB, ClassicHud::DrawWanted);
 
 				patch::RedirectCall(0x58AE5D, ClassicHud::AreaName);
 				patch::RedirectCall(0x58AE02, ClassicHud::AreaNameColor);

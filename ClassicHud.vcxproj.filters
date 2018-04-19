@@ -3,6 +3,7 @@
   <ItemGroup>
     <ClCompile Include="ClassicHud\ClassicHud.cpp" />
     <ClCompile Include="ClassicHud\Settings.cpp" />
+    <ClCompile Include="ClassicHud\Utility.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ClassicHud\Clock.h" />
@@ -10,5 +11,7 @@
     <ClInclude Include="ClassicHud\Money.h" />
     <ClInclude Include="ClassicHud\Settings.h" />
     <ClInclude Include="ClassicHud\Weapon.h" />
+    <ClInclude Include="ClassicHud\Wanted.h" />
+    <ClInclude Include="ClassicHud\Utility.h" />
   </ItemGroup>
 </Project>
