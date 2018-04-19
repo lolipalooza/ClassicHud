@@ -2,8 +2,12 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="ClassicHud\ClassicHud.cpp" />
+    <ClCompile Include="ClassicHud\Settings.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ClassicHud\Clock.h" />
     <ClInclude Include="ClassicHud\IniReader.h" />
+    <ClInclude Include="ClassicHud\Money.h" />
+    <ClInclude Include="ClassicHud\Settings.h" />
   </ItemGroup>
 </Project>

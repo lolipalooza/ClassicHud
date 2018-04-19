@@ -1,4 +1,11 @@
-#include "plugin.h"
+#include <plugin.h>
+
+//#include "Radar.h"
+#include "Settings.h"
+#include "IniReader.h"
+#include "Money.h"
+#include "Clock.h"
+
 #include "CHud.h"
 #include "CTimer.h"
 #include "CFont.h"
@@ -18,8 +25,6 @@
 #include "CMenuManager.h"
 #include "CAERadioTrackManager.h"
 #include "CPad.h"
-
-#include "IniReader.h"
 
 #define g_pHelpMessage ((char *)0xBAA7A0)
 #define g_HelpMessageState (*(__int32 *)0xBAA474)
@@ -46,164 +51,14 @@
 #define Menu_WidescreenOn (*(unsigned __int8 *)0xBA6793)
 #define ZoneToPrint ((char *)0xBAB1D0)
 
-#define CLASSICHUD_TXD_PATH "MODELS\\CLASSICHUD\\CLASSICHUD.TXD"
-#define DEFAULT_WEAPONS_TXD "MODELS\\CLASSICHUD\\WEAPONS.TXD"
-#define CLASSICHUD_DAT_PATH ".\\CLASSICHUD.DAT"
-
 short& m_ItemToFlash = *(short*)0xBAB1DC;
 
 using namespace plugin;
 
 static int STYLE;
-
-// Files
-static char* HUD_TXD;
-static char* FONTS_TXD;
-static char* FONTS_DAT;
-static char* WEAPONS_TXD;
-
-// Money
-static float MONEY_X, MONEY_Y, MONEY_WIDTH, MONEY_HEIGHT;
-static int MONEY_R, MONEY_G, MONEY_B, MONEY_A, MONEY_SHADOW, MONEY_OUTLINE, MONEY_FONTSTYLE;
-
-// Clock
-static float CLOCK_X, CLOCK_Y, CLOCK_WIDTH, CLOCK_HEIGHT;
-static int CLOCK_R, CLOCK_G, CLOCK_B, CLOCK_A, CLOCK_FONTSTYLE;
-
-// Health
-static float HEALTHICON_X, HEALTHICON_Y, HEALTHICON_WIDTH, HEALTHICON_HEIGHT,
-			HEALTH_X, HEALTH_Y, HEALTH_WIDTH, HEALTH_HEIGHT,
-			HEALTHBAR_X, HEALTHBAR_Y, HEALTHBAR_SIZE_X, HEALTHBAR_SIZE_Y;
-static int HEALTH_DISPLAY, HEALTH_R, HEALTH_G, HEALTH_B, HEALTH_A, HEALTHBAR_BORDER, HEALTH_TYPE;
-
-// Armour
-static float ARMOUR_X,ARMOUR_Y,ARMOUR_SIZE_X,ARMOUR_SIZE_Y,
-			ARMOURBAR_X,ARMOURBAR_Y,ARMOURBAR_SIZE_X,ARMOURBAR_SIZE_Y,
-			ARMOURICON_X,ARMOURICON_Y,ARMOURICON_SIZE_X,ARMOURICON_SIZE_Y;
-static int ARMOUR_R, ARMOUR_G, ARMOUR_B, ARMOUR_A, ARMOURBAR_BORDER, ARMOUR_TYPE;
-
-// Breath
-static float BREATH_X, BREATH_Y, BREATH_SIZE_X, BREATH_SIZE_Y,
-			BREATHICON_X, BREATHICON_Y, BREATHICON_SIZE_X, BREATHICON_SIZE_Y,
-			BREATHBAR_X, BREATHBAR_Y, BREATHBAR_SIZE_X, BREATHBAR_SIZE_Y;
-static int BREATH_R, BREATH_G, BREATH_B, BREATH_A, BREATHBAR_BORDER, BREATH_TYPE;
-
-// Ammo
-static int AMMO_SHADOW, AMMO_OUTLINE, D_AMMO_R, D_AMMO_G, D_AMMO_B, AMMO_R, AMMO_G, AMMO_B;
-static float AMMO_SIZE_X, AMMO_SIZE_Y, AMMO_X, AMMO_Y;
-
-// Weapon
-static int WEAPON_A;
-static float WEAPON_X, WEAPON_Y, WEAPON_SIZE_X, WEAPON_SIZE_Y;
-static int STAT_WEP_ALPHA;
-static float stat3_2;
-
-// Wanted Level
-static float STAR_X, STAR_Y, STAR_SIZE_X, STAR_SIZE_Y, STAR_SPACE, STAR_X_OFFSET, STAR_Y_OFFSET;
-static int STAR_R, STAR_G, STAR_B, STARBACK_R, STARBACK_G, STARBACK_B, SHADOWSTAR_A, 
-FLASHSTAR_R, FLASHSTAR_G, FLASHSTAR_B, STAR_A2, STAR_A3, SHADOWSTAR_A2, SHADOWSTAR_A3, STAR_STYLE;
-
-// Area
-static int AREA_FONTSTYLE, AREA_R, AREA_G, AREA_B, AREA_SHADOW, AREA_OUTLINE;
-static float AREA_SIZE_X, AREA_SIZE_Y, AREA_X, AREA_Y, AREA_SLANT;
-
-// Vehicle
-static int VEHICLE_FONTSTYLE, VEHICLE_R, VEHICLE_G, VEHICLE_B, VEHICLE_SHADOW, VEHICLE_OUTLINE;
-static float VEHICLE_SIZE_X, VEHICLE_SIZE_Y, VEHICLE_X, VEHICLE_Y, VEHICLE_SLANT;
-
-// Subtitles
-static int SUBTITLES_SHADOW, SUBTITLES_OUTLINE, SUBTITLES_R, SUBTITLES_G, SUBTITLES_B;
-static float SUBTITLES_X, SUBTITLES_Y, SUBTITLES_SIZE_X, SUBTITLES_SIZE_Y,
-SUBTITLES_VITALSTATS_X, SUBTITLES_VITALSTATS_SIZE_X, SUBTITLES_LINEWIDTH;
-
-// Text box (Help Message)
-static float fTextBoxPosnX = 50.0f;
-static float fTextBoxPosnXWithRadar = 50.0f;
-static float fTextBoxPosnXWithRadarAndPlane = 50.0f;
-static float fTextBoxPosnY = 50.0;
-static float fTextBoxFontScaleX = 0.7f;
-static float fTextBoxFontScaleY = 1.9f;
-static float fTextBoxWidth = 421.0f;
-static float fTextBoxBorderSize = 6.0f;
-
-// Radar
-static float RADAR_RANGE, RADAR_X, RADAR_Y, RADAR_SIZE_X, RADAR_SIZE_Y;
-static int RADAR_A;
-static void __declspec(naked) RadarAlpha() {
-	RwRenderStateSet(rwRENDERSTATEVERTEXALPHAENABLE, reinterpret_cast<void *>(TRUE));
-	_asm {
-		mov     ecx, 586420h
-		mov     al, [esp + 140h - 12Dh]
-		test    al, al
-		jmp     ecx
-	}
-}
-void RotateVertices(CVector2D *rect, unsigned int numVerts, float x, float y, float angle) {
-	float xold, yold;
-	// angle /= 57.2957795;
-	float _cos = cosf(angle);
-	float _sin = sinf(angle);
-	for (unsigned int i = 0; i < numVerts; i++) {
-		xold = rect[i].x;
-		yold = rect[i].y;
-		rect[i].x = x + (xold - x) * _cos + (yold - y) * _sin;
-		rect[i].y = y - (xold - x) * _sin + (yold - y) * _cos;
-	}
-}
-float BilinearOffset(float coord) {
-	return static_cast<float>(static_cast<int>(coord)) - 0.5f;
-}
-
-// Success Failed Message (Styled Text 1)
-static int STYLED1_SHADOW, STYLED1_OUTLINE, STYLED1_R, STYLED1_G, STYLED1_B;
-static float STYLED1_Y, STYLED1_Y1, STYLED1_Y2, STYLED1_SIZE_X, STYLED1_SIZE_Y;
-
-// Mission Title (Styled Text 2)
-static int MT_R, MT_G, MT_B, MT_SHADOW, MT_OUTLINE, MT_FONTSTYLE;
-static float MT_POS_X, MT_POS_Y, MT_SIZE_X, MT_SIZE_Y;
-
-// Wasted Busted Message (Styled Text 3)
-static int WB_R, WB_G, WB_B, WB_SHADOW, WB_OUTLINE, WB_FONTSTYLE, WB_ALIGN;
-static float WB_POS_X, WB_POS_Y, WB_SIZE_X, WB_SIZE_Y;
-
-// Odd Job Messages 1 (Styled Text 4)
-static int STYLED4_FONTSTYLE, STYLED4_SHADOW, STYLED4_OUTLINE, STYLED4_R, STYLED4_G, STYLED4_B, STYLED4_ALIGN;
-static float STYLED4_X, STYLED4_Y, STYLED4_SIZE_X, STYLED4_SIZE_Y;
-
-// Odd Job Messages 2 (Styled Text 5)
-static int STYLED5_FONTSTYLE, STYLED5_SHADOW, STYLED5_OUTLINE, STYLED5_R, STYLED5_G, STYLED5_B;
-static float STYLED5_Y, STYLED5_SIZE_X, STYLED5_SIZE_Y;
-
-// Odd Job Messages 3 (Styled Text 6)
-static int STYLED6_FONTSTYLE, STYLED6_SHADOW, STYLED6_OUTLINE, STYLED6_R, STYLED6_G, STYLED6_B;
-static float STYLED6_Y, STYLED6_SIZE_X, STYLED6_SIZE_Y;
-
-// Odd Job Messages 4 (Styled Text 7)
-static int STYLED7_FONTSTYLE, STYLED7_SHADOW, STYLED7_OUTLINE, STYLED7_R, STYLED7_G, STYLED7_B;
-static float STYLED7_Y, STYLED7_SIZE_X, STYLED7_SIZE_Y;
-
-// Mission Timers (Timer and Status Text)
-static int M_TIMERS_FONTSTYLE, M_TIMERS_SHADOW, M_TIMERS_OUTLINE, M_TIMERS_R, M_TIMERS_G, M_TIMERS_B;
-static float M_TIMERS_SIZE_X, M_TIMERS_SIZE_Y, M_TIMER_X, M_TIMER_Y, M_TIMER_DESC_X;
-static int M_STATUSBAR_BORDER, M_STATUSBAR_R, M_STATUSBAR_G, M_STATUSBAR_B, M_STATUSBAR_A;
-static float M_STATUSBAR_X, M_STATUSBAR_Y, M_STATUSBAR_SIZE_X, M_STATUSBAR_SIZE_Y;
-static float M_STATUSTEXT_X, M_STATUSTEXT_Y, M_STATUSTEXT_DESC_X, M_STATUSTEXT_SPACE;
-
-// Radio Station Text
-static int RS_FONTSTYLE, RS_SHADOW, RS_OUTLINE, RS_RED1, RS_GREEN1, RS_BLUE1, RS_RED2, RS_GREEN2, RS_BLUE2;
-static float RS_POS_Y, RS_SIZE_X, RS_SIZE_Y;
-
-// Garage Messages
-static int GARAGES_R, GARAGES_G, GARAGES_B, GARAGES_FONTSTYLE, GARAGES_SHADOW, GARAGES_OUTLINE;
-static float GARAGES_Y, GARAGES_SIZE_X, GARAGES_SIZE_Y, GARAGES_LINEWIDTH;
-
-// Custom text (for Hud Editor)
-static int CUSTOM_ALIGN, CUSTOM_SHADOW, CUSTOM_OUTLINE, CUSTOM_FONTSTYLE, CUSTOM_R, CUSTOM_G, CUSTOM_B, CUSTOM_A;
-static float CUSTOM_X, CUSTOM_Y, CUSTOM_SIZE_X, CUSTOM_SIZE_Y, CUSTOM_LINEWIDTH;
+static float HUD_POS_X, HUD_POS_Y;
 
 CRGBA AreaCRGBA;
-
-static float HUD_POS_X, HUD_POS_Y;
 
 CSprite2d hudIcons[10];
 CSprite2d weaponicons[50];
@@ -213,70 +68,18 @@ class ClassicHud {
 public:
 
 	static void HudTextures(int index) {
-		CTxdStore::LoadTxd(index, HUD_TXD);
+		CTxdStore::LoadTxd(index, settings.HUD_TXD);
 	}
 
 	static void FontTextures(int index) {
-		CTxdStore::LoadTxd(index, FONTS_TXD);
+		CTxdStore::LoadTxd(index, settings.FONTS_TXD);
 	}
 
 	static void FontData() {
-		CFileMgr::OpenFile(FONTS_DAT, "rb");
+		CFileMgr::OpenFile(settings.FONTS_DAT, "rb");
 	}
 
-	static void DrawMoney(void)
-	{
-		int displayedScore = CWorld::Players[CWorld::PlayerInFocus].m_nDisplayMoney;
-		const char* displayScore;
-		char str[16];
-
-		if (displayedScore < 0)
-		{
-			CFont::SetColor(CRGBA(255, 38, 41, 255));
-			displayedScore = -displayedScore;
-			displayScore = "-$%07d";
-		}
-		else
-		{
-			CFont::SetColor(CRGBA(MONEY_R, MONEY_G, MONEY_B, 255));
-			displayScore = "$%08d";
-		}
-
-		_snprintf(str, sizeof(str), displayScore, displayedScore);
-
-		CFont::SetBackground(0, 0);
-		CFont::SetProp(false);
-		CFont::SetAlignment(ALIGN_RIGHT);
-		CFont::SetFontStyle(MONEY_FONTSTYLE);
-		CFont::SetRightJustifyWrap(0.0);
-		CFont::SetScale(SCREEN_MULTIPLIER(MONEY_WIDTH), SCREEN_MULTIPLIER(MONEY_HEIGHT));
-		CFont::SetDropShadowPosition(MONEY_SHADOW);
-		if (MONEY_OUTLINE != 0)
-			CFont::SetOutlinePosition(MONEY_OUTLINE);
-		CFont::SetDropColor(CRGBA(0, 0, 0, 255));
-		CFont::PrintString(RsGlobal.maximumWidth - SCREEN_COORD(HUD_POS_X + MONEY_X), SCREEN_COORD(HUD_POS_Y + MONEY_Y), str);
-	}
-
-	static void DrawClock(float posX, float posY) {
-		char str[16];
-		CClock* CClock;
-
-		CFont::SetProp(0);
-		CFont::SetBackground(0, 0);
-		CFont::SetScale(SCREEN_MULTIPLIER(CLOCK_WIDTH), SCREEN_MULTIPLIER(CLOCK_HEIGHT));
-		CFont::SetAlignment(ALIGN_RIGHT);
-		CFont::SetRightJustifyWrap(0.0);
-		CFont::SetFontStyle(CLOCK_FONTSTYLE);
-		CFont::SetDropColor(CRGBA(0, 0, 0, 255));
-		CFont::SetColor(CRGBA(CLOCK_R, CLOCK_G, CLOCK_B, 255));
-		CFont::SetDropShadowPosition(MONEY_SHADOW);
-		if (MONEY_OUTLINE != 0)
-			CFont::SetOutlinePosition(MONEY_OUTLINE);
-
-		_snprintf(str, sizeof(str), "%02d:%02d", CClock->ms_nGameClockHours, CClock->ms_nGameClockMinutes);
-
-		CFont::PrintString(RsGlobal.maximumWidth - SCREEN_COORD(HUD_POS_X + CLOCK_X), SCREEN_COORD(HUD_POS_Y + CLOCK_Y), str);
-	}
+	/*
 
 	static void ClassicHudTextures() {
 		int v0 = CTxdStore::AddTxdSlot("classichud");
@@ -1559,148 +1362,6 @@ public:
 		patch::Set<const void*>(0x58A9D5, &size_y);
 	}
 
-	static void DrawRadarRectangle(CSprite2d *sprite, CRect const& rect, CRGBA const& color) {
-		if (sprite) {
-			sprite->Draw(CRect(rect.left, SCREEN_HEIGHT - rect.top, rect.right, SCREEN_HEIGHT - rect.bottom), color);
-		}
-		else {
-			CSprite2d::DrawRect(CRect(rect.left, SCREEN_HEIGHT - rect.top, rect.right, SCREEN_HEIGHT - rect.bottom), color);
-		}
-	}
-
-	static void __fastcall MyDrawRadarCircle(CSprite2d *sprite, int, CRect const &rect, CRGBA const &color)
-	{
-		CPed *player = FindPlayerPed(-1);
-		CPad *pad = CPad::GetPad(0);
-		DrawRadarRectangle(sprite, CRect(SCREEN_COORD(RADAR_X - RADAR_SIZE_X), SCREEN_COORD(RADAR_Y - RADAR_SIZE_Y),
-			SCREEN_COORD(RADAR_X), SCREEN_COORD(RADAR_Y)), CRGBA(255, 255, 255, 255));
-		DrawRadarRectangle(sprite, CRect(SCREEN_COORD(RADAR_X + RADAR_SIZE_X), SCREEN_COORD(RADAR_Y - RADAR_SIZE_Y),
-			SCREEN_COORD(RADAR_X), SCREEN_COORD(RADAR_Y)), CRGBA(255, 255, 255, 255));
-		DrawRadarRectangle(sprite, CRect(SCREEN_COORD(RADAR_X - RADAR_SIZE_X), SCREEN_COORD(RADAR_Y + RADAR_SIZE_Y),
-			SCREEN_COORD(RADAR_X), SCREEN_COORD(RADAR_Y)), CRGBA(255, 255, 255, 255));
-		DrawRadarRectangle(sprite, CRect(SCREEN_COORD(RADAR_X + RADAR_SIZE_X), SCREEN_COORD(RADAR_Y + RADAR_SIZE_Y),
-			SCREEN_COORD(RADAR_X), SCREEN_COORD(RADAR_Y)), CRGBA(255, 255, 255, 255));
-	}
-
-	static void MyTransformRadarPointToScreenSpace(CVector2D *out, CVector2D *in) {
-		CPed *player = FindPlayerPed(-1);
-		CPad *pad = CPad::GetPad(0);
-		__asm push edx
-
-		if (FrontEndMenuManager.drawRadarOrMap) {
-			out->x = FrontEndMenuManager.m_fMapZoom * in->x + FrontEndMenuManager.m_fMapBaseX;
-			out->y = FrontEndMenuManager.m_fMapBaseY - FrontEndMenuManager.m_fMapZoom * in->y;
-		}
-		else {
-			if (!pad->GetDisplayVitalStats(player) || FindPlayerVehicle(-1, 0))
-				out->x = SCREEN_COORD(RADAR_X) + in->x * SCREEN_COORD(RADAR_SIZE_X)*0.98f;
-			else
-				out->x = SCREEN_COORD(RADAR_X + 270.0f) + in->x * SCREEN_COORD(RADAR_SIZE_X)*0.98f;
-			out->y = SCREEN_COORD_MAX_Y - SCREEN_COORD(RADAR_Y) - in->y * SCREEN_COORD(RADAR_SIZE_Y)*0.98f;
-		}
-
-		__asm pop edx
-	}
-
-	/*static void __fastcall MyDrawRadarPlane(CSprite2d *sprite, int, float x1, float y1, float x2, float y2, float x3,
-		float y3, float x4, float y4, CRGBA const &color)
-	{
-		CVector2D posn[4];
-		posn[0].x = SCREEN_COORD(RADAR_X) - SCREEN_COORD(RADAR_SIZE_X);
-		posn[0].y = SCREEN_COORD(RADAR_Y) + SCREEN_COORD(RADAR_SIZE_Y);
-		posn[1].x = SCREEN_COORD(RADAR_X) + SCREEN_COORD(RADAR_SIZE_X);
-		posn[1].y = SCREEN_COORD(RADAR_Y) + SCREEN_COORD(RADAR_SIZE_Y);
-		posn[2].x = SCREEN_COORD(RADAR_X) - SCREEN_COORD(RADAR_SIZE_X);
-		posn[2].y = SCREEN_COORD(RADAR_Y) - SCREEN_COORD(RADAR_SIZE_Y);
-		posn[3].x = SCREEN_COORD(RADAR_X) + SCREEN_COORD(RADAR_SIZE_X);
-		posn[3].y = SCREEN_COORD(RADAR_Y) - SCREEN_COORD(RADAR_SIZE_Y);
-		CMatrix *planeMat = FindPlayerVehicle(-1, false)->m_matrix;
-		float angle = atan2f(planeMat->at.z, -planeMat->right.z) - 1.57079632679f;
-		RotateVertices(posn, 4, SCREEN_COORD(RADAR_X), SCREEN_COORD(RADAR_Y), -angle);
-		sprite->Draw(posn[2].x, SCREEN_COORD_MAX_Y - posn[2].y - SCREEN_COORD(1.0f),
-			posn[3].x, SCREEN_COORD_MAX_Y - posn[3].y - SCREEN_COORD(1.0f),
-			posn[0].x, SCREEN_COORD_MAX_Y - posn[0].y - SCREEN_COORD(1.0f),
-			posn[1].x, SCREEN_COORD_MAX_Y - posn[1].y - SCREEN_COORD(1.0f),
-			CRGBA(255, 255, 255, 255));
-	}
-
-	static void MyDrawPlaneHeightBorder(CRect const& rect, CRGBA const& color) {
-		float settings_vecPlaneRadarPosn_x = 0.0f, settings_vecPlaneRadarPosn_y = 67.0f;
-		float settings_vecPlaneRadarSize_x = 14.0f, settings_vecPlaneRadarSize_y = 145.0f;
-		float settings_vecPlaneRadarLightPartPosn_x = 225.0f, settings_vecPlaneRadarLightPartPosn_y = 70.0f;
-		float settings_vecPlaneRadarLightPartSize_x = 8.0f, settings_vecPlaneRadarLightPartSize_y = 139.0f;
-		CPed *player = FindPlayerPed();
-		CPad *pad = CPad::GetPad(0);
-		if (!pad->GetDisplayVitalStats(player) || FindPlayerVehicle(-1, 0)) {
-			DrawRadarRectangle(NULL, CRect(BilinearOffset(SCREEN_COORD(settings_vecPlaneRadarPosn_x)), BilinearOffset(SCREEN_COORD(settings_vecPlaneRadarPosn_y)),
-				BilinearOffset(SCREEN_COORD(settings_vecPlaneRadarPosn_x) + SCREEN_COORD(settings_vecPlaneRadarSize_x)), BilinearOffset(SCREEN_COORD(settings_vecPlaneRadarPosn_y)
-					+ SCREEN_COORD(settings_vecPlaneRadarSize_y))), CRGBA(0, 0, 0, 255));
-			DrawRadarRectangle(NULL, CRect(BilinearOffset(SCREEN_COORD(settings_vecPlaneRadarLightPartPosn_x)),
-				BilinearOffset(SCREEN_COORD(settings_vecPlaneRadarLightPartPosn_y)),
-				BilinearOffset(SCREEN_COORD(settings_vecPlaneRadarLightPartPosn_x) + SCREEN_COORD(settings_vecPlaneRadarLightPartSize_x)),
-				BilinearOffset(SCREEN_COORD(settings_vecPlaneRadarLightPartPosn_y) + SCREEN_COORD(settings_vecPlaneRadarLightPartSize_y))), CRGBA(120, 120, 120, 255));
-		}
-		else {
-			DrawRadarRectangle(NULL, CRect(BilinearOffset(SCREEN_COORD(settings_vecPlaneRadarPosn_x + 270.0f)), BilinearOffset(SCREEN_COORD(settings_vecPlaneRadarPosn_y)),
-				BilinearOffset(SCREEN_COORD(settings_vecPlaneRadarPosn_x + 270.0f) + SCREEN_COORD(settings_vecPlaneRadarSize_x)), BilinearOffset(SCREEN_COORD(settings_vecPlaneRadarPosn_y)
-					+ SCREEN_COORD(settings_vecPlaneRadarSize_y))), CRGBA(0, 0, 0, 255));
-			DrawRadarRectangle(NULL, CRect(BilinearOffset(SCREEN_COORD(settings_vecPlaneRadarLightPartPosn_x + 270.0f)),
-				BilinearOffset(SCREEN_COORD(settings_vecPlaneRadarLightPartPosn_y)),
-				BilinearOffset(SCREEN_COORD(settings_vecPlaneRadarLightPartPosn_x + 270.0f) + SCREEN_COORD(settings_vecPlaneRadarLightPartSize_x)),
-				BilinearOffset(SCREEN_COORD(settings_vecPlaneRadarLightPartPosn_y) + SCREEN_COORD(settings_vecPlaneRadarLightPartSize_y))), CRGBA(120, 120, 120, 255));
-		}
-	}
-
-	void MyDrawPlaneHeight(CRect const& rect, CRGBA const& color) {
-		float playerHeight = 0.0f;
-		float blackLineBaseY = 0.0f;
-		CPed *playa = FindPlayerPed();
-		CPad *pad = CPad::GetPad(0);
-		CVehicle *playaVeh = FindPlayerVehicle(-1, false);
-		if (playaVeh)
-			playerHeight = playaVeh->GetPosition().z;
-		else if (playa)
-			playerHeight = playa->GetPosition().z;
-		if (playerHeight < 0.0f)
-			playerHeight = 0.0f;
-		else
-			playerHeight /= 900.0f;
-		if (playerHeight > 1.0f)
-			playerHeight = 1.0f;
-		if (playerHeight > 0.0f) {
-			if (!pad->GetDisplayVitalStats(playa) || FindPlayerVehicle(-1, 0)) {
-				CSprite2d::DrawRect(CRect(BilinearOffset(SCREEN_COORD(settings.vecPlaneRadarLightPartPosn.x)),
-					BilinearOffset(SCREEN_COORD_MAX_Y + 1.0f - SCREEN_COORD(settings.vecPlaneRadarLightPartPosn.y) -
-						SCREEN_COORD(settings.vecPlaneRadarLightPartSize.y) * playerHeight),
-					BilinearOffset(SCREEN_COORD(settings.vecPlaneRadarLightPartPosn.x) + SCREEN_COORD(settings.vecPlaneRadarLightPartSize.x)),
-					BilinearOffset(SCREEN_COORD_MAX_Y + 1.0f - SCREEN_COORD(settings.vecPlaneRadarLightPartPosn.y))), CRGBA(255, 255, 255, 255));
-			}
-			else {
-				CSprite2d::DrawRect(CRect(BilinearOffset(SCREEN_COORD(settings.vecPlaneRadarLightPartPosn.x + 270.0f)),
-					BilinearOffset(SCREEN_COORD_MAX_Y + 1.0f - SCREEN_COORD(settings.vecPlaneRadarLightPartPosn.y) -
-						SCREEN_COORD(settings.vecPlaneRadarLightPartSize.y) * playerHeight),
-					BilinearOffset(SCREEN_COORD(settings.vecPlaneRadarLightPartPosn.x + 270.0f) + SCREEN_COORD(settings.vecPlaneRadarLightPartSize.x)),
-					BilinearOffset(SCREEN_COORD_MAX_Y + 1.0f - SCREEN_COORD(settings.vecPlaneRadarLightPartPosn.y))), CRGBA(255, 255, 255, 255));
-			}
-		}
-		if (!pad->GetDisplayVitalStats(playa) || FindPlayerVehicle(-1, 0)) {
-			blackLineBaseY = playerHeight * (settings.vecPlaneRadarLightPartSize.y) > 4.0f ?
-				SCREEN_COORD_MAX_Y + 1.0f - SCREEN_COORD(settings.vecPlaneRadarLightPartPosn.y) - SCREEN_COORD(settings.vecPlaneRadarLightPartSize.y) * playerHeight :
-				SCREEN_COORD_MAX_Y + 1.0f - SCREEN_COORD(settings.vecPlaneRadarLightPartPosn.y) - SCREEN_COORD(4.0f);
-			CSprite2d::DrawRect(CRect(BilinearOffset(SCREEN_COORD(settings.vecPlaneRadarPosn.x) - SCREEN_COORD(3.0f)),
-				BilinearOffset(blackLineBaseY), BilinearOffset(SCREEN_COORD(settings.vecPlaneRadarPosn.x) + SCREEN_COORD(settings.vecPlaneRadarSize.x) + SCREEN_COORD(3.0f)),
-				BilinearOffset(blackLineBaseY + SCREEN_COORD(4.0f))), CRGBA(0, 0, 0, 255));
-		}
-		else {
-			blackLineBaseY = playerHeight * (settings.vecPlaneRadarLightPartSize.y) > 4.0f ?
-				SCREEN_COORD_MAX_Y + 1.0f - SCREEN_COORD(settings.vecPlaneRadarLightPartPosn.y) - SCREEN_COORD(settings.vecPlaneRadarLightPartSize.y) * playerHeight :
-				SCREEN_COORD_MAX_Y + 1.0f - SCREEN_COORD(settings.vecPlaneRadarLightPartPosn.y) - SCREEN_COORD(4.0f);
-			CSprite2d::DrawRect(CRect(BilinearOffset(SCREEN_COORD(settings.vecPlaneRadarPosn.x + 270.0f) - SCREEN_COORD(3.0f)),
-				BilinearOffset(blackLineBaseY), BilinearOffset(SCREEN_COORD(settings.vecPlaneRadarPosn.x + 270.0f) + SCREEN_COORD(settings.vecPlaneRadarSize.x) + SCREEN_COORD(3.0f)),
-				BilinearOffset(blackLineBaseY + SCREEN_COORD(4.0f))), CRGBA(0, 0, 0, 255));
-		}
-	}*/
-
 	static void DrawSuccessFailedMessage(float x, float y, char* str)
 	{
 		float pos_y = SCREEN_COORD(STYLED1_Y),
@@ -1886,19 +1547,19 @@ public:
 		if (GARAGES_OUTLINE != 0)
 			CFont::SetOutlinePosition(GARAGES_OUTLINE);
 		CFont::PrintString((float)(RsGlobal.maximumWidth / 2), SCREEN_COORD(GARAGES_Y), str);
-	}
+	}*/
 
 	ClassicHud() {
 
 		static int keyPressTime = 0;
 		static int show_splash = 0;
-
+		/*
 		CIniReader iniReader(CLASSICHUD_DAT_PATH);
 		WEAPONS_TXD = iniReader.ReadString("SA_FILES", "WEAPONS_TXD", DEFAULT_WEAPONS_TXD);
 		Events::initRwEvent += ClassicHud::ClassicHudTextures;
 		Events::initRwEvent += ClassicHud::WeaponTextures;
 		Events::shutdownRwEvent += ClassicHud::ClassicHudTextureShutdown;
-		Events::shutdownRwEvent += ClassicHud::WeaponTexturesShutdown;
+		Events::shutdownRwEvent += ClassicHud::WeaponTexturesShutdown;*/
 
 		static char str[100];
 
@@ -1908,10 +1569,10 @@ public:
 				keyPressTime = CTimer::m_snTimeInMilliseconds;
 
 				STYLE = (STYLE >= 3) ? 0 : STYLE + 1;
-				ClassicHud::Init(STYLE);
+				settings.Init(STYLE);
 
-				ClassicHud::WeaponTexturesShutdown();
-				ClassicHud::WeaponTextures();
+				//ClassicHud::WeaponTexturesShutdown();
+				//ClassicHud::WeaponTextures();
 
 				patch::RedirectCall(0x5BA8AF, ClassicHud::HudTextures);
 				patch::RedirectCall(0x5BA6A4, ClassicHud::FontTextures);
@@ -1922,8 +1583,10 @@ public:
 				//CHud::Shutdown();
 				//CHud::Initialise();
 
-				patch::RedirectCall(0x58F607, ClassicHud::DrawMoney);
-				patch::RedirectCall(0x58EC21, ClassicHud::DrawClock);
+				Money::InstallPatches();
+				Clock::InstallPatches();
+
+				/*
 
 				patch::RedirectCall(0x589395, ClassicHud::DrawHealth);
 				patch::RedirectCall(0x58917A, ClassicHud::DrawArmour);
@@ -1941,7 +1604,7 @@ public:
 				patch::RedirectCall(0x58C68A, ClassicHud::DrawSubtitles);
 				patch::RedirectCall(0x58FCFA, ClassicHud::DrawHelpText);
 
-				/*// Set Radar Range
+				/* // Set Radar Range
 				patch::SetFloat(0x586C9B, RADAR_RANGE);
 				patch::Set<const void*>(0x586C66, &RADAR_RANGE);
 
@@ -1956,15 +1619,10 @@ public:
 				patch::RedirectCall(0x58AA15, &SetRadarDisc);
 
 				SetRadarPosAndSize();*/
-				plugin::patch::RedirectCall(0x58AA25, ClassicHud::MyDrawRadarCircle);
-				//plugin::patch::RedirectCall(0x58A551, ClassicHud::MyDrawRadarPlane);
-				//plugin::patch::RedirectCall(0x58A649, ClassicHud::MyDrawPlaneHeightBorder);
-				//plugin::patch::RedirectCall(0x58A77A, ClassicHud::MyDrawPlaneHeight);
-				plugin::patch::RedirectJump(0x583480, ClassicHud::MyTransformRadarPointToScreenSpace);
-				plugin::patch::Nop(0x58A818, 16);
-				plugin::patch::Nop(0x58A8C2, 16);
-				plugin::patch::Nop(0x58A96C, 16);
 
+				//Radar::InstallPatches();
+				
+				/*
 				// Styled Texts
 				patch::RedirectCall(0x58CA30, ClassicHud::DrawSuccessFailedMessage);
 				patch::RedirectCall(0x58D470, ClassicHud::DrawMissionTitle);
@@ -1986,373 +1644,15 @@ public:
 				// Garage Messages
 				patch::RedirectCall(0x4478D6, ClassicHud::CGarages__PrintMessages);
 				patch::RedirectCall(0x447940, ClassicHud::CGarages__PrintMessages);
-				patch::RedirectCall(0x44797E, ClassicHud::CGarages__PrintMessages);
+				patch::RedirectCall(0x44797E, ClassicHud::CGarages__PrintMessages);*/
 			}
 		};
 	}
-
-	static void Init(int style)
-	{
-		char section[20];
-		char* prefix[5] = { "SA", "III", "VC", "LCS", "VCS" };
-		CIniReader iniReader(CLASSICHUD_DAT_PATH);
-
-		sprintf(section, "CUSTOM_TEXT");
-		CUSTOM_ALIGN		= iniReader.ReadInt(section, "ALIGN", 0);
-		CUSTOM_SHADOW		= iniReader.ReadInt(section, "SHADOW", 0);
-		CUSTOM_OUTLINE		= iniReader.ReadInt(section, "OUTLINE", 0);
-		CUSTOM_FONTSTYLE	= iniReader.ReadInt(section, "FONTSTYLE", 0);
-		CUSTOM_R			= iniReader.ReadInt(section, "RED", 0);
-		CUSTOM_G			= iniReader.ReadInt(section, "GREEN", 0);
-		CUSTOM_B			= iniReader.ReadInt(section, "BLUE", 0);
-		CUSTOM_A			= iniReader.ReadInt(section, "ALPHA", 0);
-		CUSTOM_X			= iniReader.ReadFloat(section, "POS_X", 0.0f);
-		CUSTOM_Y			= iniReader.ReadFloat(section, "POS_Y", 0.0f);
-		CUSTOM_SIZE_X		= iniReader.ReadFloat(section, "SIZE_X", 0.0f);
-		CUSTOM_SIZE_Y		= iniReader.ReadFloat(section, "SIZE_Y", 0.0f);
-		CUSTOM_LINEWIDTH	= iniReader.ReadFloat(section, "LINEWIDTH", 0.0f);
-
-		sprintf(section, "%s_%s", prefix[style], "FILES");
-		HUD_TXD		= iniReader.ReadString(section, "HUD_TXD", "404");
-		FONTS_TXD	= iniReader.ReadString(section, "FONTS_TXD", "404");
-		FONTS_DAT	= iniReader.ReadString(section, "FONTS_DAT", "404");
-		WEAPONS_TXD	= iniReader.ReadString(section, "WEAPONS_TXD", "404");
-
-		sprintf(section, "%s_%s", prefix[style], "MONEY");
-		MONEY_X			= iniReader.ReadFloat(section, "POS_X", 0.0f);
-		MONEY_Y			= iniReader.ReadFloat(section, "POS_Y", 0.0f);
-		MONEY_WIDTH		= iniReader.ReadFloat(section, "SIZE_X", 0.0f);
-		MONEY_HEIGHT	= iniReader.ReadFloat(section, "SIZE_Y", 0.0f);
-		MONEY_R			= iniReader.ReadInt(section, "RED", 47);
-		MONEY_G			= iniReader.ReadInt(section, "GREEN", 90);
-		MONEY_B			= iniReader.ReadInt(section, "BLUE", 38);
-		MONEY_A			= iniReader.ReadInt(section, "ALPHA", 255);
-		MONEY_OUTLINE	= iniReader.ReadInt(section, "OUTLINE", 2);
-		MONEY_SHADOW	= iniReader.ReadInt(section, "SHADOW", 0);
-		MONEY_FONTSTYLE	= iniReader.ReadInt(section, "FONTSTYLE", 0);
-		
-		sprintf(section, "%s_%s", prefix[style], "CLOCK");
-		CLOCK_X			= iniReader.ReadFloat(section, "POS_X", 0.0f);
-		CLOCK_Y			= iniReader.ReadFloat(section, "POS_Y", 0.0f);
-		CLOCK_WIDTH		= iniReader.ReadFloat(section, "SIZE_X", 0.0f);
-		CLOCK_HEIGHT	= iniReader.ReadFloat(section, "SIZE_Y", 0.0f);
-		CLOCK_R			= iniReader.ReadInt(section, "RED", 194);
-		CLOCK_G			= iniReader.ReadInt(section, "GREEN", 165);
-		CLOCK_B			= iniReader.ReadInt(section, "BLUE", 120);
-		CLOCK_A			= iniReader.ReadInt(section, "ALPHA", 255);
-		CLOCK_FONTSTYLE = iniReader.ReadInt(section, "FONTSTYLE", 0);
-
-		sprintf(section, "%s_%s", prefix[style], "HEALTH");
-		HEALTH_DISPLAY		= iniReader.ReadInt(section, "DISPLAY", 0);
-		HEALTH_R			= iniReader.ReadInt(section, "RED", 180);
-		HEALTH_G			= iniReader.ReadInt(section, "GREEN", 100);
-		HEALTH_B			= iniReader.ReadInt(section, "BLUE", 50);
-		HEALTH_A			= iniReader.ReadInt(section, "ALPHA", 255);
-		HEALTHICON_X		= iniReader.ReadFloat(section, "ICON_X", 0.0f);
-		HEALTHICON_Y		= iniReader.ReadFloat(section, "ICON_Y", 0.0f);
-		HEALTHICON_WIDTH	= iniReader.ReadFloat(section, "ICON_SIZE_X", 0.0f);
-		HEALTHICON_HEIGHT	= iniReader.ReadFloat(section, "ICON_SIZE_Y", 0.0f);
-		HEALTH_X			= iniReader.ReadFloat(section, "POS_X", 0.0f);
-		HEALTH_Y			= iniReader.ReadFloat(section, "POS_Y", 0.0f);
-		HEALTH_WIDTH		= iniReader.ReadFloat(section, "SIZE_X", 0.0f);
-		HEALTH_HEIGHT		= iniReader.ReadFloat(section, "SIZE_Y", 0.0f);
-		HEALTHBAR_X			= iniReader.ReadFloat(section, "BAR_X", 0.0f);
-		HEALTHBAR_Y			= iniReader.ReadFloat(section, "BAR_Y", 0.0f);
-		HEALTHBAR_SIZE_X	= iniReader.ReadFloat(section, "BAR_SIZE_X", 0.0f);
-		HEALTHBAR_SIZE_Y	= iniReader.ReadFloat(section, "BAR_SIZE_Y", 0.0f);
-		HEALTHBAR_BORDER	= iniReader.ReadInt(section, "BORDER", 0);
-		HEALTH_TYPE			= iniReader.ReadInt(section, "TYPE", 0);
-
-		sprintf(section, "%s_%s", prefix[style], "ARMOUR");
-		ARMOUR_R			= iniReader.ReadInt(section, "RED", 121);
-		ARMOUR_G			= iniReader.ReadInt(section, "GREEN", 136);
-		ARMOUR_B			= iniReader.ReadInt(section, "BLUE", 93);
-		ARMOUR_A			= iniReader.ReadInt(section, "ALPHA", 255);
-		ARMOUR_X			= iniReader.ReadFloat(section, "POS_X", 0.0f);
-		ARMOUR_Y			= iniReader.ReadFloat(section, "POS_Y", 0.0f);
-		ARMOUR_SIZE_X		= iniReader.ReadFloat(section, "SIZE_X", 0.0f);
-		ARMOUR_SIZE_Y		= iniReader.ReadFloat(section, "SIZE_Y", 0.0f);
-		ARMOURBAR_X			= iniReader.ReadFloat(section, "BAR_X", 0.0f);
-		ARMOURBAR_Y			= iniReader.ReadFloat(section, "BAR_Y", 0.0f);
-		ARMOURBAR_SIZE_X	= iniReader.ReadFloat(section, "BAR_SIZE_X", 0.0f);
-		ARMOURBAR_SIZE_Y	= iniReader.ReadFloat(section, "BAR_SIZE_Y", 0.0f);
-		ARMOURICON_X		= iniReader.ReadFloat(section, "ICON_X", 0.0f);
-		ARMOURICON_Y		= iniReader.ReadFloat(section, "ICON_Y", 0.0f);
-		ARMOURICON_SIZE_X	= iniReader.ReadFloat(section, "ICON_SIZE_X", 0.0f);
-		ARMOURICON_SIZE_Y	= iniReader.ReadFloat(section, "ICON_SIZE_Y", 0.0f);
-		ARMOURBAR_BORDER	= iniReader.ReadInt(section, "BORDER", 0);
-		ARMOUR_TYPE			= iniReader.ReadInt(section, "TYPE", 0);
-
-		sprintf(section, "%s_%s", prefix[style], "BREATH");
-		BREATH_X			= iniReader.ReadFloat(section, "POS_X", 0.0f);
-		BREATH_Y			= iniReader.ReadFloat(section, "POS_Y", 0.0f);
-		BREATH_SIZE_X		= iniReader.ReadFloat(section, "SIZE_X", 0.0f);
-		BREATH_SIZE_Y		= iniReader.ReadFloat(section, "SIZE_Y", 0.0f);
-		BREATHICON_X		= iniReader.ReadFloat(section, "ICON_X", 0.0f);
-		BREATHICON_Y		= iniReader.ReadFloat(section, "ICON_Y", 0.0f);
-		BREATHICON_SIZE_X	= iniReader.ReadFloat(section, "ICON_SIZE_X", 0.0f);
-		BREATHICON_SIZE_Y	= iniReader.ReadFloat(section, "ICON_SIZE_Y", 0.0f);
-		BREATHBAR_X			= iniReader.ReadFloat(section, "BAR_X", 0.0f);
-		BREATHBAR_Y			= iniReader.ReadFloat(section, "BAR_Y", 0.0f);
-		BREATHBAR_SIZE_X	= iniReader.ReadFloat(section, "BAR_SIZE_X", 0.0f);
-		BREATHBAR_SIZE_Y	= iniReader.ReadFloat(section, "BAR_SIZE_Y", 0.0f);
-		BREATH_R			= iniReader.ReadInt(section, "RED", 121);
-		BREATH_G			= iniReader.ReadInt(section, "GREEN", 136);
-		BREATH_B			= iniReader.ReadInt(section, "BLUE", 93);
-		BREATH_A			= iniReader.ReadInt(section, "ALPHA", 255);
-		BREATHBAR_BORDER	= iniReader.ReadInt(section, "BORDER", 0);
-		BREATH_TYPE			= iniReader.ReadInt(section, "TYPE", 0);
-
-		sprintf(section, "%s_%s", prefix[style], "AMMO");
-		AMMO_SHADOW		= iniReader.ReadInt(section, "SHADOW", 0);
-		AMMO_OUTLINE	= iniReader.ReadInt(section, "OUTLINE", 0);
-		D_AMMO_R		= iniReader.ReadInt(section, "D_RED", 0);
-		D_AMMO_G		= iniReader.ReadInt(section, "D_GREEN", 0);
-		D_AMMO_B		= iniReader.ReadInt(section, "D_BLUE", 0);
-		AMMO_R			= iniReader.ReadInt(section, "RED", 0);
-		AMMO_G			= iniReader.ReadInt(section, "GREEN", 0);
-		AMMO_B			= iniReader.ReadInt(section, "BLUE", 0);
-		AMMO_SIZE_X		= iniReader.ReadFloat(section, "SIZE_X", 0.0f);
-		AMMO_SIZE_Y		= iniReader.ReadFloat(section, "SIZE_Y", 0.0f);
-		AMMO_X			= iniReader.ReadFloat(section, "POS_X", 0.0f);
-		AMMO_Y			= iniReader.ReadFloat(section, "POS_Y", 0.0f);
-
-		sprintf(section, "%s_%s", prefix[style], "WEAPON");
-		WEAPON_A		= iniReader.ReadInt(section, "ALPHA", 0);
-		WEAPON_X		= iniReader.ReadFloat(section, "POS_X", 0.0f);
-		WEAPON_Y		= iniReader.ReadFloat(section, "POS_Y", 0.0f);
-		WEAPON_SIZE_X	= iniReader.ReadFloat(section, "SIZE_X", 0.0f);
-		WEAPON_SIZE_Y	= iniReader.ReadFloat(section, "SIZE_Y", 0.0f);
-
-		sprintf(section, "%s_%s", prefix[style], "WANTED");
-		STAR_X			= iniReader.ReadFloat(section, "POS_X", 0.0f);
-		STAR_Y			= iniReader.ReadFloat(section, "POS_Y", 0.0f);
-		STAR_SIZE_X		= iniReader.ReadFloat(section, "SIZE_X", 0.0f);
-		STAR_SIZE_Y		= iniReader.ReadFloat(section, "SIZE_Y", 0.0f);
-		STAR_SPACE		= iniReader.ReadFloat(section, "SPACE", 0.0f);
-		STAR_R			= iniReader.ReadInt(section, "ACTIVE_R", 0);
-		STAR_G			= iniReader.ReadInt(section, "ACTIVE_G", 0);
-		STAR_B			= iniReader.ReadInt(section, "ACTIVE_B", 0);
-		STARBACK_R		= iniReader.ReadInt(section, "INACTIVE_R", 0);
-		STARBACK_G		= iniReader.ReadInt(section, "INACTIVE_G", 0);
-		STARBACK_B		= iniReader.ReadInt(section, "INACTIVE_B", 0);
-		FLASHSTAR_R		= iniReader.ReadInt(section, "FLASH_R", 0);
-		FLASHSTAR_G		= iniReader.ReadInt(section, "FLASH_G", 0);
-		FLASHSTAR_B		= iniReader.ReadInt(section, "FLASH_B", 0);
-		SHADOWSTAR_A	= iniReader.ReadInt(section, "SHADOW_A1", 0);
-		SHADOWSTAR_A2	= iniReader.ReadInt(section, "SHADOW_A2", 0);
-		SHADOWSTAR_A3	= iniReader.ReadInt(section, "SHADOW_A3", 0);
-		STAR_A2			= iniReader.ReadInt(section, "STAR_A2", 0);
-		STAR_A3			= iniReader.ReadInt(section, "STAR_A3", 0);
-		STAR_STYLE		= iniReader.ReadInt(section, "STYLE", 0);
-		STAR_X_OFFSET	= iniReader.ReadFloat(section, "OFFSET_X", 0.0f);
-		STAR_Y_OFFSET	= iniReader.ReadFloat(section, "OFFSET_Y", 0.0f);
-
-		sprintf(section, "%s_%s", prefix[style], "AREA");
-		AREA_FONTSTYLE	= iniReader.ReadInt(section, "FONTSTYLE", 0);
-		AREA_R			= iniReader.ReadInt(section, "RED", 0);
-		AREA_G			= iniReader.ReadInt(section, "GREEN", 0);
-		AREA_B			= iniReader.ReadInt(section, "BLUE", 0);
-		AREA_SHADOW		= iniReader.ReadInt(section, "SHADOW", 0);
-		AREA_OUTLINE	= iniReader.ReadInt(section, "OUTLINE", 0);
-		AREA_SIZE_X		= iniReader.ReadFloat(section, "SIZE_X", 0.0f);
-		AREA_SIZE_Y		= iniReader.ReadFloat(section, "SIZE_Y", 0.0f);
-		AREA_X			= iniReader.ReadFloat(section, "POS_X", 0.0f);
-		AREA_Y			= iniReader.ReadFloat(section, "POS_Y", 0.0f);
-		AREA_SLANT		= iniReader.ReadFloat(section, "SLANT", 0.0f);
-
-		sprintf(section, "%s_%s", prefix[style], "VEHICLE");
-		VEHICLE_FONTSTYLE	= iniReader.ReadInt(section, "FONTSTYLE", 0);
-		VEHICLE_R			= iniReader.ReadInt(section, "RED", 0);
-		VEHICLE_G			= iniReader.ReadInt(section, "GREEN", 0);
-		VEHICLE_B			= iniReader.ReadInt(section, "BLUE", 0);
-		VEHICLE_SHADOW		= iniReader.ReadInt(section, "SHADOW", 0);
-		VEHICLE_OUTLINE		= iniReader.ReadInt(section, "OUTLINE", 0);
-		VEHICLE_SIZE_X		= iniReader.ReadFloat(section, "SIZE_X", 0.0f);
-		VEHICLE_SIZE_Y		= iniReader.ReadFloat(section, "SIZE_Y", 0.0f);
-		VEHICLE_X			= iniReader.ReadFloat(section, "POS_X", 0.0f);
-		VEHICLE_Y			= iniReader.ReadFloat(section, "POS_Y", 0.0f);
-		VEHICLE_SLANT		= iniReader.ReadFloat(section, "SLANT", 0.0f);
-
-		sprintf(section, "%s_%s", prefix[style], "SUBTITLES");
-		SUBTITLES_SHADOW			= iniReader.ReadInt(section, "SHADOW", 0);
-		SUBTITLES_OUTLINE			= iniReader.ReadInt(section, "OUTLINE", 0);
-		SUBTITLES_R					= iniReader.ReadInt(section, "RED", 0);
-		SUBTITLES_G					= iniReader.ReadInt(section, "GREEN", 0);
-		SUBTITLES_B					= iniReader.ReadInt(section, "BLUE", 0);
-		SUBTITLES_X					= iniReader.ReadFloat(section, "POS_X", 0.0f);
-		SUBTITLES_Y					= iniReader.ReadFloat(section, "POS_Y", 0.0f);
-		SUBTITLES_SIZE_X			= iniReader.ReadFloat(section, "SIZE_X", 0.0f);
-		SUBTITLES_SIZE_Y			= iniReader.ReadFloat(section, "SIZE_Y", 0.0f);
-		SUBTITLES_LINEWIDTH			= iniReader.ReadFloat(section, "LINEWIDTH", 0.0f);
-
-		sprintf(section, "%s_%s", prefix[style], "SUBTITLES_VITALSTATS");
-		SUBTITLES_VITALSTATS_X = iniReader.ReadFloat(section, "POS_X1", 0.0f);
-		SUBTITLES_VITALSTATS_SIZE_X = iniReader.ReadFloat(section, "SIZE_X1", 0.0f);
-
-		sprintf(section, "%s_%s", prefix[style], "HELP_TEXT");
-		fTextBoxPosnX					= iniReader.ReadFloat(section, "POS_X", 0.0f);
-		fTextBoxPosnXWithRadar			= iniReader.ReadFloat(section, "POS_X", 0.0f);
-		fTextBoxPosnXWithRadarAndPlane	= iniReader.ReadFloat(section, "POS_X", 0.0f);
-		fTextBoxPosnY					= iniReader.ReadFloat(section, "POS_Y", 0.0f);
-		fTextBoxFontScaleX				= iniReader.ReadFloat(section, "SIZE_X", 0.0f);
-		fTextBoxFontScaleY				= iniReader.ReadFloat(section, "SIZE_Y", 0.0f);
-		fTextBoxWidth					= iniReader.ReadFloat(section, "WIDTH", 0.0f);
-		fTextBoxBorderSize				= iniReader.ReadFloat(section, "BORDER_SIZE", 0.0f);
-
-		sprintf(section, "%s_%s", prefix[style], "RADAR");
-		RADAR_A			= iniReader.ReadInt(section, "ALPHA", 0);
-		RADAR_RANGE		= iniReader.ReadFloat(section, "RANGE", 0.0f);
-		RADAR_X			= iniReader.ReadFloat(section, "POS_X", 0.0f);
-		RADAR_Y			= iniReader.ReadFloat(section, "POS_Y", 0.0f);
-		RADAR_SIZE_X	= iniReader.ReadFloat(section, "SIZE_X", 0.0f);
-		RADAR_SIZE_Y	= iniReader.ReadFloat(section, "SIZE_Y", 0.0f);
-
-		sprintf(section, "%s_%s", prefix[style], "STYLED1");
-		STYLED1_SHADOW	= iniReader.ReadInt(section, "SHADOW", 0);
-		STYLED1_OUTLINE	= iniReader.ReadInt(section, "OUTLINE", 0);
-		STYLED1_R		= iniReader.ReadInt(section, "RED", 0);
-		STYLED1_G		= iniReader.ReadInt(section, "GREEN", 0);
-		STYLED1_B		= iniReader.ReadInt(section, "BLUE", 0);
-		STYLED1_Y		= iniReader.ReadFloat(section, "POS_Y", 0.0f);
-		STYLED1_Y1		= iniReader.ReadFloat(section, "POS_Y1", 0.0f);
-		STYLED1_Y2		= iniReader.ReadFloat(section, "POS_Y2", 0.0f);
-		STYLED1_SIZE_X	= iniReader.ReadFloat(section, "SIZE_X", 0.0f);
-		STYLED1_SIZE_Y	= iniReader.ReadFloat(section, "SIZE_Y", 0.0f);
-
-		sprintf(section, "%s_%s", prefix[style], "STYLED2");
-		MT_R			= iniReader.ReadInt(section, "RED", 0);
-		MT_G			= iniReader.ReadInt(section, "GREEN", 0);
-		MT_B			= iniReader.ReadInt(section, "BLUE", 0);
-		MT_SHADOW		= iniReader.ReadInt(section, "SHADOW", 0);
-		MT_OUTLINE		= iniReader.ReadInt(section, "OUTLINE", 0);
-		MT_FONTSTYLE	= iniReader.ReadInt(section, "FONTSTYLE", 0);
-		MT_POS_X		= iniReader.ReadFloat(section, "POS_X", 0.0f);
-		MT_POS_Y		= iniReader.ReadFloat(section, "POS_Y", 0.0f);
-		MT_SIZE_X		= iniReader.ReadFloat(section, "SIZE_X", 0.0f);
-		MT_SIZE_Y		= iniReader.ReadFloat(section, "SIZE_Y", 0.0f);
-
-		sprintf(section, "%s_%s", prefix[style], "STYLED3");
-		WB_R			= iniReader.ReadInt(section, "RED", 0);
-		WB_G			= iniReader.ReadInt(section, "GREEN", 0);
-		WB_B			= iniReader.ReadInt(section, "BLUE", 0);
-		WB_SHADOW		= iniReader.ReadInt(section, "SHADOW", 0);
-		WB_OUTLINE		= iniReader.ReadInt(section, "OUTLINE", 0);
-		WB_FONTSTYLE	= iniReader.ReadInt(section, "FONTSTYLE", 0);
-		WB_ALIGN		= iniReader.ReadInt(section, "ALIGN", 0);
-		WB_POS_X		= iniReader.ReadFloat(section, "POS_X", 0.0f);
-		WB_POS_Y		= iniReader.ReadFloat(section, "POS_Y", 0.0f);
-		WB_SIZE_X		= iniReader.ReadFloat(section, "SIZE_X", 0.0f);
-		WB_SIZE_Y		= iniReader.ReadFloat(section, "SIZE_Y", 0.0f);
-
-		sprintf(section, "%s_%s", prefix[style], "STYLED4");
-		STYLED4_FONTSTYLE	= iniReader.ReadInt(section, "FONTSTYLE", 0);
-		STYLED4_SHADOW		= iniReader.ReadInt(section, "SHADOW", 0);
-		STYLED4_OUTLINE		= iniReader.ReadInt(section, "OUTLINE", 0);
-		STYLED4_ALIGN		= iniReader.ReadInt(section, "ALIGN", 0);
-		STYLED4_R			= iniReader.ReadInt(section, "RED", 0);
-		STYLED4_G			= iniReader.ReadInt(section, "GREEN", 0);
-		STYLED4_B			= iniReader.ReadInt(section, "BLUE", 0);
-		STYLED4_X			= iniReader.ReadFloat(section, "POS_X", 0.0f);
-		STYLED4_Y			= iniReader.ReadFloat(section, "POS_Y", 0.0f);
-		STYLED4_SIZE_X		= iniReader.ReadFloat(section, "SIZE_X", 0.0f);
-		STYLED4_SIZE_Y		= iniReader.ReadFloat(section, "SIZE_Y", 0.0f);
-
-		sprintf(section, "%s_%s", prefix[style], "STYLED5");
-		STYLED5_FONTSTYLE	= iniReader.ReadInt(section, "FONTSTYLE", 0);
-		STYLED5_SHADOW		= iniReader.ReadInt(section, "SHADOW", 0);
-		STYLED5_OUTLINE		= iniReader.ReadInt(section, "OUTLINE", 0);
-		STYLED5_R			= iniReader.ReadInt(section, "RED", 0);
-		STYLED5_G			= iniReader.ReadInt(section, "GREEN", 0);
-		STYLED5_B			= iniReader.ReadInt(section, "BLUE", 0);
-		STYLED5_Y			= iniReader.ReadFloat(section, "POS_Y", 0.0f);
-		STYLED5_SIZE_X		= iniReader.ReadFloat(section, "SIZE_X", 0.0f);
-		STYLED5_SIZE_Y		= iniReader.ReadFloat(section, "SIZE_Y", 0.0f);
-
-		sprintf(section, "%s_%s", prefix[style], "STYLED6");
-		STYLED6_FONTSTYLE	= iniReader.ReadInt(section, "FONTSTYLE", 0);
-		STYLED6_SHADOW		= iniReader.ReadInt(section, "SHADOW", 0);
-		STYLED6_OUTLINE		= iniReader.ReadInt(section, "OUTLINE", 0);
-		STYLED6_R			= iniReader.ReadInt(section, "RED", 0);
-		STYLED6_G			= iniReader.ReadInt(section, "GREEN", 0);
-		STYLED6_B			= iniReader.ReadInt(section, "BLUE", 0);
-		STYLED6_Y			= iniReader.ReadFloat(section, "POS_Y", 0.0f);
-		STYLED6_SIZE_X		= iniReader.ReadFloat(section, "SIZE_X", 0.0f);
-		STYLED6_SIZE_Y		= iniReader.ReadFloat(section, "SIZE_Y", 0.0f);
-
-		sprintf(section, "%s_%s", prefix[style], "STYLED7");
-		STYLED7_FONTSTYLE	= iniReader.ReadInt(section, "FONTSTYLE", 0);
-		STYLED7_SHADOW		= iniReader.ReadInt(section, "SHADOW", 0);
-		STYLED7_OUTLINE		= iniReader.ReadInt(section, "OUTLINE", 0);
-		STYLED7_R			= iniReader.ReadInt(section, "RED", 0);
-		STYLED7_G			= iniReader.ReadInt(section, "GREEN", 0);
-		STYLED7_B			= iniReader.ReadInt(section, "BLUE", 0);
-		STYLED7_Y			= iniReader.ReadFloat(section, "POS_Y", 0.0f);
-		STYLED7_SIZE_X		= iniReader.ReadFloat(section, "SIZE_X", 0.0f);
-		STYLED7_SIZE_Y		= iniReader.ReadFloat(section, "SIZE_Y", 0.0f);
-
-		sprintf(section, "%s_%s", prefix[style], "MISSION_TIMERS");
-		M_TIMERS_FONTSTYLE	= iniReader.ReadInt(section, "FONTSTYLE", 0);
-		M_TIMERS_SHADOW		= iniReader.ReadInt(section, "SHADOW", 0);
-		M_TIMERS_OUTLINE	= iniReader.ReadInt(section, "OUTLINE", 0);
-		M_TIMERS_R			= iniReader.ReadInt(section, "RED", 0);
-		M_TIMERS_G			= iniReader.ReadInt(section, "GREEN", 0);
-		M_TIMERS_B			= iniReader.ReadInt(section, "BLUE", 0);
-		M_TIMERS_SIZE_X		= iniReader.ReadFloat(section, "SIZE_X", 0.0f);
-		M_TIMERS_SIZE_Y		= iniReader.ReadFloat(section, "SIZE_Y", 0.0f);
-		M_TIMER_X			= iniReader.ReadFloat(section, "POS_X2", 0.0f);
-		M_TIMER_DESC_X		= iniReader.ReadFloat(section, "POS_X1", 0.0f);
-		M_TIMER_Y			= iniReader.ReadFloat(section, "POS_Y", 0.0f);
-
-		sprintf(section, "%s_%s", prefix[style], "STATUS_TEXT");
-		M_STATUSTEXT_X		= iniReader.ReadFloat(section, "POS_X2", 0.0f);
-		M_STATUSTEXT_DESC_X = iniReader.ReadFloat(section, "POS_X1", 0.0f);
-		M_STATUSTEXT_Y		= iniReader.ReadFloat(section, "POS_Y", 0.0f);
-		M_STATUSTEXT_SPACE	= iniReader.ReadFloat(section, "SPACE", 0.0f);
-
-		sprintf(section, "%s_%s", prefix[style], "STATUS_TEXT_BAR");
-		M_STATUSBAR_BORDER	= iniReader.ReadInt(section, "BORDER", 0);
-		M_STATUSBAR_R		= iniReader.ReadInt(section, "RED", 0);
-		M_STATUSBAR_G		= iniReader.ReadInt(section, "GREEN", 0);
-		M_STATUSBAR_B		= iniReader.ReadInt(section, "BLUE", 0);
-		M_STATUSBAR_A		= iniReader.ReadInt(section, "ALPHA", 0);
-		M_STATUSBAR_X		= iniReader.ReadFloat(section, "POS_X", 0.0f);
-		M_STATUSBAR_Y		= iniReader.ReadFloat(section, "POS_Y", 0.0f);
-		M_STATUSBAR_SIZE_X	= iniReader.ReadFloat(section, "SIZE_X", 0.0f);
-		M_STATUSBAR_SIZE_Y	= iniReader.ReadFloat(section, "SIZE_Y", 0.0f);
-
-		sprintf(section, "%s_%s", prefix[style], "RADIO_STATION");
-		RS_FONTSTYLE	= iniReader.ReadInt(section, "FONTSTYLE", 0);
-		RS_SHADOW		= iniReader.ReadInt(section, "SHADOW", 0);
-		RS_OUTLINE		= iniReader.ReadInt(section, "OUTLINE", 0);
-		RS_RED1			= iniReader.ReadInt(section, "RED1", 0);
-		RS_GREEN1		= iniReader.ReadInt(section, "GREEN1", 0);
-		RS_BLUE1		= iniReader.ReadInt(section, "BLUE1", 0);
-		RS_RED2			= iniReader.ReadInt(section, "RED2", 0);
-		RS_GREEN2		= iniReader.ReadInt(section, "GREEN2", 0);
-		RS_BLUE2		= iniReader.ReadInt(section, "BLUE2", 0);
-		RS_POS_Y		= iniReader.ReadFloat(section, "POS_Y", 0.0f);
-		RS_SIZE_X		= iniReader.ReadFloat(section, "SIZE_X", 0.0f);
-		RS_SIZE_Y		= iniReader.ReadFloat(section, "SIZE_Y", 0.0f);
-
-		sprintf(section, "%s_%s", prefix[style], "GARAGE_MESSAGES");
-		GARAGES_R			= iniReader.ReadInt(section, "RED", 0);
-		GARAGES_G			= iniReader.ReadInt(section, "GREEN", 0);
-		GARAGES_B			= iniReader.ReadInt(section, "BLUE", 0);
-		GARAGES_FONTSTYLE	= iniReader.ReadInt(section, "FONTSTYLE", 0);
-		GARAGES_SHADOW		= iniReader.ReadInt(section, "SHADOW", 0);
-		GARAGES_OUTLINE		= iniReader.ReadInt(section, "OUTLINE", 0);
-		GARAGES_Y			= iniReader.ReadFloat(section, "POS_Y", 0.0f);
-		GARAGES_SIZE_X		= iniReader.ReadFloat(section, "SIZE_X", 0.0f);
-		GARAGES_SIZE_Y		= iniReader.ReadFloat(section, "SIZE_Y", 0.0f);
-		GARAGES_LINEWIDTH	= iniReader.ReadFloat(section, "LINEWIDTH", 0.0f);
-	}
-
 } classicHud;
 
 
 
-
+/*
 class HudEditor
 {
 public:
@@ -2393,7 +1693,7 @@ public:
 		}
 		iniReader.WriteFloat((char*)s_section.c_str(), key, value);
 
-		ClassicHud::Init(STYLE);
+		Settings::Init(STYLE);
 		if ((std::string)section == "MONEY")
 			patch::RedirectCall(0x58F607, ClassicHud::DrawMoney);
 		else if ((std::string)section == "CLOCK")
@@ -2839,3 +2139,4 @@ public:
 		}
 	}
 }editHud;
+*/
