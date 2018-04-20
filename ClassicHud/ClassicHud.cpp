@@ -19,6 +19,8 @@
 #include "GarageMessages.h"
 #include "TestMessage.h"
 
+#include "MobileLoadingScreen.h"
+
 #include "CFileMgr.h"
 
 using namespace plugin;
@@ -27,7 +29,6 @@ static int STYLE;
 
 class ClassicHud {
 public:
-
 	static void HudTextures(int index) {
 		CTxdStore::LoadTxd(index, settings.HUD_TXD);
 	}
@@ -74,21 +75,9 @@ public:
 		CTxdStore::RemoveTxdSlot(v0);
 	}
 
-	/*
-	static CRGBA * __fastcall SetRadarDisc(CRGBA *rgba, int, unsigned char r, unsigned char g, unsigned char b, unsigned char a) {
-		rgba->red = 255;
-		rgba->green = 255;
-		rgba->blue = 255;
-		rgba->alpha = 255;
-		return rgba;
-	}
-
-*/
-
 	ClassicHud() {
 
 		static int keyPressTime = 0;
-		static int show_splash = 0;
 
 		CIniReader iniReader(CLASSICHUD_DAT_PATH);
 		settings.WEAPONS_TXD = iniReader.ReadString("SA_FILES", "WEAPONS_TXD", DEFAULT_WEAPONS_TXD);
@@ -99,7 +88,10 @@ public:
 		Events::initRwEvent += Weapon::WeaponTextures;
 		Events::shutdownRwEvent += Weapon::WeaponTexturesShutdown;
 
-		static char str[100];
+		/*Events::initRwEvent += [] {
+			MobileMenuSystem::InstallPatches();
+			MobileLoadingScreen::InstallPatches();
+		};*/
 
 		Events::gameProcessEvent += [] {
 
@@ -180,26 +172,16 @@ public:
 		iniReader.WriteFloat((char*)s_section.c_str(), key, value);
 
 		settings.Init(STYLE);
-		if ((std::string)section == "MONEY")
-			Money::InstallPatches();
-		else if ((std::string)section == "CLOCK")
-			Clock::InstallPatches();
-		else if ((std::string)section == "HEALTH")
-			patch::RedirectCall(0x589395, HudIcons::DrawHealth);
-		else if ((std::string)section == "ARMOUR")
-			patch::RedirectCall(0x58917A, HudIcons::DrawArmour);
-		else if ((std::string)section == "BREATH")
-			patch::RedirectCall(0x589252, HudIcons::DrawBreath);
-		else if ((std::string)section == "WEAPON")
-			patch::RedirectJump(0x58D7D0, Weapon::DrawWeaponIcon);
-		else if ((std::string)section == "AMMO")
-			patch::RedirectCall(0x58962A, Weapon::DrawWeaponAmmo);
-		else if ((std::string)section == "WANTED")
-			Wanted::InstallPatches();
-		else if ((std::string)section == "HELP_TEXT")
-			HelpText::InstallPatches();
-		else if ((std::string)section == "RADAR")
-			Radar::InstallPatches();
+		if ((std::string)section == "MONEY")			Money::InstallPatches();
+		else if ((std::string)section == "CLOCK")		Clock::InstallPatches();
+		else if ((std::string)section == "HEALTH")		HudIcons::InstallPatches();
+		else if ((std::string)section == "ARMOUR")		HudIcons::InstallPatches();
+		else if ((std::string)section == "BREATH")		HudIcons::InstallPatches();
+		else if ((std::string)section == "WEAPON")		Weapon::InstallPatches();
+		else if ((std::string)section == "AMMO")		Weapon::InstallPatches();
+		else if ((std::string)section == "WANTED")		Wanted::InstallPatches();
+		else if ((std::string)section == "HELP_TEXT")	HelpText::InstallPatches();
+		else if ((std::string)section == "RADAR")		Radar::InstallPatches();
 
 		char str[200];
 		_snprintf(str, sizeof(str), "section: %s ~n~key: %s ~n~value: %f ~n~incr: %f",
@@ -219,36 +201,22 @@ public:
 		Events::drawingEvent += []
 		{
 			if (enable) {
-				if (section == "AREA")
-					AreaName::Test();
-				else if (section == "VEHICLE")
-					VehicleName::Test();
-				else if (section == "SUBTITLES")
-					Subtitles::Test();
-				else if (section == "SUBTITLES_VITALSTATS")
-					Subtitles::Test_VitalStats();
-				else if (section == "STYLED1")
-					StyledTexts::TestSuccessFailedMessage();
-				else if (section == "STYLED2")
-					StyledTexts::TestMissionTitle();
-				else if (section == "STYLED3")
-					StyledTexts::TestBustedWastedMessage();
-				else if (section == "STYLED4")
-					StyledTexts::TestOddJobMessage4();
-				else if (section == "STYLED5")
-					StyledTexts::TestOddJobMessage5();
-				else if (section == "STYLED6")
-					StyledTexts::TestOddJobMessage6();
-				else if (section == "STYLED7")
-					StyledTexts::TestOddJobMessage7();
-				else if (section == "RADIO_STATION")
-					RadioStation::Test();
-				else if (section == "GARAGE_MESSAGES")
-					GarageMessages::Test();
+				if (section == "AREA")							AreaName::Test();
+				else if (section == "VEHICLE")					VehicleName::Test();
+				else if (section == "SUBTITLES")				Subtitles::Test();
+				else if (section == "SUBTITLES_VITALSTATS")		Subtitles::Test_VitalStats();
+				else if (section == "STYLED1")					StyledTexts::TestSuccessFailedMessage();
+				else if (section == "STYLED2")					StyledTexts::TestMissionTitle();
+				else if (section == "STYLED3")					StyledTexts::TestBustedWastedMessage();
+				else if (section == "STYLED4")					StyledTexts::TestOddJobMessage4();
+				else if (section == "STYLED5")					StyledTexts::TestOddJobMessage5();
+				else if (section == "STYLED6")					StyledTexts::TestOddJobMessage6();
+				else if (section == "STYLED7")					StyledTexts::TestOddJobMessage7();
+				else if (section == "RADIO_STATION")			RadioStation::Test();
+				else if (section == "GARAGE_MESSAGES")			GarageMessages::Test();
 				else if (section == "MISSION_TIMERS"
 					|| section == "STATUS_TEXT"
-					|| section == "STATUS_TEXT_BAR")
-					MissionTimers::Test();
+					|| section == "STATUS_TEXT_BAR")			MissionTimers::Test();
 
 				TestMessage::Draw(SCREEN_COORD(settings.CUSTOM_X),
 					SCREEN_COORD(settings.CUSTOM_Y), settings.CUSTOM_SIZE_X, settings.CUSTOM_SIZE_Y,

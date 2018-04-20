@@ -30,7 +30,19 @@ public:
 	static void MyDrawPlaneHeightBorder(CRect const& rect, CRGBA const& color);
 	static void MyDrawPlaneHeight(CRect const& rect, CRGBA const& color);
 	static void DrawRadarRectangle(CSprite2d *sprite, CRect const& rect, CRGBA const& color);
+	static CRGBA * __fastcall SetRadarDisc(CRGBA *rgba, int, unsigned char r,
+		unsigned char g, unsigned char b, unsigned char a);
 };
+
+CRGBA * __fastcall Radar::SetRadarDisc(CRGBA *rgba, int, unsigned char r,
+	unsigned char g, unsigned char b, unsigned char a)
+{
+	rgba->red = 255;
+	rgba->green = 255;
+	rgba->blue = 255;
+	rgba->alpha = 255;
+	return rgba;
+}
 
 void Radar::InstallPatches() {
 	plugin::patch::RedirectCall(0x58AA25, MyDrawRadarCircle);
