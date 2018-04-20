@@ -19,7 +19,11 @@
 #include "GarageMessages.h"
 #include "TestMessage.h"
 
+#include "MobileProgressBar.h"
+#include "MobileMenuSystem.h"
 #include "MobileLoadingScreen.h"
+#include "MobileTextures.h"
+#include "MobileFrontEnd.h"
 
 #include "CFileMgr.h"
 
@@ -88,10 +92,18 @@ public:
 		Events::initRwEvent += Weapon::WeaponTextures;
 		Events::shutdownRwEvent += Weapon::WeaponTexturesShutdown;
 
-		/*Events::initRwEvent += [] {
-			MobileMenuSystem::InstallPatches();
-			MobileLoadingScreen::InstallPatches();
-		};*/
+		Events::initRwEvent += [] {
+			//screen::SetBaseResolution(900.0f);
+			MobileTextures::Setup();
+
+			{
+				MobileProgressBar::InstallPatches();
+				MobileMenuSystem::InstallPatches();
+				MobileLoadingScreen::InstallPatches();
+				MobileMenuPage::InstallPatches();
+				MobileFrontEnd::InstallPatches();
+			}
+		};
 
 		Events::gameProcessEvent += [] {
 
