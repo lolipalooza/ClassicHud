@@ -45,6 +45,16 @@ CRGBA * __fastcall Radar::SetRadarDisc(CRGBA *rgba, int, unsigned char r,
 }
 
 void Radar::InstallPatches() {
+	/*
+	// Set Radar Range
+	patch::SetFloat(0x586C9B, RADAR_RANGE);
+	patch::Set<const void*>(0x586C66, &RADAR_RANGE);
+
+	// Transparent Radar
+	patch::Set<DWORD>(0x5864BD, RADAR_A);
+	plugin::patch::RedirectJump(0x58641A, RadarAlpha);
+	*/
+
 	plugin::patch::RedirectCall(0x58AA25, MyDrawRadarCircle);
 	//plugin::patch::RedirectCall(0x58A551, MyDrawRadarPlane);
 	//plugin::patch::RedirectCall(0x58A649, MyDrawPlaneHeightBorder);

@@ -16,6 +16,11 @@ public:
 
 void MobileProgressBar::InstallPatches() {
 	plugin::patch::RedirectJump(0x728640, MyDrawProgressBar);
+	/*plugin::patch::Set<unsigned char>(0x728640, 0xA1);
+	plugin::patch::Set<unsigned char>(0x728641, 0x24);
+	plugin::patch::Set<unsigned char>(0x728642, 0x7B);
+	plugin::patch::Set<unsigned char>(0x728643, 0xC9);
+	plugin::patch::Set<unsigned char>(0x728644, 0x00);*/
 }
 
 void MobileProgressBar::MyDrawProgressBar(float x, float y, unsigned short width, unsigned char height, float progress, signed char progressAdd,

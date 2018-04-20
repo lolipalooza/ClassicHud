@@ -121,3 +121,11 @@ void MobileLoadingScreen::RenderLoadingBar(float x, float y, unsigned short widt
     else
         CSprite2d::DrawBarChart(SCREEN_COORD_LEFT(distance), SCREEN_COORD_BOTTOM(30.0f), SCREEN_COORD_MAX_X - SCREEN_COORD(distance * 2), SCREEN_MULTIPLIER(20.0f), progress, progressAdd, drawPercentage, drawBlackBorder, color, addColor);
 }
+
+void MobileLoadingScreen::TestLoadingBar() {
+	float distance = 18.0f;
+	if (RsGlobal.maximumWidth == 2560 || RsGlobal.maximumWidth == 3840)
+		CSprite2d::DrawBarChart(SCREEN_COORD_CENTER_X - SCREEN_COORD((1920.0f * 900 / 1080) / 2 - distance), SCREEN_COORD_BOTTOM(30.0f), SCREEN_COORD(1920.0f * 900 / 1080 - distance * 2), SCREEN_MULTIPLIER(20.0f), 50.0, 0.0, 0, 0, CRGBA(120, 120, 120, 255), CRGBA(25, 25, 25, 255));
+	else
+		CSprite2d::DrawBarChart(SCREEN_COORD_LEFT(distance), SCREEN_COORD_BOTTOM(30.0f), SCREEN_COORD_MAX_X - SCREEN_COORD(distance * 2), SCREEN_MULTIPLIER(20.0f), 50.0, 0.0, 0, 0, CRGBA(120, 120, 120, 255), CRGBA(25, 25, 25, 255));
+}

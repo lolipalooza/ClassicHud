@@ -19,6 +19,7 @@ public:
     static void RenderSplash();
     static void DisplaySplash();
     static void RenderLoadingBar(float x, float y, unsigned short width, unsigned char height, float progress, signed char progressAdd, unsigned char drawPercentage, unsigned char drawBlackBorder, CRGBA color, CRGBA addColor);
+	static void TestLoadingBar();
 };
 
 extern MobileLoadingScreen MobileLoad;
