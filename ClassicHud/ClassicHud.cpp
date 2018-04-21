@@ -1,6 +1,5 @@
 #include <plugin.h>
 
-#include "Settings.h"
 #include "IniReader.h"
 #include "HudEditor.h"
 
@@ -27,6 +26,8 @@
 #include "MobileFrontEnd.h"
 
 #include "CFileMgr.h"
+
+#include "LoadingScreen.h"
 
 using namespace plugin;
 
@@ -100,7 +101,7 @@ public:
 			{
 				//MobileProgressBar::InstallPatches();
 				//MobileMenuSystem::InstallPatches();
-				MobileLoadingScreen::InstallPatches();
+				//MobileLoadingScreen::InstallPatches();
 				//MobileMenuPage::InstallPatches();
 				//MobileFrontEnd::InstallPatches();
 			}

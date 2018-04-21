@@ -41,25 +41,48 @@ void DrawProgressBar_BilinearOffset_RightAlign(float x, float y, float width, fl
 }
 
 void DrawProgressBarWithProgressDelta_BilinearOffset(float x, float y, float width, float height, float progress,
-    CRGBA const &color, float deltaProgress, CRGBA const &deltaColor)
+	CRGBA const &color, float deltaProgress, CRGBA const &deltaColor)
 {
-    // progress value is 0.0 - 100.0
-    if (progress >= 100.0f)
-        progress = 100.0f;
-    else {
-        CSprite2d::DrawRect(CRect((int)(x)-0.5f, (int)(y)-0.5f, (int)(x + width) - 0.5f, (int)(y + height) - 0.5f),
-            CRGBA(color.red, color.green, color.blue, color.alpha / 2));
-    }
-    if (progress > 0.0f) {
-        CSprite2d::DrawRect(CRect((int)(x)-0.5f, (int)(y)-0.5f, (int)(x + width * (progress / 100.f)) - 0.5f,
-            (int)(y + height) - 0.5f), color);
-    }
-    if (deltaProgress > 0.0f) {
-        if (deltaProgress > 100.0f)
-            deltaProgress = 100.0f;
-        CSprite2d::DrawRect(CRect((int)(x + width * (progress / 100.f) - deltaProgress / 100.0f * width) - 0.5f, (int)(y)-0.5f,
-            (int)(x + width * (progress / 100.f)) - 0.5f, (int)(y + height) - 0.5f), deltaColor);
-    }
+	// progress value is 0.0 - 100.0
+	if (progress >= 100.0f)
+		progress = 100.0f;
+	else {
+		CSprite2d::DrawRect(CRect((int)(x)-0.5f, (int)(y)-0.5f, (int)(x + width) - 0.5f, (int)(y + height) - 0.5f),
+			CRGBA(color.red, color.green, color.blue, color.alpha / 2));
+	}
+	if (progress > 0.0f) {
+		CSprite2d::DrawRect(CRect((int)(x)-0.5f, (int)(y)-0.5f, (int)(x + width * (progress / 100.f)) - 0.5f,
+			(int)(y + height) - 0.5f), color);
+	}
+	if (deltaProgress > 0.0f) {
+		if (deltaProgress > 100.0f)
+			deltaProgress = 100.0f;
+		CSprite2d::DrawRect(CRect((int)(x + width * (progress / 100.f) - deltaProgress / 100.0f * width) - 0.5f, (int)(y)-0.5f,
+			(int)(x + width * (progress / 100.f)) - 0.5f, (int)(y + height) - 0.5f), deltaColor);
+	}
+}
+
+void DrawProgressBar_BilinearOffset(float x, float y, float width, float height, float progress,
+	CRGBA const &color, float deltaProgress, CRGBA const &deltaColor, CRGBA const &color2)
+{
+	// progress value is 0.0 - 100.0
+	if (progress >= 100.0f)
+		progress = 100.0f;
+	else {
+		CSprite2d::DrawRect(CRect((int)(x)-0.5f, (int)(y)-0.5f,
+			(int)(x + width) - 0.5f, (int)(y + height) - 0.5f), color2);
+	}
+	if (progress > 0.0f) {
+		CSprite2d::DrawRect(CRect((int)(x)-0.5f, (int)(y)-0.5f,
+			(int)(x + width * (progress / 100.f)) - 0.5f,
+			(int)(y + height) - 0.5f), color);
+	}
+	if (deltaProgress > 0.0f) {
+		if (deltaProgress > 100.0f)
+			deltaProgress = 100.0f;
+		CSprite2d::DrawRect(CRect((int)(x + width * (progress / 100.f) - deltaProgress / 100.0f * width) - 0.5f, (int)(y)-0.5f,
+			(int)(x + width * (progress / 100.f)) - 0.5f, (int)(y + height) - 0.5f), deltaColor);
+	}
 }
 
 void StringReplace(std::string &str, std::string substring, std::string replacement) {

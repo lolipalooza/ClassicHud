@@ -25,6 +25,8 @@
 #include "MobileTextures.h"
 #include "MobileFrontEnd.h"
 
+#include "LoadingScreen.h"
+
 extern int STYLE;
 
 using namespace plugin;
@@ -198,12 +200,18 @@ Data edit_data[] = {
 	{ "Custom Text Size X", "CUSTOM_TEXT", "SIZE_X", 0.01f },
 	{ "Custom Text Size Y", "CUSTOM_TEXT", "SIZE_Y", 0.02f },
 	{ "Custom Text Linewidth", "CUSTOM_TEXT", "LINEWIDTH", 10.0f },
+
+	{ "Loading Screen Bar Pos X", "LOADING_SCREEN_BAR", "POS_X", 0.5f },
+	{ "Loading Screen Bar Pos Y", "LOADING_SCREEN_BAR", "POS_Y", 0.5f },
+	{ "Loading Screen Bar Size X", "LOADING_SCREEN_BAR", "SIZE_X", 0.5f },
+	{ "Loading Screen Bar Size Y", "LOADING_SCREEN_BAR", "SIZE_Y", 0.5f },
+	{ "Loading Screen Bar Shadow Distance", "LOADING_SCREEN_BAR", "SHADOW", 0.1f },
 };
 
 class HudEditor
 {
 public:
-	static char* ModifyValueInIni(char* section, char* key, float incr)
+	static char* ModifyValueInIni(char* section, char* key, float incr, float incr_multiplier)
 	{
 		std::string prefix[5] = { "SA_", "III_", "VC_", "LCS_", "VCS_" };
 		std::string s_section = prefix[STYLE] + (std::string)section;
@@ -214,10 +222,10 @@ public:
 		float value = iniReader.ReadFloat((char*)s_section.c_str(), key, 0.0f);
 
 		if (KeyPressed(VK_ADD)) {
-			value += incr;
+			value += incr * incr_multiplier;
 		}
 		if (KeyPressed(VK_SUBTRACT)) {
-			value -= incr;
+			value -= incr * incr_multiplier;
 		}
 		iniReader.WriteFloat((char*)s_section.c_str(), key, value);
 
@@ -245,12 +253,15 @@ public:
 		static int keyPressTime = 0;
 		static int menu_level = 0, chosen = 0;
 		static bool showStyled1 = false;
+		static char edit_mode_text[200] = "Edit mode";
 		static char custom_text[200];
 		static std::string section;
+		static float incr_multiplier = 1.0f;
 
 		static int data_size = 0;
 		for each (Data d in edit_data)
 			data_size++;
+		//sprintf(edit_mode_text, "Edit mode");
 
 
 		Events::drawingEvent += []
@@ -272,7 +283,7 @@ public:
 				else if (section == "MISSION_TIMERS"
 					|| section == "STATUS_TEXT"
 					|| section == "STATUS_TEXT_BAR")			MissionTimers::Test();
-				else if (section == "CLOCK")					MobileLoadingScreen::TestLoadingBar();
+				else if (section == "LOADING_SCREEN_BAR")		LoadingScreen::TestLoadingBar();
 
 				TestMessage::Draw(SCREEN_COORD(settings.CUSTOM_X),
 					SCREEN_COORD(settings.CUSTOM_Y), settings.CUSTOM_SIZE_X, settings.CUSTOM_SIZE_Y,
@@ -287,7 +298,7 @@ public:
 						settings.CUSTOM_SIZE_Y, (eFontAlignment)settings.CUSTOM_ALIGN,
 						settings.CUSTOM_LINEWIDTH, settings.CUSTOM_SHADOW, settings.CUSTOM_OUTLINE,
 						settings.CUSTOM_FONTSTYLE,
-						CRGBA(255, 255, 255, settings.CUSTOM_A), "Edit mode");
+						CRGBA(255, 255, 255, settings.CUSTOM_A), edit_mode_text);
 			}
 		};
 
@@ -299,6 +310,18 @@ public:
 				menu_level = 0; chosen = 0; menu_level = 0;
 				sprintf(custom_text, "Money Pos X");
 				CHud::SetHelpMessage(enable ? "Hud Editor enabled!" : "Hud Editor disabled!", true, false, false);
+			}
+
+			if (enable && FindPlayerPed() && KeyPressed(VK_DIVIDE) && CTimer::m_snTimeInMilliseconds - keyPressTime > 500) {
+				keyPressTime = CTimer::m_snTimeInMilliseconds;
+				if (incr_multiplier == 1.0f) {
+					incr_multiplier = 10.0f;
+					sprintf(edit_mode_text, "Edit mode (X10)");
+				}
+				else {
+					incr_multiplier = 1.0f;
+					sprintf(edit_mode_text, "Edit mode");
+				}
 			}
 
 			if (enable && FindPlayerPed() && KeyPressed(VK_MULTIPLY) && CTimer::m_snTimeInMilliseconds - keyPressTime > 500) {
@@ -321,7 +344,7 @@ public:
 					break;
 				case 1:
 					HudEditor::ModifyValueInIni((char*)edit_data[chosen].section.c_str(),
-						(char*)edit_data[chosen].key.c_str(), edit_data[chosen].incr);
+						(char*)edit_data[chosen].key.c_str(), edit_data[chosen].incr, incr_multiplier);
 					break;
 				}
 

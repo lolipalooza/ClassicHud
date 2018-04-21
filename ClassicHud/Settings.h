@@ -129,6 +129,11 @@ public:
 	// Custom text (for Hud Editor)
 	int CUSTOM_ALIGN, CUSTOM_SHADOW, CUSTOM_OUTLINE, CUSTOM_FONTSTYLE, CUSTOM_R, CUSTOM_G, CUSTOM_B, CUSTOM_A;
 	float CUSTOM_X, CUSTOM_Y, CUSTOM_SIZE_X, CUSTOM_SIZE_Y, CUSTOM_LINEWIDTH;
+
+	// Loading Screen Bar
+	int LOADBAR_R1, LOADBAR_G1, LOADBAR_B1, LOADBAR_R2, LOADBAR_G2, LOADBAR_B2;
+	int LOADBAR_STYLE, LOADBAR_BORDER;
+	float LOADBAR_X, LOADBAR_Y, LOADBAR_SIZE_X, LOADBAR_SIZE_Y, LOADBAR_SHADOW;
 	
 public:
 	void Init(int style);
@@ -489,4 +494,20 @@ void Settings::Init(int style)
 	GARAGES_SIZE_X = iniReader.ReadFloat(section, "SIZE_X", 0.0f);
 	GARAGES_SIZE_Y = iniReader.ReadFloat(section, "SIZE_Y", 0.0f);
 	GARAGES_LINEWIDTH = iniReader.ReadFloat(section, "LINEWIDTH", 0.0f);
+
+	sprintf(section, "%s_%s", prefix[style], "LOADING_SCREEN_BAR");
+	LOADBAR_R1 = iniReader.ReadInt(section, "RED1", 0);
+	LOADBAR_G1 = iniReader.ReadInt(section, "GREEN1", 0);
+	LOADBAR_B1 = iniReader.ReadInt(section, "BLUE1", 0);
+	LOADBAR_R2 = iniReader.ReadInt(section, "RED2", 0);
+	LOADBAR_G2 = iniReader.ReadInt(section, "GREEN2", 0);
+	LOADBAR_B2 = iniReader.ReadInt(section, "BLUE2", 0);
+	LOADBAR_STYLE = iniReader.ReadInt(section, "STYLE", 0);
+	LOADBAR_BORDER = iniReader.ReadInt(section, "BORDER", 0);
+	LOADBAR_X = iniReader.ReadFloat(section, "POS_X", 0.0f);
+	LOADBAR_Y = iniReader.ReadFloat(section, "POS_Y", 0.0f);
+	LOADBAR_SIZE_X = iniReader.ReadFloat(section, "SIZE_X", 0.0f);
+	LOADBAR_SIZE_Y = iniReader.ReadFloat(section, "SIZE_Y", 0.0f);
+	LOADBAR_SHADOW = iniReader.ReadFloat(section, "SHADOW", 0.0f);
+
 }
