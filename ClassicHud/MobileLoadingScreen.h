@@ -18,7 +18,11 @@ public:
     static void LoadSplashes(char bStarting, char bNvidia);
     static void RenderSplash();
     static void DisplaySplash();
-    static void RenderLoadingBar(float x, float y, unsigned short width, unsigned char height, float progress, signed char progressAdd, unsigned char drawPercentage, unsigned char drawBlackBorder, CRGBA color, CRGBA addColor);
+	static void FadingSplash(bool enable);
+	static void RenderLoadingBar0(float x, float y, unsigned short width, unsigned char height, float progress, signed char progressAdd, unsigned char drawPercentage, unsigned char drawBlackBorder, CRGBA color, CRGBA addColor);
+	static void RenderLoadingBar(float x, float y, unsigned short width, unsigned char height, float progress, signed char progressAdd, unsigned char drawPercentage, unsigned char drawBlackBorder, CRGBA color, CRGBA addColor);
+	static void TestLoadingBar();
+	static void TestLegalText(bool flag);
 };
 
 extern MobileLoadingScreen MobileLoad;

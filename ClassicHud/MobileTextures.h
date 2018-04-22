@@ -8,7 +8,7 @@ enum eMenuSliderTexture {
     MENU_SLIDER_FULL,
     MENU_SLIDER_EMPTY
 };
-
+/*
 enum eLoadScreenTexture {
     MOBILESCREEN_0,
     MOBILESCREEN_1,
@@ -20,7 +20,25 @@ enum eLoadScreenTexture {
     ROCKSTAR,
     LEGALSCREEN
 };
-
+*/
+enum eLoadScreenTexture {
+	MOBILESCREEN_0,
+	MOBILESCREEN_1,
+	MOBILESCREEN_2,
+	MOBILESCREEN_3,
+	MOBILESCREEN_4,
+	MOBILESCREEN_5,
+	MOBILESCREEN_6,
+	MOBILESCREEN_7,
+	MOBILESCREEN_8,
+	MOBILESCREEN_9,
+	MOBILESCREEN_10,
+	MOBILESCREEN_11,
+	MOBILESCREEN_12,
+	MOBILESCREEN_13,
+	ROCKSTAR,
+	LEGALSCREEN
+};
 enum eMenuBackgroundTexture {
     MENU_CHAR_0,
     MENU_CHAR_1,
@@ -65,7 +83,7 @@ public:
 class MobileTextures {
 public:
     CSprite2d m_menuSlider;
-    CSprite2d m_aSplashes[6];
+    CSprite2d m_aSplashes[14];
     CSprite2d m_nBackgroundSprite;
 
     static MobileTexDictionary m_menuSliderTxd, m_aSplashesTxd, m_nBackgroundSpriteTxd;

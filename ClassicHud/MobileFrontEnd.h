@@ -42,6 +42,8 @@ public:
     static void DrawStatsSlider(float x, float y, unsigned short width, unsigned char height, float percentage, signed char,
         unsigned char, unsigned char, CRGBA, CRGBA);
     static void PrintBriefsText(float x, float y, char *str);
+
+	static void TestMenuStandard(unsigned char m_nCurrentMenuPage);
 };
 
 extern MobileFrontEnd FrontEndMobileMenuManager;

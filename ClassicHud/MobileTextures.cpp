@@ -1,4 +1,5 @@
 #include "MobileTextures.h"
+#include "Settings.h"
 #include "game_sa\CTxdStore.h"
 #include "game_sa\CFileLoader.h"
 #include "game_sa\CTimer.h"
@@ -79,6 +80,7 @@ MobileTxdStorage &MobileTxdStorage::Instance() {
 
 void MobileTextures::Setup() {
     m_menuSliderTxd.Init(PLUGIN_PATH("MobileHud\\menu_slider.txd"));
-    m_aSplashesTxd.Init(PLUGIN_PATH("MobileHud\\mobilescs.txd"));
-    m_nBackgroundSpriteTxd.Init(PLUGIN_PATH("MobileHud\\menu_background.txd"));
+	//m_aSplashesTxd.Init(PLUGIN_PATH("MobileHud\\mobilescs.txd"));
+	m_aSplashesTxd.Init(GAME_PATH(settings.LOADSCS_TXD));
+	m_nBackgroundSpriteTxd.Init(PLUGIN_PATH("MobileHud\\menu_background.txd"));
 }

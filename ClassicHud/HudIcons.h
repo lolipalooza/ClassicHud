@@ -7,14 +7,23 @@
 #include "CFont.h"
 #include "CWorld.h"
 #include "CTimer.h"
+#include "CTxdStore.h"
+#include "CFileMgr.h"
 
 short& m_ItemToFlash = *(short*)0xBAB1DC;
 
-static CSprite2d hudIcons[10];
+CSprite2d hudIcons[10];
 
 class HudIcons {
 public:
 	static void InstallPatches();
+
+	static void HudTextures(int index);
+	static void FontTextures(int index);
+	static void FontData();
+	static void ClassicHudTextures();
+	static void ClassicHudTextureShutdown();
+
 	static void PrintHealthString(float posX, float posY, WORD wWidth, WORD wHeight, float fPercentage, BYTE drawBlueLine, BYTE drawPercentage, BYTE drawBorder, CRGBA dwColor, CRGBA dwForeColor);
 	static void PrintArmourString(float posX, float posY, WORD wWidth, WORD wHeight, float fPercentage, BYTE drawBlueLine, BYTE drawPercentage, BYTE drawBorder, CRGBA dwColor, CRGBA dwForeColor);
 	static void PrintBreathString(float posX, float posY, WORD wWidth, WORD wHeight, float fPercentage, BYTE drawBlueLine, BYTE drawPercentage, BYTE drawBorder, CRGBA dwColor, CRGBA dwForeColor);
@@ -30,6 +39,52 @@ void HudIcons::InstallPatches() {
 	plugin::patch::RedirectCall(0x589395, DrawHealth);
 	plugin::patch::RedirectCall(0x58917A, DrawArmour);
 	plugin::patch::RedirectCall(0x589252, DrawBreath);
+}
+
+void HudIcons::HudTextures(int index) {
+	CTxdStore::LoadTxd(index, settings.HUD_TXD);
+}
+
+void HudIcons::FontTextures(int index) {
+	CTxdStore::LoadTxd(index, settings.FONTS_TXD);
+}
+
+void HudIcons::FontData() {
+	CFileMgr::OpenFile(settings.FONTS_DAT, "rb");
+}
+
+void HudIcons::ClassicHudTextures() {
+	int v0 = CTxdStore::AddTxdSlot("classichud");
+	CTxdStore::LoadTxd(v0, CLASSICHUD_TXD_PATH);
+	CTxdStore::AddRef(v0);
+	CTxdStore::PushCurrentTxd();
+	CTxdStore::SetCurrentTxd(v0);
+	hudIcons[0].SetTexture("health");
+	hudIcons[1].SetTexture("armour");
+	hudIcons[2].SetTexture("breath");
+	hudIcons[3].SetTexture("star");
+	hudIcons[4].SetTexture("arrow");
+	hudIcons[5].SetTexture("bar_squareOutline");
+	hudIcons[6].SetTexture("bar_roundOutline");
+	hudIcons[7].SetTexture("star_Outline");
+	hudIcons[8].SetTexture("sa_star");
+	hudIcons[9].SetTexture("stories_star");
+	CTxdStore::PopCurrentTxd();
+}
+
+void HudIcons::ClassicHudTextureShutdown() {
+	hudIcons[0].Delete();
+	hudIcons[1].Delete();
+	hudIcons[2].Delete();
+	hudIcons[3].Delete();
+	hudIcons[4].Delete();
+	hudIcons[5].Delete();
+	hudIcons[6].Delete();
+	hudIcons[7].Delete();
+	hudIcons[8].Delete();
+	hudIcons[9].Delete();
+	int v0 = CTxdStore::FindTxdSlot("classichud");
+	CTxdStore::RemoveTxdSlot(v0);
 }
 
 void HudIcons::PrintHealthString(float posX, float posY, WORD wWidth, WORD wHeight, float fPercentage, BYTE drawBlueLine,

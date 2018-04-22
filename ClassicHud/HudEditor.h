@@ -25,8 +25,6 @@
 #include "MobileTextures.h"
 #include "MobileFrontEnd.h"
 
-#include "LoadingScreen.h"
-
 extern int STYLE;
 
 using namespace plugin;
@@ -201,11 +199,16 @@ Data edit_data[] = {
 	{ "Custom Text Size Y", "CUSTOM_TEXT", "SIZE_Y", 0.02f },
 	{ "Custom Text Linewidth", "CUSTOM_TEXT", "LINEWIDTH", 10.0f },
 
+	{ "Legal Text 1", "LEGAL_TEXT1", "DUMMY", 0.0f },
+	{ "Legal Text 2", "LEGAL_TEXT2", "DUMMY", 0.0f },
+
 	{ "Loading Screen Bar Pos X", "LOADING_SCREEN_BAR", "POS_X", 0.5f },
 	{ "Loading Screen Bar Pos Y", "LOADING_SCREEN_BAR", "POS_Y", 0.5f },
 	{ "Loading Screen Bar Size X", "LOADING_SCREEN_BAR", "SIZE_X", 0.5f },
 	{ "Loading Screen Bar Size Y", "LOADING_SCREEN_BAR", "SIZE_Y", 0.5f },
 	{ "Loading Screen Bar Shadow Distance", "LOADING_SCREEN_BAR", "SHADOW", 0.1f },
+
+	{ "Menu Example Demo", "DUMMY", "DUMMY", 0.0f },
 };
 
 class HudEditor
@@ -283,7 +286,10 @@ public:
 				else if (section == "MISSION_TIMERS"
 					|| section == "STATUS_TEXT"
 					|| section == "STATUS_TEXT_BAR")			MissionTimers::Test();
-				else if (section == "LOADING_SCREEN_BAR")		LoadingScreen::TestLoadingBar();
+				else if (section == "LOADING_SCREEN_BAR")		MobileLoadingScreen::TestLoadingBar();
+				else if (section == "LEGAL_TEXT1")				MobileLoadingScreen::TestLegalText(true);
+				else if (section == "LEGAL_TEXT2")				MobileLoadingScreen::TestLegalText(false);
+				else if (section == "DUMMY")					MobileFrontEnd::TestMenuStandard(MENUPAGE_MAIN_MENU);
 
 				TestMessage::Draw(SCREEN_COORD(settings.CUSTOM_X),
 					SCREEN_COORD(settings.CUSTOM_Y), settings.CUSTOM_SIZE_X, settings.CUSTOM_SIZE_Y,

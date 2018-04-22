@@ -1495,3 +1495,362 @@ void MobileFrontEnd::PrintBriefsText(float x, float y, char *str) {
     CFont::SetScale(SCREEN_MULTIPLIER(0.9f), SCREEN_MULTIPLIER(1.7f));
     CFont::PrintString(SCREEN_COORD_CENTER_X - SCREEN_COORD(282.0f / 2), y, str);
 }
+
+
+void MobileFrontEnd::TestMenuStandard(unsigned char m_nCurrentMenuPage) {
+	CFont::SetBackground(0, 0);
+	CFont::SetProp(1);
+	CFont::SetWrapx(SCREEN_COORD_MAX_X - 12.5f);
+	CFont::SetOutlinePosition(2);
+	CFont::SetRightJustifyWrap(12.5f);
+	CFont::SetCentreSize(SCREEN_COORD_MAX_X);
+	CFont::SetDropColor(CRGBA(0, 0, 0, 255));
+
+	// Header
+	if (MenuPages[m_nCurrentMenuPage].m_szTitleName[0]) {
+		if (m_nCurrentMenuPage != 5 || !FrontEndMenuManager.field_78) {
+			CFont::SetAlignment(ALIGN_LEFT);
+			CFont::SetFontStyle(FONT_GOTHIC);
+			CFont::SetScale(SCREEN_MULTIPLIER(1.8f), SCREEN_MULTIPLIER(3.6f));
+			CFont::SetOutlinePosition(2);
+			CFont::SetColor(CRGBA(255, 255, 255, 255));
+			CFont::SetDropColor(CRGBA(0, 0, 0, 255));
+			if (m_nCurrentMenuPage != 0)
+				CFont::PrintString(SCREEN_COORD_CENTER_X - SCREEN_COORD(282.0f / 2), SCREEN_COORD_CENTER_Y - SCREEN_COORD(794.0f / 2), TheText.Get(MenuPages[m_nCurrentMenuPage].m_szTitleName));
+			else
+				CFont::PrintString(SCREEN_COORD_CENTER_X - SCREEN_COORD(1113.0f / 2), SCREEN_COORD_CENTER_Y - SCREEN_COORD(794.0f / 2), TheText.Get(MenuPages[m_nCurrentMenuPage].m_szTitleName));
+		}
+	}
+
+	// Actions
+	if (MenuPages[m_nCurrentMenuPage].m_aButtons[0].m_nActionType == 1)
+	{
+		static char* pText;
+		CFont::SetFontStyle(FONT_SUBTITLES);
+		CFont::SetAlignment(ALIGN_LEFT);
+		CFont::SetScale(SCREEN_MULTIPLIER(0.9f), SCREEN_MULTIPLIER(1.7f));
+		CFont::SetOutlinePosition(2);
+		CFont::SetColor(CRGBA(255, 255, 255, 255));
+		CFont::SetDropColor(CRGBA(0, 0, 0, 255));
+
+		switch (m_nCurrentMenuPage)
+		{
+		case 6:
+		{
+			pText = TheText.Get(FrontEndMenuManager.m_bMainMenuSwitch ? "FESZ_QQ" : MenuPages[m_nCurrentMenuPage].m_aButtons[0].m_szName);
+			break;
+		}
+		case 35:
+		{
+			pText = TheText.Get(FrontEndMenuManager.m_bMainMenuSwitch ? "FEQ_SRW" : MenuPages[m_nCurrentMenuPage].m_aButtons[0].m_szName);
+			break;
+		}
+		case 17:
+		{
+			switch (FrontEndMobileMenuManager.SlotValidation[FrontEndMenuManager.m_bSelectedSaveGame + 1]) {
+			case 0:
+				pText = TheText.Get("FESZ_QO");
+				break;
+			case 2:
+				pText = TheText.Get("FESZ_QC");
+				break;
+			default:
+				pText = TheText.Get(MenuPages[m_nCurrentMenuPage].m_aButtons[0].m_szName);
+				break;
+			}
+			break;
+		}
+		case 11:
+		{
+			pText = TheText.Get(FrontEndMenuManager.m_bMainMenuSwitch ? "FES_LCG" : MenuPages[m_nCurrentMenuPage].m_aButtons[0].m_szName);
+			break;
+		}
+		default:
+		{
+			pText = TheText.Get(MenuPages[m_nCurrentMenuPage].m_aButtons[0].m_szName);
+			break;
+		}
+		}
+		CFont::PrintString(SCREEN_COORD_CENTER_X - SCREEN_COORD(282.0f / 2), SCREEN_COORD_CENTER_Y - SCREEN_COORD(640.0f / 2), pText);
+	}
+
+	for (unsigned int i = 0; i < 12; i++) {
+		CFont::SetFontStyle(FONT_MENU);
+		CFont::SetOutlinePosition(2);
+
+		if (MenuPages[m_nCurrentMenuPage].m_aButtons[i].m_nActionType != 1 && MenuPages[m_nCurrentMenuPage].m_aButtons[i].m_szName[0]) {
+			const char* LeftColumn = nullptr;
+			const char* RightColumn = nullptr;
+			char ReservedSpace[64];
+
+			if (MenuPages[m_nCurrentMenuPage].m_aButtons[i].m_nType >= MENU_ENTRY_SAVE_1 && MenuPages[m_nCurrentMenuPage].m_aButtons[i].m_nType <= MENU_ENTRY_SAVE_8) {
+				switch (FrontEndMobileMenuManager.SlotValidation[i]) {
+				case 0:
+					LeftColumn = plugin::CallAndReturn<const char*, 0x5D0F40>(i - 1);
+					break;
+				case 2:
+					LeftColumn = TheText.Get("FESZ_CS");
+					break;
+				}
+
+				if (!LeftColumn || !LeftColumn[0]) {
+					sprintf(gString, "FEM_SL%X", i);
+					LeftColumn = TheText.Get(gString);
+
+				}
+			}
+
+			else if (MenuPages[m_nCurrentMenuPage].m_aButtons[i].m_nType == MENU_ENTRY_MISSIONPACK) {
+			}
+
+			else if (MenuPages[m_nCurrentMenuPage].m_aButtons[i].m_nType == MENU_ENTRY_JOYMOUSE) {
+				LeftColumn = TheText.Get(FrontEndMenuManager.m_nController ? "FEJ_TIT" : "FEC_MOU");
+			}
+
+			else {
+				LeftColumn = TheText.Get(MenuPages[m_nCurrentMenuPage].m_aButtons[i].m_szName);
+			}
+
+			CAERadioTrackManager RadioEntity;
+
+			switch (MenuPages[m_nCurrentMenuPage].m_aButtons[i].m_nActionType) {
+			case 30:
+				RightColumn = TheText.Get(FrontEndMenuManager.m_bRadioEq ? "FEM_ON" : "FEM_OFF");
+				break;
+			case 31:
+				RightColumn = TheText.Get(FrontEndMenuManager.m_bRadioAutoSelect ? "FEM_ON" : "FEM_OFF");
+				break;
+			case 32:
+				RightColumn = RadioEntity.GetRadioStationName(FrontEndMenuManager.m_nRadioStation);
+				break;
+			case 33:
+				RightColumn = TheText.Get(FrontEndMenuManager.m_bMapLegend ? "FEM_ON" : "FEM_OFF");
+				break;
+			case 25:
+				RightColumn = TheText.Get(FrontEndMenuManager.m_bShowSubtitles ? "FEM_ON" : "FEM_OFF");
+				break;
+			case 26:
+				RightColumn = TheText.Get(FrontEndMenuManager.m_bWidescreenOn ? "FEM_ON" : "FEM_OFF");
+				break;
+			case 34:
+				switch (FrontEndMenuManager.m_nRadarMode) {
+				case 0:
+					RightColumn = TheText.Get("FED_RDM");
+					break;
+				case 1:
+					RightColumn = TheText.Get("FED_RDB");
+					break;
+				case 2:
+					RightColumn = TheText.Get("FEM_OFF");
+					break;
+				}
+				break;
+			case 35:
+				switch (FrontEndMenuManager.m_bHudOn) {
+				case 0:
+					RightColumn = TheText.Get("FEM_OFF");
+					FrontEndMenuManager.m_nRadarMode = 2;
+					break;
+				case 1:
+					RightColumn = TheText.Get("FEM_ON");
+					FrontEndMenuManager.m_nRadarMode = 0;
+					break;
+				}
+				break;
+			case 65:
+				RightColumn = TheText.Get(FrontEndMenuManager.m_bSavePhotos ? "FEM_ON" : "FEM_OFF");
+				break;
+			case 63:
+				switch (FrontEndMenuManager.m_nRadioMode) {
+				case 0:
+					RightColumn = TheText.Get("FEA_PR1");
+					break;
+				case 1:
+					RightColumn = TheText.Get("FEA_PR2");
+					break;
+				case 2:
+					RightColumn = TheText.Get("FEA_PR3");
+					break;
+				}
+				break;
+			case 24:
+				RightColumn = TheText.Get(FrontEndMenuManager.m_bFrameLimiterOn ? "FEM_ON" : "FEM_OFF");
+				break;
+			case 43:
+				RightColumn = TheText.Get(FrontEndMenuManager.m_bMipMapping ? "FEM_ON" : "FEM_OFF");
+				break;
+			case 64:
+				RightColumn = TheText.Get(FrontEndMenuManager.m_bTracksAutoScan ? "FEM_ON" : "FEM_OFF");
+				break;
+			case 46:
+				RightColumn = TheText.Get(!FrontEndMenuManager.bInvertMouseY ? "FEM_ON" : "FEM_OFF");
+				break;
+			case 47:
+				RightColumn = TheText.Get(FrontEndMenuManager.invertPadX1 ? "FEM_ON" : "FEM_OFF");
+				break;
+			case 48:
+				RightColumn = TheText.Get(FrontEndMenuManager.invertPadY1 ? "FEM_ON" : "FEM_OFF");
+				break;
+			case 49:
+				RightColumn = TheText.Get(FrontEndMenuManager.invertPadX2 ? "FEM_ON" : "FEM_OFF");
+				break;
+			case 50:
+				RightColumn = TheText.Get(FrontEndMenuManager.invertPadY2 ? "FEM_ON" : "FEM_OFF");
+				break;
+			case 51:
+				RightColumn = TheText.Get(FrontEndMenuManager.swapPadAxis1 ? "FEM_ON" : "FEM_OFF");
+				break;
+			case 52:
+				RightColumn = TheText.Get(FrontEndMenuManager.swapPadAxis2 ? "FEM_ON" : "FEM_OFF");
+				break;
+			case 59:
+				RightColumn = TheText.Get(CVehicle::m_bEnableMouseSteering ? "FEM_ON" : "FEM_OFF");
+				break;
+			case 60:
+				RightColumn = TheText.Get(CVehicle::m_bEnableMouseFlying ? "FEM_ON" : "FEM_OFF");
+				break;
+			case 56:
+			{
+				const char* pszResolution = ((const char**(*)())0x745AF0)()[FrontEndMenuManager.m_nResolution];
+
+				if (!pszResolution)
+					pszResolution = "";
+
+				strncpy(ReservedSpace, pszResolution, sizeof(ReservedSpace));
+				RightColumn = ReservedSpace;
+			}
+			break;
+			case 44:
+				if (FrontEndMenuManager.m_nAntiAliasingLevel <= 1)
+					RightColumn = TheText.Get("FEM_OFF");
+				else {
+					switch (FrontEndMenuManager.m_nAntiAliasingLevel)
+					{
+					case 2:
+						RightColumn = "2x";
+						break;
+					case 3:
+						RightColumn = "4x";
+						break;
+					case 4:
+						RightColumn = "8x";
+						break;
+					}
+				}
+				break;
+			case 42:
+				switch (g_fx.GetFxQuality()) {
+				case FXQUALITY_LOW:
+					RightColumn = TheText.Get("FED_FXL");
+					break;
+				case FXQUALITY_MEDIUM:
+					RightColumn = TheText.Get("FED_FXM");
+					break;
+				case FXQUALITY_HIGH:
+					RightColumn = TheText.Get("FED_FXH");
+					break;
+				case FXQUALITY_VERY_HIGH:
+					RightColumn = TheText.Get("FED_FXV");
+					break;
+				}
+				break;
+			case 58:
+				RightColumn = TheText.Get(FrontEndMenuManager.m_nController ? "FET_CCN" : "FET_SCN");
+				break;
+			}
+
+			unsigned int savedAlpha;
+			float f_leftPosX = SCREEN_COORD_CENTER_X - SCREEN_COORD(282.0f / 2);
+			float fPosnXForStats = SCREEN_COORD_CENTER_X - SCREEN_COORD(1113.0f / 2);
+			float f_rightPosX = SCREEN_COORD_CENTER_X - SCREEN_COORD(-1113.0f / 2);
+			float fPosY = SCREEN_COORD_CENTER_Y - SCREEN_COORD(-MenuPages[m_nCurrentMenuPage].m_aButtons[i].m_nPosnY) + (0.0f / 2);
+
+			if (i == FrontEndMenuManager.m_nSelectedMenuItem) {
+				if (m_nCurrentMenuPage != 5) {
+					RwRenderStateGet(rwRENDERSTATEVERTEXALPHAENABLE, &savedAlpha);
+					RwRenderStateSet(rwRENDERSTATEVERTEXALPHAENABLE, reinterpret_cast<void *>(TRUE));
+
+					if (m_nCurrentMenuPage == 0)
+						CSprite2d::DrawRect(CRect(fPosnXForStats - SCREEN_COORD(25.0f / 2), fPosY - SCREEN_COORD(12.5f / 2), (fPosnXForStats - SCREEN_COORD(25.0f / 2)) + SCREEN_MULTIPLIER(330.0f), (fPosY - SCREEN_COORD(12.5f / 2)) + SCREEN_MULTIPLIER(50.0f)), CRGBA(255, 255, 255, 50));
+					else
+						CSprite2d::DrawRect(CRect(f_leftPosX - SCREEN_COORD(25.0f / 2), fPosY - SCREEN_COORD(12.5f / 2), (f_leftPosX - SCREEN_COORD(25.0f / 2)) + SCREEN_MULTIPLIER(725.0f), (fPosY - SCREEN_COORD(12.5f / 2)) + SCREEN_MULTIPLIER(50.0f)), CRGBA(255, 255, 255, 50));
+
+					RwRenderStateSet(rwRENDERSTATEVERTEXALPHAENABLE, reinterpret_cast<void *>(savedAlpha));
+				}
+			}
+
+			CFont::SetScale(SCREEN_MULTIPLIER(0.9f), SCREEN_MULTIPLIER(1.7f));
+
+			if (m_nCurrentMenuPage == 7 || m_nCurrentMenuPage == 9 || m_nCurrentMenuPage == 10 || m_nCurrentMenuPage == 16) {
+				float width = CFont::GetStringWidth((char*)LeftColumn, true, false);
+
+				if (width > SCREEN_COORD(690.0f))
+					CFont::SetScale(SCREEN_MULTIPLIER(0.9f * SCREEN_COORD(690.0f) / width), SCREEN_MULTIPLIER(1.7f));
+			}
+
+			// Print left column
+			CFont::SetDropColor(CRGBA(0, 0, 0, 255));
+			CFont::SetColor(CRGBA(255, 255, 255, 255));
+			CFont::SetAlignment(ALIGN_LEFT);
+
+			if (m_nCurrentMenuPage == 0)
+				CFont::PrintString(fPosnXForStats, fPosY, (char*)LeftColumn);
+			else
+				CFont::PrintString(f_leftPosX, fPosY, (char*)LeftColumn);
+
+
+			// Print right column
+			if (RightColumn) {
+				float width = CFont::GetStringWidth((char*)RightColumn, true, false);
+
+				if (width > SCREEN_COORD(312.0f))
+					CFont::SetScale(SCREEN_MULTIPLIER(0.8f * SCREEN_COORD(312.0f) / width), SCREEN_MULTIPLIER(1.7f));
+
+				CFont::SetAlignment(ALIGN_RIGHT);
+				CFont::PrintString(f_rightPosX, fPosY, (char*)RightColumn);
+			}
+
+			// Sliders
+			CVector2D vecPosition;
+			CVector2D vecScale;
+			vecPosition.x = 285.0f;
+			vecPosition.y = MenuPages[m_nCurrentMenuPage].m_aButtons[i].m_nPosnY + 2.0f;
+			vecScale.x = 265.0f;
+			vecScale.y = 28.5f;
+
+			switch (MenuPages[m_nCurrentMenuPage].m_aButtons[i].m_nActionType)
+			{
+			case 27:
+			{
+				// Brightness
+				DisplaySlider(SCREEN_COORD_CENTER_X - SCREEN_COORD(-vecPosition.x), SCREEN_COORD_CENTER_Y - SCREEN_COORD(-vecPosition.y), SCREEN_MULTIPLIER(vecScale.x), SCREEN_MULTIPLIER(vecScale.y), FrontEndMenuManager.m_nBrightness * 0.0026041667f, true);
+				break;
+			}
+			case 28:
+			{
+				// Radio Volume
+				DisplaySlider(SCREEN_COORD_CENTER_X - SCREEN_COORD(-vecPosition.x), SCREEN_COORD_CENTER_Y - SCREEN_COORD(-vecPosition.y), SCREEN_MULTIPLIER(vecScale.x), SCREEN_MULTIPLIER(vecScale.y), FrontEndMenuManager.m_nRadioVolume * 0.015625f, true);
+				break;
+			}
+			case 29:
+			{
+				// SFX Volume
+				DisplaySlider(SCREEN_COORD_CENTER_X - SCREEN_COORD(-vecPosition.x), SCREEN_COORD_CENTER_Y - SCREEN_COORD(-vecPosition.y), SCREEN_MULTIPLIER(vecScale.x), SCREEN_MULTIPLIER(vecScale.y), FrontEndMenuManager.m_nSfxVolume * 0.015625f, true);
+				break;
+			}
+			case 61:
+			{
+				// Draw Distance
+				DisplaySlider(SCREEN_COORD_CENTER_X - SCREEN_COORD(-vecPosition.x), SCREEN_COORD_CENTER_Y - SCREEN_COORD(-vecPosition.y), SCREEN_MULTIPLIER(vecScale.x), SCREEN_MULTIPLIER(vecScale.y), (FrontEndMenuManager.m_fDrawDistance - 0.925f) * 1.1428572f, true);
+				break;
+			}
+			case 62:
+			{
+				// Mouse Sensitivity
+				DisplaySlider(SCREEN_COORD_CENTER_X - SCREEN_COORD(-vecPosition.x), SCREEN_COORD_CENTER_Y - SCREEN_COORD(-vecPosition.y), SCREEN_MULTIPLIER(vecScale.x), SCREEN_MULTIPLIER(vecScale.y), (CCamera::m_fMouseAccelHorzntl / 0.005f), true);
+				break;
+			}
+			}
+		}
+	}
+}
