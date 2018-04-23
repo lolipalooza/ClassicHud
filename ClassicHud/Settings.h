@@ -166,6 +166,10 @@ public:
 	float MENU_SLIDERS_X, MENU_SLIDERS_Y, MENU_SLIDERS_SIZE_X, MENU_SLIDERS_SIZE_Y;
 	float MENU_STATS_RECT_WIDTH;
 
+	// Menu Background
+	char* BGMENU_TXD;
+	int BG_STYLE;
+
 public:
 	void Init(int style);
 };

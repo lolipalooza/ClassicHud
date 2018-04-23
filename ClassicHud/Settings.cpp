@@ -454,4 +454,8 @@ void Settings::Init(int style)
 	MENU_SLIDERS_Y = iniReader.ReadFloat(section, "SLIDERS_Y", 0.0f);
 	MENU_SLIDERS_SIZE_X = iniReader.ReadFloat(section, "SLIDERS_SIZE_X", 0.0f);
 	MENU_SLIDERS_SIZE_Y = iniReader.ReadFloat(section, "SLIDERS_SIZE_Y", 0.0f);
+
+	sprintf(section, "%s_%s", prefix[style], "MENU_BACKGROUND");
+	BGMENU_TXD = iniReader.ReadString(section, "PATH", "404");
+	BG_STYLE = iniReader.ReadInt(section, "STYLE", 0);
 }

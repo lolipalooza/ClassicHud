@@ -89,7 +89,7 @@ public:
     static MobileTexDictionary m_menuSliderTxd, m_aSplashesTxd, m_nBackgroundSpriteTxd;
 
 public:
-    static void Setup();
+	static void Setup();
 };
 
 extern MobileTextures mobileTex;

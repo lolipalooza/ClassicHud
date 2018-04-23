@@ -37,7 +37,7 @@ public:
 
 		static int keyPressTime = 0;
 
-		STYLE = 0;
+		STYLE = 1;
 		settings.Init(STYLE);
 		//CIniReader iniReader(CLASSICHUD_DAT_PATH);
 		//settings.WEAPONS_TXD = iniReader.ReadString("SA_FILES", "WEAPONS_TXD", DEFAULT_WEAPONS_TXD);
@@ -63,6 +63,10 @@ public:
 			}
 		};
 
+		Events::shutdownRwEvent += [] {
+			MobileTxdStorage::Instance().Shutdown();
+		};
+
 		Events::gameProcessEvent += [] {
 
 			if (FindPlayerPed() && KeyPressed(VK_F9) && CTimer::m_snTimeInMilliseconds - keyPressTime > 500) {
@@ -80,6 +84,12 @@ public:
 				//CHud::Initialise();
 
 				ClassicHud::TransformHud();
+
+				MobileTxdStorage::Instance().Shutdown();
+				MobileTextures::Setup();
+
+				MobileMenuPage::InstallPatches();
+				MobileFrontEnd::InstallPatches();
 			}
 		};
 	}
