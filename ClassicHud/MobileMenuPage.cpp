@@ -1,5 +1,6 @@
 #include "MobileMenuPage.h"
 
+
 float fSpacing = 75.0f;
 float fPosY0 = 0.0f;
 float fPosY1 = -299.0f;
@@ -14,6 +15,7 @@ float fPosYd = fPosY7 + 112.0f;
 float fPosYk = -188.0f;
 float fPosYn = -188.0f;
 float fPosYy = fPosYn + 50.0f;
+
 
 void MobileMenuPage::InstallPatches() {
     plugin::patch::Set<void*>(0x57345A, &MenuPages->m_aButtons->m_nActionType);

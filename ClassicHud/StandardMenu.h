@@ -2,4 +2,88 @@
 
 #include <plugin.h>
 #include "Settings.h"
+/*
+MENUPAGE_STATS = 0,
+MENUPAGE_START_GAME = 1, // New Game, Load Game, Delete Game
+MENUPAGE_BRIEF = 2,
+MENUPAGE_AUDIO_SETTINGS = 3,
+MENUPAGE_DISPLAY_SETTINGS = 4,
+MENUPAGE_MAP = 5,
+MENUPAGE_NEW_GAME_ASK = 6, // Are you sure you want to start a new game? All current game progress will be lost. Proceed?
+MENUPAGE_SELECT_GAME = 7, // Please select which new game you wish to start:
+MENUPAGE_MISSIONPACK_LOADING_ASK = 8, // // Are you sure you want to load a San Andreas Mission Pack? All current game progress will be lost. Proceed?
+MENUPAGE_LOAD_GAME = 9, // Select save file to load:
+MENUPAGE_DELETE_GAME = 10, // Select save file to delete:
+MENUPAGE_LOAD_GAME_ASK = 11, // All unsaved progress in your current game will be lost. Proceed with loading?
+MENUPAGE_DELETE_GAME_ASK = 12, // Are you sure you wish to delete this save file?
+MENUPAGE_LOAD_FIRST_SAVE = 13,
+MENUPAGE_DELETE_FINISHED = 14,
+MENUPAGE_DELETE_SUCCESSFUL = 15, // // Delete Successful. Select OK to continue.
+MENUPAGE_GAME_SAVE = 16, // Select file you wish to save to:
+MENUPAGE_SAVE_WRITE_ASK = 17, // Are you sure you wish to save?
+MENUPAGE_SAVE_DONE_1 = 18,
+MENUPAGE_SAVE_DONE_2 = 19, // Save Successful. Select OK to continue.
+MENUPAGE_GAME_SAVED = 20, // OK
+MENUPAGE_GAME_LOADED = 21, // OK
+MENUPAGE_GAME_WARNING_DONT_SAVE = 22, // Warning! One or more cheats have been activated. This may affect your save game. It is recommended that you do not save this game.
+MENUPAGE_ASK_DISPLAY_DEFAULT_SETS = 23, // Are you sure you want to reset your current settings to default?
+MENUPAGE_ASK_AUDIO_DEFAULT_SETS = 24, // Are you sure you want to reset your current settings to default?
+MENUPAGE_ASK_CONTROLLER_DEFAULT_SETS = 25, // Are you sure you want to reset your current settings to default?
+MENUPAGE_USER_TRACKS_OPTIONS = 26,
+MENUPAGE_DISPLAY_ADVANCED = 27, // DRAW DISTANCE, ...
+MENUPAGE_LANGUAGE = 28, // English, ...
+MENUPAGE_SAVE_GAME_DONE = 29, // O.K
+MENUPAGE_SAVE_GAME_FAILED = 30, // Save Unsuccessful., O.K.
+MENUPAGE_SAVE_WRITE_FAILED = 31, // Save Unsuccessful.
+MENUPAGE_SAVE_FAILED_FILE_ERROR = 32, // Load Unsuccessful. File Corrupted, Please delete.
+MENUPAGE_OPTIONS = 33, // Controller Setup, Audio Setup ...
+MENUPAGE_MAIN_MENU = 34, // Start Game, Options, Quit Game
+MENUPAGE_QUIT_GAME_ASK = 35, // Are you sure you want to quit? All progress since the last save game will be lost. Proceed?
+MENUPAGE_CONTROLLER_SETUP = 36, // CONFIGURATION, Redefine Controls ...
+MENUPAGE_REDEFINE_CONTROLS = 37, // Foot Controls, Vehicle Controls
+MENUPAGE_CONTROLS_VEHICLE_ONFOOT = 38,
+MENUPAGE_MOUSE_SETTINGS = 39,
+MENUPAGE_JOYPAD_SETTINGS = 40,
+MENUPAGE_PAUSE_MENU = 41, // Resume, START NEW GAME ...
+MENUPAGE_QUIT_GAME_2 = 42,
+MENUPAGE_EMPTY = 43
 
+
+MENUPAGE_STATS
+MENUPAGE_BRIEF
+MENUPAGE_AUDIO_SETTINGS
+MENUPAGE_MAP
+MENUPAGE_SELECT_GAME
+MENUPAGE_MISSIONPACK_LOADING_ASK
+MENUPAGE_LOAD_GAME
+MENUPAGE_DELETE_GAME
+MENUPAGE_DELETE_GAME_ASK
+MENUPAGE_LOAD_FIRST_SAVE
+MENUPAGE_DELETE_FINISHED
+MENUPAGE_DELETE_SUCCESSFUL
+MENUPAGE_GAME_SAVE
+MENUPAGE_SAVE_DONE_1
+MENUPAGE_SAVE_DONE_2
+MENUPAGE_GAME_SAVED
+MENUPAGE_GAME_LOADED
+MENUPAGE_GAME_WARNING_DONT_SAVE
+MENUPAGE_ASK_DISPLAY_DEFAULT_SETS
+MENUPAGE_ASK_AUDIO_DEFAULT_SETS
+MENUPAGE_ASK_CONTROLLER_DEFAULT_SETS
+MENUPAGE_USER_TRACKS_OPTIONS
+MENUPAGE_DISPLAY_ADVANCED
+MENUPAGE_LANGUAGE
+MENUPAGE_SAVE_GAME_DONE
+MENUPAGE_SAVE_GAME_FAILED
+MENUPAGE_SAVE_WRITE_FAILED
+MENUPAGE_SAVE_FAILED_FILE_ERROR
+MENUPAGE_OPTIONS
+MENUPAGE_CONTROLLER_SETUP
+MENUPAGE_REDEFINE_CONTROLS
+MENUPAGE_CONTROLS_VEHICLE_ONFOOT
+MENUPAGE_MOUSE_SETTINGS
+MENUPAGE_JOYPAD_SETTINGS
+MENUPAGE_PAUSE_MENU
+MENUPAGE_QUIT_GAME_2
+MENUPAGE_EMPTY
+*/

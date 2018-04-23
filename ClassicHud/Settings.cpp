@@ -381,4 +381,77 @@ void Settings::Init(int style)
 	LOADBAR_SIZE_Y = iniReader.ReadFloat(section, "SIZE_Y", 0.0f);
 	LOADBAR_SHADOW = iniReader.ReadFloat(section, "SHADOW", 0.0f);
 
+	sprintf(section, "%s_%s", prefix[style], "MENU_TITLE");
+	MENUTITLE_R = iniReader.ReadInt(section, "RED", 0);
+	MENUTITLE_G = iniReader.ReadInt(section, "GREEN", 0);
+	MENUTITLE_B = iniReader.ReadInt(section, "BLUE", 0);
+	MENUTITLE_FONTSTYLE = iniReader.ReadInt(section, "FONTSTYLE", 0);
+	MENUTITLE_ALIGN = iniReader.ReadInt(section, "ALIGN", 0);
+	MENUTITLE_OUTLINE = iniReader.ReadInt(section, "OUTLINE", 0);
+	MENUTITLE_SHADOW = iniReader.ReadInt(section, "SHADOW", 0);
+	MENUTITLE_X = iniReader.ReadFloat(section, "POS_X", 0.0f);
+	MENUTITLE_Y = iniReader.ReadFloat(section, "POS_Y", 0.0f);
+	MENUTITLE_SIZE_X = iniReader.ReadFloat(section, "SIZE_X", 0.0f);
+	MENUTITLE_SIZE_Y = iniReader.ReadFloat(section, "SIZE_Y", 0.0f);
+
+	sprintf(section, "%s_%s", prefix[style], "MENU_TITLE_STATS");
+	MENUTITLE_STATS_X = iniReader.ReadFloat(section, "STATS_X", 0.0f);
+	MENUTITLE_STATS_Y = iniReader.ReadFloat(section, "STATS_Y", 0.0f);
+
+	sprintf(section, "%s_%s", prefix[style], "MENU_ASK");
+	MENUASK_R = iniReader.ReadInt(section, "RED", 0);
+	MENUASK_G = iniReader.ReadInt(section, "GREEN", 0);
+	MENUASK_B = iniReader.ReadInt(section, "BLUE", 0);
+	MENUASK_FONTSTYLE = iniReader.ReadInt(section, "FONTSTYLE", 0);
+	MENUASK_ALIGN = iniReader.ReadInt(section, "ALIGN", 0);
+	MENUASK_OUTLINE = iniReader.ReadInt(section, "OUTLINE", 0);
+	MENUASK_SHADOW = iniReader.ReadInt(section, "SHADOW", 0);
+	MENUASK_X = iniReader.ReadFloat(section, "POS_X", 0.0f);
+	MENUASK_Y = iniReader.ReadFloat(section, "POS_Y", 0.0f);
+	MENUASK_SIZE_X = iniReader.ReadFloat(section, "SIZE_X", 0.0f);
+	MENUASK_SIZE_Y = iniReader.ReadFloat(section, "SIZE_Y", 0.0f);
+	MENU_YN = iniReader.ReadFloat(section, "POS_YN", 0.0f);
+	MENU_YY = iniReader.ReadFloat(section, "POS_YY", 0.0f);
+
+	sprintf(section, "%s_%s", prefix[style], "MENU_OPTIONS");
+	MENU_R = iniReader.ReadInt(section, "RED", 0);
+	MENU_G = iniReader.ReadInt(section, "GREEN", 0);
+	MENU_B = iniReader.ReadInt(section, "BLUE", 0);
+	MENU_FONTSTYLE = iniReader.ReadInt(section, "FONTSTYLE", 0);
+	MENU_ALIGN = iniReader.ReadInt(section, "ALIGN", 0);
+	MENU_OUTLINE = iniReader.ReadInt(section, "OUTLINE", 0);
+	MENU_SHADOW = iniReader.ReadInt(section, "SHADOW", 0);
+	MENU_X = iniReader.ReadFloat(section, "POS_X", 0.0f);
+	MENU_SIZE_X = iniReader.ReadFloat(section, "SIZE_X", 0.0f);
+	MENU_SIZE_Y = iniReader.ReadFloat(section, "SIZE_Y", 0.0f);
+	MENU_Y0 = iniReader.ReadFloat(section, "POS_Y0", 0.0f);
+	MENU_Y1 = iniReader.ReadFloat(section, "POS_Y1", 0.0f);
+	MENU_Y1_OFFSET = iniReader.ReadFloat(section, "OFFSET_Y1", 0.0f);
+	MENU_YSPACE = iniReader.ReadFloat(section, "Y_SPACE", 0.0f);
+	MENU_YK = iniReader.ReadFloat(section, "POS_YK", 0.0f);
+	MENU_RECT_R = iniReader.ReadInt(section, "RECT_R", 0);
+	MENU_RECT_G = iniReader.ReadInt(section, "RECT_G", 0);
+	MENU_RECT_B = iniReader.ReadInt(section, "RECT_B", 0);
+	MENU_RECT_X = iniReader.ReadFloat(section, "RECT_X", 0.0f);
+	MENU_RECT_Y = iniReader.ReadFloat(section, "RECT_Y", 0.0f);
+	MENU_RECT_WIDTH = iniReader.ReadFloat(section, "RECT_WIDTH", 0.0f);
+	MENU_RECT_HEIGHT = iniReader.ReadFloat(section, "RECT_HEIGHT", 0.0f);
+
+	sprintf(section, "%s_%s", prefix[style], "MENU_OPTIONS_STATS");
+	MENU_SETTINGS_SHOW_RIGHT = iniReader.ReadInt(section, "SETTINGS_SHOW_RIGHT", 0);
+	MENU_STATS_X = iniReader.ReadFloat(section, "STATS_X", 0.0f);
+	MENU_STATS_Y_OFFSET = iniReader.ReadFloat(section, "OFFSET_STATS_Y", 0.0f);
+	MENU_STATS_YSPACE = iniReader.ReadFloat(section, "SPACE", 0.0f);
+	MENU_STATS_SIZE_X = iniReader.ReadFloat(section, "SIZE_X", 0.0f);
+	MENU_STATS_SIZE_Y = iniReader.ReadFloat(section, "SIZE_Y", 0.0f);
+	MENU_STATS_RECT_WIDTH = iniReader.ReadFloat(section, "RECT_WIDTH", 0.0f);
+
+	sprintf(section, "%s_%s", prefix[style], "MENU_OPTIONS_RIGHT");
+	MENU_R_X = iniReader.ReadFloat(section, "RIGHT_X", 0.0f);
+	MENU_R_SIZE_X = iniReader.ReadFloat(section, "R_SIZE_X", 0.0f);
+	MENU_R_SIZE_Y = iniReader.ReadFloat(section, "R_SIZE_Y", 0.0f);
+	MENU_SLIDERS_X = iniReader.ReadFloat(section, "SLIDERS_X", 0.0f);
+	MENU_SLIDERS_Y = iniReader.ReadFloat(section, "SLIDERS_Y", 0.0f);
+	MENU_SLIDERS_SIZE_X = iniReader.ReadFloat(section, "SLIDERS_SIZE_X", 0.0f);
+	MENU_SLIDERS_SIZE_Y = iniReader.ReadFloat(section, "SLIDERS_SIZE_Y", 0.0f);
 }

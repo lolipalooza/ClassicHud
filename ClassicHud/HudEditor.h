@@ -208,7 +208,47 @@ Data edit_data[] = {
 	{ "Loading Screen Bar Size Y", "LOADING_SCREEN_BAR", "SIZE_Y", 0.5f },
 	{ "Loading Screen Bar Shadow Distance", "LOADING_SCREEN_BAR", "SHADOW", 0.1f },
 
-	{ "Menu Example Demo", "DUMMY", "DUMMY", 0.0f },
+	{ "Menu Title Pos X", "MENU_TITLE", "POS_X", 1.0f },
+	{ "Menu Title Pos Y", "MENU_TITLE", "POS_Y", 1.0f },
+	{ "Menu Title Size X", "MENU_TITLE", "SIZE_X", 0.01f },
+	{ "Menu Title Size Y", "MENU_TITLE", "SIZE_Y", 0.01f },
+	{ "Menu Title (Stats) Pos X", "MENU_TITLE_STATS", "STATS_X", 1.0f },
+	{ "Menu Title (Stats) Pos Y", "MENU_TITLE_STATS", "STATS_Y", 1.0f },
+
+	{ "Menu Ask Pos X", "MENU_ASK", "POS_X", 1.0f },
+	{ "Menu Ask Pos Y", "MENU_ASK", "POS_Y", 1.0f },
+	{ "Menu Ask Size X", "MENU_ASK", "SIZE_X", 0.01f },
+	{ "Menu Ask Size Y", "MENU_ASK", "SIZE_Y", 0.01f },
+	{ "Menu Ask (Opt YES) Pos Y", "MENU_ASK", "POS_YY", 1.0f },
+	{ "Menu Ask (Opt NO) Pos Y", "MENU_ASK", "POS_YN", 1.0f },
+
+	{ "Menu Options Pos X", "MENU_OPTIONS", "POS_X", 1.0f },
+	{ "Menu Options Size X", "MENU_OPTIONS", "SIZE_X", 0.01f },
+	{ "Menu Options Size Y", "MENU_OPTIONS", "SIZE_Y", 0.01f },
+	{ "Menu Options Pos Y0", "MENU_OPTIONS", "POS_Y0", 1.0f },
+	{ "Menu Options Pos Y1", "MENU_OPTIONS", "POS_Y1", 1.0f },
+	{ "Menu Options Pos Y1 Offset", "MENU_OPTIONS", "OFFSET_Y1", 1.0f },
+	{ "Menu Options Y Space", "MENU_OPTIONS", "Y_SPACE", 1.0f },
+	{ "Menu Options Selection Rectangle Pos X", "MENU_OPTIONS", "RECT_X", 1.0f },
+	{ "Menu Options Selection Rectangle Pos Y", "MENU_OPTIONS", "RECT_Y", 1.0f },
+	{ "Menu Options Selection Rectangle Width", "MENU_OPTIONS", "RECT_WIDTH", 1.0f },
+	{ "Menu Options Selection Rectangle Height", "MENU_OPTIONS", "RECT_HEIGHT", 1.0f },
+
+	{ "Menu Options (Stats) Pos X", "MENU_OPTIONS_STATS", "STATS_X", 1.0f },
+	{ "Menu Options (Stats) Pos Y Offset", "MENU_OPTIONS_STATS", "OFFSET_STATS_Y", 1.0f },
+	{ "Menu Options (Stats) Y Space Offset", "MENU_OPTIONS_STATS", "SPACE", 1.0f },
+	{ "Menu Options (Stats) Size X", "MENU_OPTIONS_STATS", "SIZE_X", 0.01f },
+	{ "Menu Options (Stats) Size Y", "MENU_OPTIONS_STATS", "SIZE_Y", 0.01f },
+	{ "Menu Options Selection Rectangle Width", "MENU_OPTIONS_STATS", "RECT_WIDTH", 1.0f },
+
+	{ "Menu Options (Right) Pos X", "MENU_OPTIONS_RIGHT", "RIGHT_X", 1.0f },
+	{ "Menu Options (Right) Size X", "MENU_OPTIONS_RIGHT", "R_SIZE_X", 0.01f },
+	{ "Menu Options (Right) Size Y", "MENU_OPTIONS_RIGHT", "R_SIZE_Y", 0.01f },
+	{ "Menu Options (Stats) Sliders Pos X", "MENU_OPTIONS_RIGHT", "SLIDERS_X", 1.0f },
+	{ "Menu Options (Stats) Sliders Pos Y Offset", "MENU_OPTIONS_RIGHT", "SLIDERS_Y", 1.0f },
+	{ "Menu Options (Stats) Sliders Size X", "MENU_OPTIONS_RIGHT", "SLIDERS_SIZE_X", 1.0f },
+	{ "Menu Options (Stats) Sliders Size Y", "MENU_OPTIONS_RIGHT", "SLIDERS_SIZE_Y", 0.02f },
+	{ "Menu Options (Opt NO) Pos Y", "MENU_OPTIONS_OK", "POS_YN", 1.0f },
 };
 
 class HudEditor
@@ -289,8 +329,14 @@ public:
 				else if (section == "LOADING_SCREEN_BAR")		MobileLoadingScreen::TestLoadingBar();
 				else if (section == "LEGAL_TEXT1")				MobileLoadingScreen::TestLegalText(true);
 				else if (section == "LEGAL_TEXT2")				MobileLoadingScreen::TestLegalText(false);
-				else if (section == "DUMMY")					MobileFrontEnd::TestMenuStandard(MENUPAGE_MAIN_MENU);
-
+				else if (section == "MENU_TITLE")				MobileFrontEnd::TestMenuStandard(MENUPAGE_START_GAME);
+				else if (section == "MENU_TITLE_STATS")			MobileFrontEnd::TestMenuStandard(MENUPAGE_STATS);
+				else if (section == "MENU_ASK")					MobileFrontEnd::TestMenuStandard(MENUPAGE_NEW_GAME_ASK);
+				else if (section == "MENU_OPTIONS")				MobileFrontEnd::TestMenuStandard(MENUPAGE_MAIN_MENU);
+				else if (section == "MENU_OPTIONS_STATS")		MobileFrontEnd::TestMenuStandard(MENUPAGE_STATS);
+				else if (section == "MENU_OPTIONS_RIGHT")		MobileFrontEnd::TestMenuStandard(MENUPAGE_DISPLAY_SETTINGS);
+				else if (section == "MENU_OPTIONS_OK")			MobileFrontEnd::TestMenuStandard(MENUPAGE_SAVE_DONE_2);
+				
 				TestMessage::Draw(SCREEN_COORD(settings.CUSTOM_X),
 					SCREEN_COORD(settings.CUSTOM_Y), settings.CUSTOM_SIZE_X, settings.CUSTOM_SIZE_Y,
 					(eFontAlignment)settings.CUSTOM_ALIGN, settings.CUSTOM_LINEWIDTH,
