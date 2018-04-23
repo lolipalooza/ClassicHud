@@ -302,40 +302,48 @@ float __fastcall MobileFrontEnd::CheckMouseInput(float a1) {
 }
 
 void MobileFrontEnd::DrawStandardMenu() {
-    CFont::SetBackground(0, 0);
-    CFont::SetProp(1);
-    CFont::SetWrapx(SCREEN_COORD_MAX_X - 12.5f);
-    CFont::SetOutlinePosition(2);
-    CFont::SetRightJustifyWrap(12.5f);
-    CFont::SetCentreSize(SCREEN_COORD_MAX_X);
-    CFont::SetDropColor(CRGBA(0, 0, 0, 255));
+	unsigned char m_nCurrentMenuPage = FrontEndMenuManager.m_nCurrentMenuPage;
+
+	CFont::SetBackground(0, 0);
+	CFont::SetProp(1);
+	CFont::SetWrapx(SCREEN_COORD_MAX_X - 12.5f);
+	CFont::SetDropShadowPosition(settings.MENU_SHADOW);
+	if (settings.MENU_OUTLINE != 0)
+		CFont::SetOutlinePosition(settings.MENU_OUTLINE);
+	CFont::SetRightJustifyWrap(12.5f);
+	CFont::SetCentreSize(SCREEN_COORD_MAX_X);
+	CFont::SetDropColor(CRGBA(0, 0, 0, 255));
 
     // Header
     if (MenuPages[FrontEndMenuManager.m_nCurrentMenuPage].m_szTitleName[0]) {
         if (FrontEndMenuManager.m_nCurrentMenuPage != 5 || !FrontEndMenuManager.field_78) {
-            CFont::SetAlignment(ALIGN_LEFT);
-            CFont::SetFontStyle(FONT_GOTHIC);
-            CFont::SetScale(SCREEN_MULTIPLIER(1.8f), SCREEN_MULTIPLIER(3.6f));
-            CFont::SetOutlinePosition(2);
-            CFont::SetColor(CRGBA(255, 255, 255, 255));
-            CFont::SetDropColor(CRGBA(0, 0, 0, 255));
-            if (FrontEndMenuManager.m_nCurrentMenuPage != 0)
-                CFont::PrintString(SCREEN_COORD_CENTER_X - SCREEN_COORD(282.0f / 2), SCREEN_COORD_CENTER_Y - SCREEN_COORD(794.0f / 2), TheText.Get(MenuPages[FrontEndMenuManager.m_nCurrentMenuPage].m_szTitleName));
-            else
-                CFont::PrintString(SCREEN_COORD_CENTER_X - SCREEN_COORD(1113.0f / 2), SCREEN_COORD_CENTER_Y - SCREEN_COORD(794.0f / 2), TheText.Get(MenuPages[FrontEndMenuManager.m_nCurrentMenuPage].m_szTitleName));
-        }
+			CFont::SetAlignment((eFontAlignment)settings.MENUTITLE_ALIGN);
+			CFont::SetFontStyle(settings.MENUTITLE_FONTSTYLE);
+			CFont::SetScale(SCREEN_MULTIPLIER(settings.MENUTITLE_SIZE_X), SCREEN_MULTIPLIER(settings.MENUTITLE_SIZE_Y));
+			CFont::SetDropShadowPosition(settings.MENUTITLE_SHADOW);
+			if (settings.MENUTITLE_OUTLINE != 0)
+				CFont::SetOutlinePosition(settings.MENUTITLE_OUTLINE);
+			CFont::SetColor(CRGBA(settings.MENUTITLE_R, settings.MENUTITLE_G, settings.MENUTITLE_B, 255));
+			CFont::SetDropColor(CRGBA(0, 0, 0, 255));
+			if (FrontEndMenuManager.m_nCurrentMenuPage != 0)
+				CFont::PrintString(SCREEN_COORD_CENTER_X - SCREEN_COORD(settings.MENUTITLE_X / 2), SCREEN_COORD_CENTER_Y - SCREEN_COORD(settings.MENUTITLE_Y / 2), TheText.Get(MenuPages[m_nCurrentMenuPage].m_szTitleName));
+			else
+				CFont::PrintString(SCREEN_COORD_CENTER_X - SCREEN_COORD(settings.MENUTITLE_STATS_X / 2), SCREEN_COORD_CENTER_Y - SCREEN_COORD(settings.MENUTITLE_STATS_Y / 2), TheText.Get(MenuPages[m_nCurrentMenuPage].m_szTitleName));
+		}
     }
 
     // Actions
     if (MenuPages[FrontEndMenuManager.m_nCurrentMenuPage].m_aButtons[0].m_nActionType == 1)
     {
         static char* pText;
-        CFont::SetFontStyle(FONT_SUBTITLES);
-        CFont::SetAlignment(ALIGN_LEFT);
-        CFont::SetScale(SCREEN_MULTIPLIER(0.9f), SCREEN_MULTIPLIER(1.7f));
-        CFont::SetOutlinePosition(2);
-        CFont::SetColor(CRGBA(255, 255, 255, 255));
-        CFont::SetDropColor(CRGBA(0, 0, 0, 255));
+		CFont::SetFontStyle(settings.MENUASK_FONTSTYLE);
+		CFont::SetAlignment((eFontAlignment)settings.MENUASK_ALIGN);
+		CFont::SetScale(SCREEN_MULTIPLIER(settings.MENUASK_SIZE_X), SCREEN_MULTIPLIER(settings.MENUASK_SIZE_Y));
+		CFont::SetDropShadowPosition(settings.MENUASK_SHADOW);
+		if (settings.MENUASK_OUTLINE != 0)
+			CFont::SetOutlinePosition(settings.MENUASK_OUTLINE);
+		CFont::SetColor(CRGBA(settings.MENUASK_R, settings.MENUASK_G, settings.MENUASK_B, 255));
+		CFont::SetDropColor(CRGBA(0, 0, 0, 255));
 
         switch (FrontEndMenuManager.m_nCurrentMenuPage)
         {
@@ -375,12 +383,14 @@ void MobileFrontEnd::DrawStandardMenu() {
             break;
         }
         }
-        CFont::PrintString(SCREEN_COORD_CENTER_X - SCREEN_COORD(282.0f / 2), SCREEN_COORD_CENTER_Y - SCREEN_COORD(640.0f / 2), pText);
-    }
+		CFont::PrintString(SCREEN_COORD_CENTER_X - SCREEN_COORD(settings.MENUASK_X / 2), SCREEN_COORD_CENTER_Y - SCREEN_COORD(settings.MENUASK_Y / 2), pText);
+	}
 
     for (unsigned int i = 0; i < 12; i++) {
-        CFont::SetFontStyle(FONT_MENU);
-        CFont::SetOutlinePosition(2);
+		CFont::SetFontStyle(settings.MENU_FONTSTYLE);
+		CFont::SetDropShadowPosition(settings.MENU_SHADOW);
+		if (settings.MENU_OUTLINE != 0)
+			CFont::SetOutlinePosition(settings.MENU_OUTLINE);
 
         if (MenuPages[FrontEndMenuManager.m_nCurrentMenuPage].m_aButtons[i].m_nActionType != 1 && MenuPages[FrontEndMenuManager.m_nCurrentMenuPage].m_aButtons[i].m_szName[0]) {
             const char* LeftColumn = nullptr;
@@ -563,11 +573,15 @@ void MobileFrontEnd::DrawStandardMenu() {
                 break;
             }
 
-            unsigned int savedAlpha;
-            float f_leftPosX = SCREEN_COORD_CENTER_X - SCREEN_COORD(282.0f / 2);
-            float fPosnXForStats = SCREEN_COORD_CENTER_X - SCREEN_COORD(1113.0f / 2);
-            float f_rightPosX = SCREEN_COORD_CENTER_X - SCREEN_COORD(-1113.0f / 2);
-            float fPosY = SCREEN_COORD_CENTER_Y - SCREEN_COORD(-MenuPages[FrontEndMenuManager.m_nCurrentMenuPage].m_aButtons[i].m_nPosnY) + (0.0f / 2);
+			bool stats_or_setting_page = m_nCurrentMenuPage == MENUPAGE_STATS
+				|| !settings.MENU_SETTINGS_SHOW_RIGHT && (m_nCurrentMenuPage == MENUPAGE_DISPLAY_SETTINGS);
+			float posY = GetNewYPos(i, m_nCurrentMenuPage);
+
+			unsigned int savedAlpha;
+			float f_leftPosX = SCREEN_COORD_CENTER_X - SCREEN_COORD(settings.MENU_X / 2);
+			float fPosnXForStats = SCREEN_COORD_CENTER_X - SCREEN_COORD(settings.MENU_STATS_X / 2);
+			float f_rightPosX = SCREEN_COORD_CENTER_X - SCREEN_COORD(settings.MENU_R_X / 2);
+			float fPosY = SCREEN_COORD_CENTER_Y - SCREEN_COORD(-posY) + (0.0f / 2);
 
             if (i == FrontEndMenuManager.m_nSelectedMenuItem) {
                 if (FrontEndMenuManager.m_nCurrentMenuPage != 5) {
@@ -575,52 +589,55 @@ void MobileFrontEnd::DrawStandardMenu() {
                     RwRenderStateSet(rwRENDERSTATEVERTEXALPHAENABLE, reinterpret_cast<void *>(TRUE));
 
                     if (FrontEndMenuManager.m_nCurrentMenuPage == 0)
-                        CSprite2d::DrawRect(CRect(fPosnXForStats - SCREEN_COORD(25.0f / 2), fPosY - SCREEN_COORD(12.5f / 2), (fPosnXForStats - SCREEN_COORD(25.0f / 2)) + SCREEN_MULTIPLIER(330.0f), (fPosY - SCREEN_COORD(12.5f / 2)) + SCREEN_MULTIPLIER(50.0f)), CRGBA(255, 255, 255, 50));
-                    else
-                        CSprite2d::DrawRect(CRect(f_leftPosX - SCREEN_COORD(25.0f / 2), fPosY - SCREEN_COORD(12.5f / 2), (f_leftPosX - SCREEN_COORD(25.0f / 2)) + SCREEN_MULTIPLIER(725.0f), (fPosY - SCREEN_COORD(12.5f / 2)) + SCREEN_MULTIPLIER(50.0f)), CRGBA(255, 255, 255, 50));
+						CSprite2d::DrawRect(CRect(fPosnXForStats - SCREEN_COORD(settings.MENU_RECT_X / 2), fPosY - SCREEN_COORD(settings.MENU_RECT_Y / 2), (fPosnXForStats - SCREEN_COORD(settings.MENU_RECT_X / 2)) + SCREEN_MULTIPLIER(settings.MENU_STATS_RECT_WIDTH), (fPosY - SCREEN_COORD(settings.MENU_RECT_Y / 2)) + SCREEN_MULTIPLIER(settings.MENU_RECT_HEIGHT)), CRGBA(settings.MENU_RECT_R, settings.MENU_RECT_G, settings.MENU_RECT_B, 50));
+					else
+						CSprite2d::DrawRect(CRect(f_leftPosX - SCREEN_COORD(settings.MENU_RECT_X / 2), fPosY - SCREEN_COORD(settings.MENU_RECT_Y / 2), (f_leftPosX - SCREEN_COORD(settings.MENU_RECT_X / 2)) + SCREEN_MULTIPLIER(settings.MENU_RECT_WIDTH), (fPosY - SCREEN_COORD(settings.MENU_RECT_Y / 2)) + SCREEN_MULTIPLIER(settings.MENU_RECT_HEIGHT)), CRGBA(settings.MENU_RECT_R, settings.MENU_RECT_G, settings.MENU_RECT_B, 50));
 
                     RwRenderStateSet(rwRENDERSTATEVERTEXALPHAENABLE, reinterpret_cast<void *>(savedAlpha));
                 }
             }
 
-            CFont::SetScale(SCREEN_MULTIPLIER(0.9f), SCREEN_MULTIPLIER(1.7f));
+			CFont::SetScale(SCREEN_MULTIPLIER(settings.MENU_SIZE_X), SCREEN_MULTIPLIER(settings.MENU_SIZE_Y));
 
             if (FrontEndMenuManager.m_nCurrentMenuPage == 7 || FrontEndMenuManager.m_nCurrentMenuPage == 9 || FrontEndMenuManager.m_nCurrentMenuPage == 10 || FrontEndMenuManager.m_nCurrentMenuPage == 16) {
                 float width = CFont::GetStringWidth((char*)LeftColumn, true, false);
 
                 if (width > SCREEN_COORD(690.0f))
-                    CFont::SetScale(SCREEN_MULTIPLIER(0.9f * SCREEN_COORD(690.0f) / width), SCREEN_MULTIPLIER(1.7f));
-            }
+					CFont::SetScale(SCREEN_MULTIPLIER(settings.MENU_SIZE_X * SCREEN_COORD(690.0f) / width), SCREEN_MULTIPLIER(settings.MENU_SIZE_Y));
+			}
 
             // Print left column
-            CFont::SetDropColor(CRGBA(0, 0, 0, 255));
-            CFont::SetColor(CRGBA(255, 255, 255, 255));
-            CFont::SetAlignment(ALIGN_LEFT);
+			CFont::SetDropColor(CRGBA(0, 0, 0, 255));
+			CFont::SetColor(CRGBA(settings.MENU_R, settings.MENU_G, settings.MENU_B, 255));
+			CFont::SetAlignment((eFontAlignment)settings.MENU_ALIGN);
 
-            if (FrontEndMenuManager.m_nCurrentMenuPage == 0)
-                CFont::PrintString(fPosnXForStats, fPosY, (char*)LeftColumn);
-            else
-                CFont::PrintString(f_leftPosX, fPosY, (char*)LeftColumn);
+			if (stats_or_setting_page) {
+				CFont::SetAlignment(ALIGN_LEFT);
+				CFont::SetScale(SCREEN_MULTIPLIER(settings.MENU_STATS_SIZE_X), SCREEN_MULTIPLIER(settings.MENU_STATS_SIZE_Y));
+				CFont::PrintString(fPosnXForStats, fPosY, (char*)LeftColumn);
+			}
+			else
+				CFont::PrintString(f_leftPosX, fPosY, (char*)LeftColumn);
 
 
             // Print right column
-            if (RightColumn) {
-                float width = CFont::GetStringWidth((char*)RightColumn, true, false);
+			if (RightColumn) {
+				float width = CFont::GetStringWidth((char*)RightColumn, true, false);
 
-                if (width > SCREEN_COORD(312.0f))
-                    CFont::SetScale(SCREEN_MULTIPLIER(0.8f * SCREEN_COORD(312.0f) / width), SCREEN_MULTIPLIER(1.7f));
+				if (width > SCREEN_COORD(312.0f))
+					CFont::SetScale(SCREEN_MULTIPLIER(settings.MENU_R_SIZE_X * SCREEN_COORD(312.0f) / width), SCREEN_MULTIPLIER(settings.MENU_R_SIZE_Y));
 
-                CFont::SetAlignment(ALIGN_RIGHT);
-                CFont::PrintString(f_rightPosX, fPosY, (char*)RightColumn);
-            }
+				CFont::SetAlignment(ALIGN_RIGHT);
+				CFont::PrintString(f_rightPosX, fPosY, (char*)RightColumn);
+			}
 
             // Sliders
-            CVector2D vecPosition;
-            CVector2D vecScale;
-            vecPosition.x = 285.0f;
-            vecPosition.y = MenuPages[FrontEndMenuManager.m_nCurrentMenuPage].m_aButtons[i].m_nPosnY + 2.0f;
-            vecScale.x = 265.0f;
-            vecScale.y = 28.5f;
+			CVector2D vecPosition;
+			CVector2D vecScale;
+			vecPosition.x = settings.MENU_SLIDERS_X;
+			vecPosition.y = posY + settings.MENU_SLIDERS_Y;
+			vecScale.x = settings.MENU_SLIDERS_SIZE_X;
+			vecScale.y = settings.MENU_SLIDERS_SIZE_Y;
 
             switch (MenuPages[FrontEndMenuManager.m_nCurrentMenuPage].m_aButtons[i].m_nActionType)
             {
@@ -1796,59 +1813,7 @@ void MobileFrontEnd::TestMenuStandard(unsigned char m_nCurrentMenuPage) {
 			bool stats_or_setting_page = m_nCurrentMenuPage == MENUPAGE_STATS
 				|| !settings.MENU_SETTINGS_SHOW_RIGHT && (m_nCurrentMenuPage == MENUPAGE_DISPLAY_SETTINGS);
 
-			float sfSpacing, sfPosY0, sfPosY1, sfPosY2, sfPosY3, sfPosY4, sfPosY5,
-				sfPosY6, sfPosY7, sfPosY8, sfPosYd, sfPosYk, sfPosYn, sfPosYy;
-
-			sfSpacing = settings.MENU_YSPACE + (stats_or_setting_page ? settings.MENU_STATS_YSPACE : 0.0f);
-			sfPosY0 = settings.MENU_Y0;
-			sfPosY1 = settings.MENU_Y1
-				+ ((m_nCurrentMenuPage == MENUPAGE_MAIN_MENU) ? settings.MENU_Y1_OFFSET : 0.0f)
-				+ (stats_or_setting_page ? settings.MENU_STATS_Y_OFFSET : 0.0f);
-			sfPosY2 = sfPosY1 + sfSpacing;
-			sfPosY3 = sfPosY2 + sfSpacing;
-			sfPosY4 = sfPosY3 + sfSpacing;
-			sfPosY5 = sfPosY4 + sfSpacing;
-			sfPosY6 = sfPosY5 + sfSpacing;
-			sfPosY7 = sfPosY6 + sfSpacing;
-			sfPosY8 = sfPosY7 + sfSpacing;
-			sfPosYd = sfPosY7 + 112.0f;
-			sfPosYk = settings.MENU_YN;
-			sfPosYn = settings.MENU_YN;
-			sfPosYy = settings.MENU_YY;
-
-			float fSpacing, fPosY0, fPosY1, fPosY2, fPosY3, fPosY4, fPosY5,
-				fPosY6, fPosY7, fPosY8, fPosYd, fPosYk, fPosYn, fPosYy;
-
-			fSpacing = 75.0f;
-			fPosY0 = 0.0f;
-			fPosY1 = -299.0f;
-			fPosY2 = fPosY1 + fSpacing;
-			fPosY3 = fPosY2 + fSpacing;
-			fPosY4 = fPosY3 + fSpacing;
-			fPosY5 = fPosY4 + fSpacing;
-			fPosY6 = fPosY5 + fSpacing;
-			fPosY7 = fPosY6 + fSpacing;
-			fPosY8 = fPosY7 + fSpacing;
-			fPosYd = fPosY7 + 112.0f;
-			fPosYk = -188.0f;
-			fPosYn = -188.0f;
-			fPosYy = fPosYn + 50.0f;
-
-			float posY;
-			float m_nPosnY = MenuPages[m_nCurrentMenuPage].m_aButtons[i].m_nPosnY;
-			if (m_nPosnY == fPosY0)			posY = sfPosY0;
-			else if (m_nPosnY == fPosY1)	posY = sfPosY1;
-			else if (m_nPosnY == fPosY2)	posY = sfPosY2;
-			else if (m_nPosnY == fPosY3)	posY = sfPosY3;
-			else if (m_nPosnY == fPosY4)	posY = sfPosY4;
-			else if (m_nPosnY == fPosY5)	posY = sfPosY5;
-			else if (m_nPosnY == fPosY6)	posY = sfPosY6;
-			else if (m_nPosnY == fPosY7)	posY = sfPosY7;
-			else if (m_nPosnY == fPosY8)	posY = sfPosY8;
-			else if (m_nPosnY == fPosYd)	posY = sfPosYd;
-			else if (m_nPosnY == fPosYk || m_nPosnY == fPosYn)		posY = sfPosYn;
-			else if (m_nPosnY == fPosYy)	posY = sfPosYy;
-
+			float posY = GetNewYPos(i, m_nCurrentMenuPage);
 			unsigned int savedAlpha;
 			float f_leftPosX = SCREEN_COORD_CENTER_X - SCREEN_COORD(settings.MENU_X / 2);
 			float fPosnXForStats = SCREEN_COORD_CENTER_X - SCREEN_COORD(settings.MENU_STATS_X / 2);
@@ -1868,10 +1833,10 @@ void MobileFrontEnd::TestMenuStandard(unsigned char m_nCurrentMenuPage) {
 					RwRenderStateSet(rwRENDERSTATEVERTEXALPHAENABLE, reinterpret_cast<void *>(savedAlpha));
 				}
 			}
-			if (m_nCurrentMenuPage == 0) {
+			/*if (m_nCurrentMenuPage == 0) {
 				float test_posY = SCREEN_COORD_CENTER_Y - SCREEN_COORD(-sfPosY2) + (0.0f / 2);
 				CSprite2d::DrawRect(CRect(fPosnXForStats - SCREEN_COORD(settings.MENU_RECT_X / 2), test_posY - SCREEN_COORD(settings.MENU_RECT_Y / 2), (fPosnXForStats - SCREEN_COORD(settings.MENU_RECT_X / 2)) + SCREEN_MULTIPLIER(settings.MENU_STATS_RECT_WIDTH), (test_posY - SCREEN_COORD(settings.MENU_RECT_Y / 2)) + SCREEN_MULTIPLIER(settings.MENU_RECT_HEIGHT)), CRGBA(settings.MENU_RECT_R, settings.MENU_RECT_G, settings.MENU_RECT_B, 50));
-			}
+			}*/
 
 			CFont::SetScale(SCREEN_MULTIPLIER(settings.MENU_SIZE_X), SCREEN_MULTIPLIER(settings.MENU_SIZE_Y));
 
@@ -1940,4 +1905,64 @@ void MobileFrontEnd::TestMenuStandard(unsigned char m_nCurrentMenuPage) {
 			}
 		}
 	}
+}
+
+float MobileFrontEnd::GetNewYPos(unsigned int i, unsigned char m_nCurrentMenuPage) {
+	bool stats_or_setting_page = m_nCurrentMenuPage == MENUPAGE_STATS
+		|| !settings.MENU_SETTINGS_SHOW_RIGHT && (m_nCurrentMenuPage == MENUPAGE_DISPLAY_SETTINGS);
+
+	float sfSpacing, sfPosY0, sfPosY1, sfPosY2, sfPosY3, sfPosY4, sfPosY5,
+		sfPosY6, sfPosY7, sfPosY8, sfPosYd, sfPosYk, sfPosYn, sfPosYy;
+
+	sfSpacing = settings.MENU_YSPACE + (stats_or_setting_page ? settings.MENU_STATS_YSPACE : 0.0f);
+	sfPosY0 = settings.MENU_Y0;
+	sfPosY1 = settings.MENU_Y1
+		+ ((m_nCurrentMenuPage == MENUPAGE_MAIN_MENU) ? settings.MENU_Y1_OFFSET : 0.0f)
+		+ (stats_or_setting_page ? settings.MENU_STATS_Y_OFFSET : 0.0f);
+	sfPosY2 = sfPosY1 + sfSpacing;
+	sfPosY3 = sfPosY2 + sfSpacing;
+	sfPosY4 = sfPosY3 + sfSpacing;
+	sfPosY5 = sfPosY4 + sfSpacing;
+	sfPosY6 = sfPosY5 + sfSpacing;
+	sfPosY7 = sfPosY6 + sfSpacing;
+	sfPosY8 = sfPosY7 + sfSpacing;
+	sfPosYd = sfPosY7 + 112.0f;
+	sfPosYk = settings.MENU_YN;
+	sfPosYn = settings.MENU_YN;
+	sfPosYy = settings.MENU_YY;
+
+	float fSpacing, fPosY0, fPosY1, fPosY2, fPosY3, fPosY4, fPosY5,
+		fPosY6, fPosY7, fPosY8, fPosYd, fPosYk, fPosYn, fPosYy;
+
+	fSpacing = 75.0f;
+	fPosY0 = 0.0f;
+	fPosY1 = -299.0f;
+	fPosY2 = fPosY1 + fSpacing;
+	fPosY3 = fPosY2 + fSpacing;
+	fPosY4 = fPosY3 + fSpacing;
+	fPosY5 = fPosY4 + fSpacing;
+	fPosY6 = fPosY5 + fSpacing;
+	fPosY7 = fPosY6 + fSpacing;
+	fPosY8 = fPosY7 + fSpacing;
+	fPosYd = fPosY7 + 112.0f;
+	fPosYk = -188.0f;
+	fPosYn = -188.0f;
+	fPosYy = fPosYn + 50.0f;
+
+	float posY;
+	float m_nPosnY = MenuPages[m_nCurrentMenuPage].m_aButtons[i].m_nPosnY;
+	if (m_nPosnY == fPosY0)			posY = sfPosY0;
+	else if (m_nPosnY == fPosY1)	posY = sfPosY1;
+	else if (m_nPosnY == fPosY2)	posY = sfPosY2;
+	else if (m_nPosnY == fPosY3)	posY = sfPosY3;
+	else if (m_nPosnY == fPosY4)	posY = sfPosY4;
+	else if (m_nPosnY == fPosY5)	posY = sfPosY5;
+	else if (m_nPosnY == fPosY6)	posY = sfPosY6;
+	else if (m_nPosnY == fPosY7)	posY = sfPosY7;
+	else if (m_nPosnY == fPosY8)	posY = sfPosY8;
+	else if (m_nPosnY == fPosYd)	posY = sfPosYd;
+	else if (m_nPosnY == fPosYk || m_nPosnY == fPosYn)		posY = sfPosYn;
+	else if (m_nPosnY == fPosYy)	posY = sfPosYy;
+
+	return posY;
 }

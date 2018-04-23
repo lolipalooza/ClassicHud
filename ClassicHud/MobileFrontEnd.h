@@ -44,6 +44,7 @@ public:
     static void PrintBriefsText(float x, float y, char *str);
 
 	static void TestMenuStandard(unsigned char m_nCurrentMenuPage);
+	static float GetNewYPos(unsigned int i, unsigned char m_nCurrentMenuPage);
 };
 
 extern MobileFrontEnd FrontEndMobileMenuManager;

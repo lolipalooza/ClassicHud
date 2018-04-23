@@ -55,11 +55,6 @@ public:
 			{
 				ClassicHud::TransformHud();
 				CFont::Initialise();
-
-				//MobileMenuSystem::InstallPatches();
-				//MobileLoadingScreen::InstallPatches();
-				MobileMenuPage::InstallPatches();
-				MobileFrontEnd::InstallPatches();
 			}
 		};
 
@@ -83,13 +78,10 @@ public:
 				//CHud::Shutdown();
 				//CHud::Initialise();
 
-				ClassicHud::TransformHud();
-
 				MobileTxdStorage::Instance().Shutdown();
 				MobileTextures::Setup();
 
-				MobileMenuPage::InstallPatches();
-				MobileFrontEnd::InstallPatches();
+				ClassicHud::TransformHud();
 			}
 		};
 	}
@@ -118,4 +110,9 @@ void ClassicHud::TransformHud()
 	MissionTimers::InstallPatches();
 	RadioStation::InstallPatches();
 	GarageMessages::InstallPatches();
+
+	//MobileMenuSystem::InstallPatches();
+	//MobileLoadingScreen::InstallPatches();
+	MobileMenuPage::InstallPatches();
+	MobileFrontEnd::InstallPatches();
 }
