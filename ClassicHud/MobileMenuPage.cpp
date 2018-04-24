@@ -1,5 +1,7 @@
 #include "MobileMenuPage.h"
+#include "Settings.h"
 
+MyMenuPage menu[45];
 
 float fSpacing = 75.0f;
 float fPosY0 = 0.0f;
@@ -16,46 +18,69 @@ float fPosYk = -188.0f;
 float fPosYn = -188.0f;
 float fPosYy = fPosYn + 50.0f;
 
+bool MobileMenuPage::statsOrSettingPage(int page) {
+	return page == MENUPAGE_STATS
+		|| !settings.MENU_SETTINGS_SHOW_RIGHT && (
+			page == MENUPAGE_DISPLAY_SETTINGS
+			|| page == MENUPAGE_JOYPAD_SETTINGS
+			|| page == MENUPAGE_MOUSE_SETTINGS
+			|| page == MENUPAGE_AUDIO_SETTINGS
+			|| page == MENUPAGE_USER_TRACKS_OPTIONS
+			|| page == 44 // Game Settings
+			);
+}
+
+void MobileMenuPage::MyPatch() {
+	for (int i = 0; i < 45; i++)
+		menu[i] = MenuPages[i];
+
+	for (int m_nCurrentMenuPage = 0; m_nCurrentMenuPage < 45; m_nCurrentMenuPage++)
+		for (int i = 0; i < 12; i++)
+			menu[m_nCurrentMenuPage].m_aButtons[i].m_nPosnY = MobileFrontEnd::GetNewYPos(i, m_nCurrentMenuPage);
+}
+
 
 void MobileMenuPage::InstallPatches() {
-    plugin::patch::Set<void*>(0x57345A, &MenuPages->m_aButtons->m_nActionType);
-    plugin::patch::Set<void*>(0x57370A, &MenuPages->m_nStartingButton);
-    plugin::patch::Set<void*>(0x573713, &MenuPages->m_nPrevMenu);
-    plugin::patch::Set<void*>(0x573728, &MenuPages->m_nPrevMenu);
-    plugin::patch::Set<void*>(0x57373D, &MenuPages->m_nPrevMenu);
-    plugin::patch::Set<void*>(0x573752, &MenuPages->m_nPrevMenu);
-    plugin::patch::Set<void*>(0x573772, &MenuPages->m_aButtons->m_nTargetMenu);
-    plugin::patch::Set<void*>(0x573EA9, &MenuPages->m_aButtons->m_nActionType);
-    plugin::patch::Set<void*>(0x576B08, &MenuPages->m_aButtons[1].m_nTargetMenu);
-    plugin::patch::Set<void*>(0x576B1E, &MenuPages->m_aButtons[1].m_nTargetMenu);
-    plugin::patch::Set<void*>(0x576B38, &MenuPages);
-    plugin::patch::Set<void*>(0x576B58, &MenuPages->m_aButtons->m_szName);
-    plugin::patch::Set<void*>(0x57B4F2, &MenuPages->m_aButtons->m_nActionType);
-    plugin::patch::Set<void*>(0x57B519, &MenuPages->m_aButtons->m_nActionType);
-    plugin::patch::Set<void*>(0x57B52A, &MenuPages->m_aButtons->m_nActionType);
-    plugin::patch::Set<void*>(0x57B534, &MenuPages->m_aButtons->m_nActionType);
-    plugin::patch::Set<void*>(0x57B588, &MenuPages->m_aButtons->m_nActionType);
-    plugin::patch::Set<void*>(0x57B5A4, &MenuPages->m_aButtons->m_nActionType);
-    plugin::patch::Set<void*>(0x57B5C9, &MenuPages->m_aButtons->m_nActionType);
-    plugin::patch::Set<void*>(0x57B5E9, &MenuPages->m_aButtons[1].m_nActionType);
-    plugin::patch::Set<void*>(0x57B601, &MenuPages->m_aButtons->m_nActionType);
-    plugin::patch::Set<void*>(0x57B629, &MenuPages->m_aButtons->m_nActionType);
-    plugin::patch::Set<void*>(0x57B69C, &MenuPages->m_aButtons->m_nType);
-    plugin::patch::Set<void*>(0x57B6F1, &MenuPages->m_aButtons->m_nType);
-    plugin::patch::Set<void*>(0x57C313, &MenuPages->m_aButtons->m_nActionType);
-    plugin::patch::Set<void*>(0x57D6D8, &MenuPages->m_aButtons->m_szName);
-    plugin::patch::Set<void*>(0x57D701, &MenuPages->m_aButtons->m_szName);
-    plugin::patch::Set<void*>(0x57E3F7, &MenuPages->m_aButtons->m_nActionType);
-    plugin::patch::Set<void*>(0x57FE0A, &MenuPages->m_aButtons->m_nActionType);
-    plugin::patch::Set<void*>(0x57FE25, &MenuPages->m_aButtons->m_szName);
-    plugin::patch::Set<void*>(0x57FF5F, &MenuPages->m_aButtons->m_nActionType);
-    plugin::patch::Set<void*>(0x57FFAE, &MenuPages->m_aButtons->m_nActionType);
-    plugin::patch::Set<void*>(0x580316, &MenuPages->m_aButtons->m_nActionType);
-    plugin::patch::Set<void*>(0x580496, &MenuPages->m_aButtons->m_nActionType);
-    plugin::patch::Set<void*>(0x5804EB, &MenuPages->m_aButtons->m_nActionType);
-    plugin::patch::Set<void*>(0x5805D3, &MenuPages->m_aButtons->m_nActionType);
-    plugin::patch::Set<void*>(0x57FE57, &MenuPages->m_aButtons->m_nPosnX);
-    plugin::patch::Set<void*>(0x57FE96, &MenuPages->m_aButtons->m_nPosnY);
+	MobileMenuPage::MyPatch();
+
+    plugin::patch::Set<void*>(0x57345A, &menu->m_aButtons->m_nActionType);
+    plugin::patch::Set<void*>(0x57370A, &menu->m_nStartingButton);
+    plugin::patch::Set<void*>(0x573713, &menu->m_nPrevMenu);
+    plugin::patch::Set<void*>(0x573728, &menu->m_nPrevMenu);
+    plugin::patch::Set<void*>(0x57373D, &menu->m_nPrevMenu);
+    plugin::patch::Set<void*>(0x573752, &menu->m_nPrevMenu);
+    plugin::patch::Set<void*>(0x573772, &menu->m_aButtons->m_nTargetMenu);
+    plugin::patch::Set<void*>(0x573EA9, &menu->m_aButtons->m_nActionType);
+    plugin::patch::Set<void*>(0x576B08, &menu->m_aButtons[1].m_nTargetMenu);
+    plugin::patch::Set<void*>(0x576B1E, &menu->m_aButtons[1].m_nTargetMenu);
+    plugin::patch::Set<void*>(0x576B38, &menu);
+    plugin::patch::Set<void*>(0x576B58, &menu->m_aButtons->m_szName);
+    plugin::patch::Set<void*>(0x57B4F2, &menu->m_aButtons->m_nActionType);
+    plugin::patch::Set<void*>(0x57B519, &menu->m_aButtons->m_nActionType);
+    plugin::patch::Set<void*>(0x57B52A, &menu->m_aButtons->m_nActionType);
+    plugin::patch::Set<void*>(0x57B534, &menu->m_aButtons->m_nActionType);
+    plugin::patch::Set<void*>(0x57B588, &menu->m_aButtons->m_nActionType);
+    plugin::patch::Set<void*>(0x57B5A4, &menu->m_aButtons->m_nActionType);
+    plugin::patch::Set<void*>(0x57B5C9, &menu->m_aButtons->m_nActionType);
+    plugin::patch::Set<void*>(0x57B5E9, &menu->m_aButtons[1].m_nActionType);
+    plugin::patch::Set<void*>(0x57B601, &menu->m_aButtons->m_nActionType);
+    plugin::patch::Set<void*>(0x57B629, &menu->m_aButtons->m_nActionType);
+    plugin::patch::Set<void*>(0x57B69C, &menu->m_aButtons->m_nType);
+    plugin::patch::Set<void*>(0x57B6F1, &menu->m_aButtons->m_nType);
+    plugin::patch::Set<void*>(0x57C313, &menu->m_aButtons->m_nActionType);
+    plugin::patch::Set<void*>(0x57D6D8, &menu->m_aButtons->m_szName);
+    plugin::patch::Set<void*>(0x57D701, &menu->m_aButtons->m_szName);
+    plugin::patch::Set<void*>(0x57E3F7, &menu->m_aButtons->m_nActionType);
+    plugin::patch::Set<void*>(0x57FE0A, &menu->m_aButtons->m_nActionType);
+    plugin::patch::Set<void*>(0x57FE25, &menu->m_aButtons->m_szName);
+    plugin::patch::Set<void*>(0x57FF5F, &menu->m_aButtons->m_nActionType);
+    plugin::patch::Set<void*>(0x57FFAE, &menu->m_aButtons->m_nActionType);
+    plugin::patch::Set<void*>(0x580316, &menu->m_aButtons->m_nActionType);
+    plugin::patch::Set<void*>(0x580496, &menu->m_aButtons->m_nActionType);
+    plugin::patch::Set<void*>(0x5804EB, &menu->m_aButtons->m_nActionType);
+    plugin::patch::Set<void*>(0x5805D3, &menu->m_aButtons->m_nActionType);
+	plugin::patch::Set<void*>(0x57FE57, &menu->m_aButtons->m_nPosnX);
+    plugin::patch::Set<void*>(0x57FE96, &menu->m_aButtons->m_nPosnY);
     plugin::patch::Set<void*>(0x57B6AD, &FrontEndMobileMenuManager.SlotValidation);
     plugin::patch::Set<void*>(0x619157, &FrontEndMobileMenuManager.SlotValidation[1]);
     plugin::patch::Set<void*>(0x61922D, &FrontEndMobileMenuManager.SlotValidation[1]);

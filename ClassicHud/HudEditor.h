@@ -219,6 +219,7 @@ Data edit_data[] = {
 	{ "Menu Ask Pos Y", "MENU_ASK", "POS_Y", 1.0f },
 	{ "Menu Ask Size X", "MENU_ASK", "SIZE_X", 0.01f },
 	{ "Menu Ask Size Y", "MENU_ASK", "SIZE_Y", 0.01f },
+	{ "Menu Ask Linewidth", "MENU_ASK", "LINEWIDTH", 10.0f },
 	{ "Menu Ask (Opt YES) Pos Y", "MENU_ASK", "POS_YY", 1.0f },
 	{ "Menu Ask (Opt NO) Pos Y", "MENU_ASK", "POS_YN", 1.0f },
 
@@ -233,6 +234,9 @@ Data edit_data[] = {
 	{ "Menu Options Selection Rectangle Pos Y", "MENU_OPTIONS", "RECT_Y", 1.0f },
 	{ "Menu Options Selection Rectangle Width", "MENU_OPTIONS", "RECT_WIDTH", 1.0f },
 	{ "Menu Options Selection Rectangle Height", "MENU_OPTIONS", "RECT_HEIGHT", 1.0f },
+	{ "Deletethis Width", "MENU_OPTIONS", "W", 1.0f },
+	{ "Deletethis Height", "MENU_OPTIONS", "H", 1.0f },
+	{ "Deletethis Rect Factor", "MENU_OPTIONS", "D_FACTOR", 0.01f },
 
 	{ "Menu Options (Stats) Pos X", "MENU_OPTIONS_STATS", "STATS_X", 1.0f },
 	{ "Menu Options (Stats) Pos Y Offset", "MENU_OPTIONS_STATS", "OFFSET_STATS_Y", 1.0f },

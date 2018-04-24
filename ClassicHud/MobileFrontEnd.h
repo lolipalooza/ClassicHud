@@ -45,6 +45,8 @@ public:
 
 	static void TestMenuStandard(unsigned char m_nCurrentMenuPage);
 	static float GetNewYPos(unsigned int i, unsigned char m_nCurrentMenuPage);
+	static void DrawViceCityFtEndBorders();
+	static void DrawVCSelectionRectangles(float width, float posY, int page, int i);
 };
 
 extern MobileFrontEnd FrontEndMobileMenuManager;

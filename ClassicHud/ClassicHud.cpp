@@ -27,6 +27,14 @@
 
 using namespace plugin;
 
+enum eStyles {
+	STYLE_SA,
+	STYLE_III,
+	STYLE_VC,
+	STYLE_LCS,
+	STYLE_VCS
+};
+
 static int STYLE;
 
 class ClassicHud {
@@ -36,8 +44,8 @@ public:
 	ClassicHud() {
 
 		static int keyPressTime = 0;
-
-		STYLE = 1;
+		
+		STYLE = STYLE_VC;
 		settings.Init(STYLE);
 		//CIniReader iniReader(CLASSICHUD_DAT_PATH);
 		//settings.WEAPONS_TXD = iniReader.ReadString("SA_FILES", "WEAPONS_TXD", DEFAULT_WEAPONS_TXD);
@@ -67,7 +75,7 @@ public:
 			if (FindPlayerPed() && KeyPressed(VK_F9) && CTimer::m_snTimeInMilliseconds - keyPressTime > 500) {
 				keyPressTime = CTimer::m_snTimeInMilliseconds;
 
-				STYLE = (STYLE >= 3) ? 0 : STYLE + 1;
+				STYLE = (STYLE >= STYLE_LCS) ? 0 : STYLE + 1;
 				settings.Init(STYLE);
 
 				Weapon::WeaponTexturesShutdown();
@@ -111,7 +119,7 @@ void ClassicHud::TransformHud()
 	RadioStation::InstallPatches();
 	GarageMessages::InstallPatches();
 
-	//MobileMenuSystem::InstallPatches();
+	MobileMenuSystem::InstallPatches();
 	//MobileLoadingScreen::InstallPatches();
 	MobileMenuPage::InstallPatches();
 	MobileFrontEnd::InstallPatches();
