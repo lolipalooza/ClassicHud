@@ -236,13 +236,13 @@ Data edit_data[] = {
 	{ "Menu Options Selection Rectangle Height", "MENU_OPTIONS", "RECT_HEIGHT", 1.0f },
 	{ "Deletethis Width", "MENU_OPTIONS", "W", 1.0f },
 	{ "Deletethis Height", "MENU_OPTIONS", "H", 1.0f },
-	{ "Deletethis Rect Factor", "MENU_OPTIONS", "D_FACTOR", 0.01f },
 
 	{ "Menu Options (Stats) Pos X", "MENU_OPTIONS_STATS", "STATS_X", 1.0f },
 	{ "Menu Options (Stats) Pos Y Offset", "MENU_OPTIONS_STATS", "OFFSET_STATS_Y", 1.0f },
 	{ "Menu Options (Stats) Y Space Offset", "MENU_OPTIONS_STATS", "SPACE", 1.0f },
 	{ "Menu Options (Stats) Size X", "MENU_OPTIONS_STATS", "SIZE_X", 0.01f },
 	{ "Menu Options (Stats) Size Y", "MENU_OPTIONS_STATS", "SIZE_Y", 0.01f },
+	{ "Menu Options (Stats) Selection Rectangle Pos X", "MENU_OPTIONS_STATS", "RECT_X", 1.0f },
 	{ "Menu Options Selection Rectangle Width", "MENU_OPTIONS_STATS", "RECT_WIDTH", 1.0f },
 
 	{ "Menu Options (Right) Pos X", "MENU_OPTIONS_RIGHT", "RIGHT_X", 1.0f },

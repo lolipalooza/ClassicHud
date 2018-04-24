@@ -461,6 +461,7 @@ void Settings::Init(int style)
 	MENU_STATS_YSPACE = iniReader.ReadFloat(section, "SPACE", 0.0f);
 	MENU_STATS_SIZE_X = iniReader.ReadFloat(section, "SIZE_X", 0.0f);
 	MENU_STATS_SIZE_Y = iniReader.ReadFloat(section, "SIZE_Y", 0.0f);
+	MENU_STATS_RECT_X = iniReader.ReadFloat(section, "RECT_X", 0.0f);
 	MENU_STATS_RECT_WIDTH = iniReader.ReadFloat(section, "RECT_WIDTH", 0.0f);
 
 	sprintf(section, "%s_%s", prefix[style], "MENU_OPTIONS_RIGHT");
