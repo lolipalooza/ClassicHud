@@ -265,6 +265,12 @@ Data edit_data[] = {
 	{ "Save/Load Rectangle Pos Y (Only Vice City)", "TEST_RECTANGLE", "RECT_Y", 1.0f },
 	{ "Save/Load Rectangle Width (Only Vice City)", "TEST_RECTANGLE", "RECT_W", 1.0f },
 	{ "Save/Load Rectangle Height (Only Vice City)", "TEST_RECTANGLE", "RECT_H", 1.0f },
+
+	{ "Logo Pos X", "TEMP_DATA", "POS_X", 1.0f },
+	{ "Logo Pos Y", "TEMP_DATA", "POS_Y", 1.0f },
+	{ "Logo Width", "TEMP_DATA", "SIZE_X", 1.0f },
+	{ "Logo Height", "TEMP_DATA", "SIZE_Y", 1.0f },
+	{ "Logo Shadow Offset", "TEMP_DATA", "SHADOW_OFFSET", 1.0f },
 };
 
 class HudEditor
@@ -304,6 +310,28 @@ public:
 		_snprintf(str, sizeof(str), "section: %s ~n~key: %s ~n~value: %f ~n~incr: %f",
 			section, key, value, incr);
 		return str;
+	}
+
+	static void DrawIcons(int style) {
+		int tex_id;
+		if (STYLE == STYLE_III)
+			mobileTex.m_nBackgroundSprite.m_pTexture = mobileTex.m_nBackgroundSpriteTxd.GetTexture(7);
+		else if (STYLE == STYLE_LCS)
+			mobileTex.m_nBackgroundSprite.m_pTexture = mobileTex.m_nBackgroundSpriteTxd.GetTexture(1);
+		else return;
+
+		if (settings.D_LOGO_SHADOW_OFFSET != 0.0f)
+			mobileTex.m_nBackgroundSprite.Draw(CRect(
+				SCREEN_COORD(settings.D_LOGO_X + settings.D_LOGO_SHADOW_OFFSET), SCREEN_COORD(settings.D_LOGO_Y + settings.D_LOGO_SHADOW_OFFSET),
+				SCREEN_COORD(settings.D_LOGO_X + settings.D_LOGO_W + settings.D_LOGO_SHADOW_OFFSET), SCREEN_COORD(settings.D_LOGO_Y + settings.D_LOGO_H + settings.D_LOGO_SHADOW_OFFSET)),
+				CRGBA(0, 0, 0, 255));
+
+		mobileTex.m_nBackgroundSprite.Draw(CRect(
+			SCREEN_COORD(settings.D_LOGO_X), SCREEN_COORD(settings.D_LOGO_Y),
+			SCREEN_COORD(settings.D_LOGO_X + settings.D_LOGO_W), SCREEN_COORD(settings.D_LOGO_Y + settings.D_LOGO_H)),
+			CRGBA(255, 255, 255, 255));
+
+		mobileTex.m_nBackgroundSprite.m_pTexture = nullptr;
 	}
 
 	HudEditor()
@@ -354,7 +382,8 @@ public:
 				else if (section == "MENU_OPTIONS_OK")			MobileFrontEnd::TestMenuStandard(MENUPAGE_SAVE_DONE_2);
 				else if (section == "MENU_SAVE_LOAD")			MobileFrontEnd::TestMenuStandard(MENUPAGE_LOAD_GAME);
 				else if (section == "TEST_RECTANGLE")			CSprite2d::DrawRect(CRect(SCREEN_COORD(settings.MENU_TEST_RECT_X), SCREEN_COORD(settings.MENU_TEST_RECT_Y), SCREEN_COORD(settings.MENU_TEST_RECT_X + settings.MENU_TEST_RECT_W), SCREEN_COORD(settings.MENU_TEST_RECT_Y + settings.MENU_TEST_RECT_H)), CRGBA(33, 92, 182, 255));
-				
+				else if (section == "TEMP_DATA")				HudEditor::DrawIcons(STYLE);
+
 				TestMessage::Draw(SCREEN_COORD(settings.CUSTOM_X),
 					SCREEN_COORD(settings.CUSTOM_Y), settings.CUSTOM_SIZE_X, settings.CUSTOM_SIZE_Y,
 					(eFontAlignment)settings.CUSTOM_ALIGN, settings.CUSTOM_LINEWIDTH,

@@ -366,6 +366,7 @@ void Settings::Init(int style)
 	SPLASH_STYLE = iniReader.ReadInt(section, "STYLE", 0);
 	SPLASH_SCREENS = iniReader.ReadInt(section, "SCREENS", 0);
 	LOADSCS_TXD = iniReader.ReadString(section, "PATH", "404");
+	SPLASH_LOGO_SIZE = iniReader.ReadInt(section, "LOGO_SIZE", 0);
 
 	sprintf(section, "%s_%s", prefix[style], "LOADING_SCREEN_BAR");
 	LOADBAR_R1 = iniReader.ReadInt(section, "RED1", 0);
@@ -381,6 +382,13 @@ void Settings::Init(int style)
 	LOADBAR_SIZE_X = iniReader.ReadFloat(section, "SIZE_X", 0.0f);
 	LOADBAR_SIZE_Y = iniReader.ReadFloat(section, "SIZE_Y", 0.0f);
 	LOADBAR_SHADOW = iniReader.ReadFloat(section, "SHADOW", 0.0f);
+	DISPLAY_LOGO_ON_LOADING_SCREEN = iniReader.ReadInt(section, "DISPLAY_LOGO_ON_LOADING_SCREEN", 0);
+	LOGO_ID = iniReader.ReadInt(section, "LOGO_ID", 0);
+	LOGO_X = iniReader.ReadFloat(section, "LOGO_X", 0.0f);
+	LOGO_Y = iniReader.ReadFloat(section, "LOGO_Y", 0.0f);
+	LOGO_SIZE_X = iniReader.ReadFloat(section, "LOGO_SIZE_X", 0.0f);
+	LOGO_SIZE_Y = iniReader.ReadFloat(section, "LOGO_SIZE_Y", 0.0f);
+	LOGO_SHADOW_OFFSET = iniReader.ReadFloat(section, "LOGO_SHADOW_OFFSET", 0.0f);
 
 	sprintf(section, "%s_%s", prefix[style], "MENU_TITLE");
 	MENUTITLE_R = iniReader.ReadInt(section, "RED", 0);
@@ -510,4 +518,11 @@ void Settings::Init(int style)
 	sprintf(section, "%s_%s", prefix[style], "MENU_OPTIONS");
 	D_W = iniReader.ReadFloat(section, "W", 0.0f);
 	D_H = iniReader.ReadFloat(section, "H", 0.0f);
+
+	sprintf(section, "%s_%s", prefix[style], "TEMP_DATA");
+	D_LOGO_X = iniReader.ReadFloat(section, "POS_X", 0.0f);
+	D_LOGO_Y = iniReader.ReadFloat(section, "POS_Y", 0.0f);
+	D_LOGO_W = iniReader.ReadFloat(section, "SIZE_X", 0.0f);
+	D_LOGO_H = iniReader.ReadFloat(section, "SIZE_Y", 0.0f);
+	D_LOGO_SHADOW_OFFSET = iniReader.ReadFloat(section, "SHADOW_OFFSET", 0.0f);
 }

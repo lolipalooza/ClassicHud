@@ -27,15 +27,8 @@
 
 using namespace plugin;
 
-enum eStyles {
-	STYLE_SA,
-	STYLE_III,
-	STYLE_VC,
-	STYLE_LCS,
-	STYLE_VCS
-};
-
 static int STYLE;
+static int MAX_STYLE = STYLE_LCS;
 
 class ClassicHud {
 public:
@@ -45,10 +38,14 @@ public:
 
 		static int keyPressTime = 0;
 		
-		STYLE = STYLE_VC;
+		CIniReader iniReader(CLASSICHUD_INI_PATH);
+		int random_style = iniReader.ReadInt("INITIALIZE", "Random", 0);
+		STYLE = iniReader.ReadInt("INITIALIZE", "Style", 0);
+
+		if (random_style)
+			STYLE = rand() % (MAX_STYLE + 1);
+
 		settings.Init(STYLE);
-		//CIniReader iniReader(CLASSICHUD_DAT_PATH);
-		//settings.WEAPONS_TXD = iniReader.ReadString("SA_FILES", "WEAPONS_TXD", DEFAULT_WEAPONS_TXD);
 
 		Events::initRwEvent += HudIcons::ClassicHudTextures;
 		Events::shutdownRwEvent += HudIcons::ClassicHudTextureShutdown;
@@ -75,7 +72,7 @@ public:
 			if (FindPlayerPed() && KeyPressed(VK_F9) && CTimer::m_snTimeInMilliseconds - keyPressTime > 500) {
 				keyPressTime = CTimer::m_snTimeInMilliseconds;
 
-				STYLE = (STYLE >= STYLE_LCS) ? 0 : STYLE + 1;
+				STYLE = (STYLE >= MAX_STYLE) ? 0 : STYLE + 1;
 				settings.Init(STYLE);
 
 				Weapon::WeaponTexturesShutdown();
@@ -120,7 +117,7 @@ void ClassicHud::TransformHud()
 	GarageMessages::InstallPatches();
 
 	MobileMenuSystem::InstallPatches();
-	//MobileLoadingScreen::InstallPatches();
+	MobileLoadingScreen::InstallPatches();
 	MobileMenuPage::InstallPatches();
 	MobileFrontEnd::InstallPatches();
 }

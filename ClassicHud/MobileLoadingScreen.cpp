@@ -86,7 +86,7 @@ void MobileLoadingScreen::RenderSplash() {
         CSprite2d::DrawRect(CRect(BilinearOffset(0.0f), BilinearOffset(0.0f), BilinearOffset(0.0f + SCREEN_WIDTH), BilinearOffset(0.0f + SCREEN_HEIGHT)), CRGBA(0, 0, 0, 255));
 
         if (!MobileLoad.m_currDisplayedSplash) {
-			mobileTex.m_nBackgroundSprite.m_pTexture = mobileTex.m_aSplashesTxd.GetTexture(LEGALSCREEN);
+			mobileTex.m_nBackgroundSprite.m_pTexture = mobileTex.m_aSplashesTxd.GetTexture(LEGALSCREEN + settings.SPLASH_SCREENS);
 			mobileTex.m_nBackgroundSprite.Draw(CRect(BilinearOffset(fPosX), BilinearOffset(0.0f), BilinearOffset(fPosX + SCREEN_WIDTH), BilinearOffset(0.0f + SCREEN_HEIGHT)), CRGBA(backgroundAlpha, backgroundAlpha, backgroundAlpha, backgroundAlpha));
 
 			// Legal screen
@@ -105,10 +105,13 @@ void MobileLoadingScreen::RenderSplash() {
 				}
 			}
 
-            mobileTex.m_nBackgroundSprite.m_pTexture = mobileTex.m_aSplashesTxd.GetTexture(ROCKSTAR);
-            mobileTex.m_nBackgroundSprite.Draw(CRect(BilinearOffset(SCREEN_COORD_CENTER_X - SCREEN_COORD(96.0f / 2)), BilinearOffset(SCREEN_COORD_CENTER_Y - SCREEN_COORD(96.0f / 2)),
-                BilinearOffset(SCREEN_COORD_CENTER_X - SCREEN_COORD(96.0f / 2)) + BilinearOffset(SCREEN_MULTIPLIER(96.0f)), 
-                BilinearOffset(SCREEN_COORD_CENTER_Y - SCREEN_COORD(96.0f / 2)) + BilinearOffset(SCREEN_MULTIPLIER(96.0f))), CRGBA(logoAlpha, logoAlpha, logoAlpha, logoAlpha));
+            mobileTex.m_nBackgroundSprite.m_pTexture = mobileTex.m_aSplashesTxd.GetTexture(ROCKSTAR + settings.SPLASH_SCREENS);
+			if (settings.SPLASH_LOGO_SIZE)
+				mobileTex.m_nBackgroundSprite.Draw(CRect(BilinearOffset(0.0f), BilinearOffset(0.0f), BilinearOffset(0.0f + SCREEN_WIDTH), BilinearOffset(0.0f + SCREEN_HEIGHT)), CRGBA(logoAlpha, logoAlpha, logoAlpha, logoAlpha));
+			else
+				mobileTex.m_nBackgroundSprite.Draw(CRect(BilinearOffset(SCREEN_COORD_CENTER_X - SCREEN_COORD(96.0f / 2)), BilinearOffset(SCREEN_COORD_CENTER_Y - SCREEN_COORD(96.0f / 2)),
+					BilinearOffset(SCREEN_COORD_CENTER_X - SCREEN_COORD(96.0f / 2)) + BilinearOffset(SCREEN_MULTIPLIER(96.0f)),
+					BilinearOffset(SCREEN_COORD_CENTER_Y - SCREEN_COORD(96.0f / 2)) + BilinearOffset(SCREEN_MULTIPLIER(96.0f))), CRGBA(logoAlpha, logoAlpha, logoAlpha, logoAlpha));
 
             mobileTex.m_nBackgroundSprite.m_pTexture = nullptr;
         }
@@ -117,6 +120,23 @@ void MobileLoadingScreen::RenderSplash() {
                 mobileTex.m_aSplashes[MobileLoad.m_currDisplayedSplash].Draw(CRect(SCREEN_COORD_CENTER_X - SCREEN_COORD((1920.0f * 900 / 1080) / 2), SCREEN_COORD(0.0f), SCREEN_COORD_CENTER_X - SCREEN_COORD((1920.0f * 900 / 1080) / 2) + SCREEN_COORD(1920.0f * 900 / 1080), SCREEN_COORD(0.0f) + SCREEN_HEIGHT), CRGBA(255, 255, 255, 255));
             else
                 mobileTex.m_aSplashes[MobileLoad.m_currDisplayedSplash].Draw(CRect(SCREEN_COORD(0.0f), SCREEN_COORD(0.0f), SCREEN_COORD(0.0f) + SCREEN_WIDTH, SCREEN_COORD(0.0f) + SCREEN_HEIGHT), CRGBA(255, 255, 255, 255));
+
+			if (settings.DISPLAY_LOGO_ON_LOADING_SCREEN) {
+				mobileTex.m_nBackgroundSprite.m_pTexture = mobileTex.m_nBackgroundSpriteTxd.GetTexture(settings.LOGO_ID);
+
+				if (settings.LOGO_SHADOW_OFFSET != 0.0f)
+					mobileTex.m_nBackgroundSprite.Draw(CRect(
+						SCREEN_COORD(settings.LOGO_X + settings.LOGO_SHADOW_OFFSET), SCREEN_COORD(settings.LOGO_Y + settings.LOGO_SHADOW_OFFSET),
+						SCREEN_COORD(settings.LOGO_X + settings.LOGO_SIZE_X + settings.LOGO_SHADOW_OFFSET), SCREEN_COORD(settings.LOGO_Y + settings.LOGO_SIZE_Y + settings.LOGO_SHADOW_OFFSET)),
+						CRGBA(0, 0, 0, 255));
+
+				mobileTex.m_nBackgroundSprite.Draw(CRect(
+					SCREEN_COORD(settings.LOGO_X), SCREEN_COORD(settings.LOGO_Y),
+					SCREEN_COORD(settings.LOGO_X + settings.LOGO_SIZE_X), SCREEN_COORD(settings.LOGO_Y + settings.LOGO_SIZE_Y)),
+					CRGBA(255, 255, 255, 255));
+
+				mobileTex.m_nBackgroundSprite.m_pTexture = nullptr;
+			}
         }
 		MobileLoadingScreen::FadingSplash(settings.SPLASH_STYLE);
     }

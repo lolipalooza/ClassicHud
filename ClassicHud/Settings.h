@@ -6,6 +6,15 @@
 #define CLASSICHUD_TXD_PATH "models\\ClassicHud\\classichud.txd"
 #define DEFAULT_WEAPONS_TXD "models\\ClassicHud\\weapons.txd"
 #define CLASSICHUD_DAT_PATH ".\\models\\ClassicHud\\classichud.dat"
+#define CLASSICHUD_INI_PATH ".\\models\\ClassicHud\\classichud.ini"
+
+enum eStyles {
+	STYLE_SA,
+	STYLE_III,
+	STYLE_VC,
+	STYLE_LCS,
+	STYLE_VCS
+};
 
 class Settings {
 public:
@@ -134,13 +143,15 @@ public:
 	int LEGALTEXT_ENABLE;
 
 	// Splash
-	int SPLASH_STYLE, SPLASH_SCREENS;
+	int SPLASH_STYLE, SPLASH_SCREENS, SPLASH_LOGO_SIZE;
 	char* LOADSCS_TXD;
 
 	// Loading Screen Bar
 	int LOADBAR_R1, LOADBAR_G1, LOADBAR_B1, LOADBAR_R2, LOADBAR_G2, LOADBAR_B2;
 	int LOADBAR_STYLE, LOADBAR_BORDER;
 	float LOADBAR_X, LOADBAR_Y, LOADBAR_SIZE_X, LOADBAR_SIZE_Y, LOADBAR_SHADOW;
+	int DISPLAY_LOGO_ON_LOADING_SCREEN, LOGO_ID;
+	float LOGO_X, LOGO_Y, LOGO_SIZE_X, LOGO_SIZE_Y, LOGO_SHADOW_OFFSET;
 
 	// Menu Title
 	int MENUTITLE_R, MENUTITLE_G, MENUTITLE_B, MENUTITLE_D_R, MENUTITLE_D_G, MENUTITLE_D_B;
@@ -183,6 +194,7 @@ public:
 
 	// Deletethis
 	float D_W, D_H;
+	float D_LOGO_X, D_LOGO_Y, D_LOGO_W, D_LOGO_H, D_LOGO_SHADOW_OFFSET;
 
 public:
 	void Init(int style);
