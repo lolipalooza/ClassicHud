@@ -495,6 +495,9 @@ void Settings::Init(int style)
 	MENU_TEST_RECT_W = iniReader.ReadFloat(section, "RECT_W", 0.0f);
 	MENU_TEST_RECT_H = iniReader.ReadFloat(section, "RECT_H", 0.0f);
 
+	sprintf(section, "%s_%s", prefix[style], "NEW_GAME_SCREEN");
+	MENU_NEWGAME_FONTSTYLE = iniReader.ReadInt(section, "FONTSTYLE", 0);
+
 	sprintf(section, "%s_%s", prefix[style], "MENU_BACKGROUND");
 	BGMENU_TXD = iniReader.ReadString(section, "PATH", "404");
 	BG_STYLE = iniReader.ReadInt(section, "STYLE", 0);

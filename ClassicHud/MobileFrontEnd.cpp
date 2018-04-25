@@ -639,6 +639,9 @@ void MobileFrontEnd::DrawStandardMenu() {
 				CFont::SetFontStyle(settings.MENUASK_YN_FONTSTYLE);
 			}
 
+			if (m_nCurrentMenuPage == MENUPAGE_SELECT_GAME)
+				CFont::SetFontStyle(settings.MENU_NEWGAME_FONTSTYLE);
+
 			if (stats_or_setting_page && MenuPages[m_nCurrentMenuPage].m_aButtons[i].m_nPosnY != posYd) {
 				CFont::SetAlignment(ALIGN_LEFT);
 				CFont::SetFontStyle(settings.MENU_SETTINGS_FONTSTYLE);
@@ -1919,6 +1922,9 @@ void MobileFrontEnd::TestMenuStandard(unsigned char m_nCurrentMenuPage) {
 					CFont::SetColor(CRGBA(settings.MENUASK_YN_R, settings.MENUASK_YN_G, settings.MENUASK_YN_B, 255));
 				CFont::SetFontStyle(settings.MENUASK_YN_FONTSTYLE);
 			}
+
+			if (m_nCurrentMenuPage == MENUPAGE_SELECT_GAME)
+				CFont::SetFontStyle(settings.MENU_NEWGAME_FONTSTYLE);
 
 			if (stats_or_setting_page && MenuPages[m_nCurrentMenuPage].m_aButtons[i].m_nPosnY != posYd) {
 				CFont::SetAlignment(ALIGN_LEFT);
