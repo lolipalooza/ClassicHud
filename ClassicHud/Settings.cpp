@@ -218,6 +218,7 @@ void Settings::Init(int style)
 	RADAR_Y = iniReader.ReadFloat(section, "POS_Y", 0.0f);
 	RADAR_SIZE_X = iniReader.ReadFloat(section, "SIZE_X", 0.0f);
 	RADAR_SIZE_Y = iniReader.ReadFloat(section, "SIZE_Y", 0.0f);
+	VC_RADAR_OFFSET = iniReader.ReadFloat(section, "VC_OFFSET", 0.0f);
 
 	sprintf(section, "%s_%s", prefix[style], "STYLED1");
 	STYLED1_SHADOW = iniReader.ReadInt(section, "SHADOW", 0);

@@ -80,7 +80,7 @@ public:
 	float fTextBoxBorderSize;
 
 	// Radar
-	float RADAR_RANGE, RADAR_X, RADAR_Y, RADAR_SIZE_X, RADAR_SIZE_Y;
+	float RADAR_RANGE, RADAR_X, RADAR_Y, RADAR_SIZE_X, RADAR_SIZE_Y, VC_RADAR_OFFSET;
 	int RADAR_A;
 
 	// Success Failed Message (Styled Text 1)

@@ -134,6 +134,7 @@ Data edit_data[] = {
 	{ "Radar Pos Y", "RADAR", "POS_Y", 1.0f },
 	{ "Radar Size X", "RADAR", "SIZE_X", 1.0f },
 	{ "Radar Size Y", "RADAR", "SIZE_Y", 1.0f },
+	{ "Radar Offset (Only Vice City)", "RADAR", "VC_OFFSET", 0.5f },
 
 	{ "Styled Text 1 Pos Y", "STYLED1", "POS_Y", 2.0f },
 	{ "Styled Text 1 Offset Y1", "STYLED1", "POS_Y1", 1.0f },

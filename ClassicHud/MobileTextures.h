@@ -85,8 +85,9 @@ public:
     CSprite2d m_menuSlider;
     CSprite2d m_aSplashes[14];
     CSprite2d m_nBackgroundSprite;
+	CSprite2d vc_radarDisc;
 
-    static MobileTexDictionary m_menuSliderTxd, m_aSplashesTxd, m_nBackgroundSpriteTxd;
+    static MobileTexDictionary m_menuSliderTxd, m_aSplashesTxd, m_nBackgroundSpriteTxd, vc_radarDiscTxd;
 
 public:
 	static void Setup();

@@ -5,7 +5,11 @@
 #include "game_sa\CTimer.h"
 
 MobileTextures mobileTex;
-MobileTexDictionary MobileTextures::m_menuSliderTxd, MobileTextures::m_aSplashesTxd, MobileTextures::m_nBackgroundSpriteTxd;
+
+MobileTexDictionary MobileTextures::m_menuSliderTxd;
+MobileTexDictionary MobileTextures::m_aSplashesTxd;
+MobileTexDictionary MobileTextures::m_nBackgroundSpriteTxd;
+MobileTexDictionary MobileTextures::vc_radarDiscTxd;
 
 void MobileTexDictionary::Load() {
     if (!m_pRwTexDictionary) {
@@ -85,4 +89,6 @@ void MobileTextures::Setup() {
 	m_aSplashesTxd.Init(GAME_PATH(settings.LOADSCS_TXD));
 	//m_nBackgroundSpriteTxd.Init(PLUGIN_PATH("MobileHud\\menu_background.txd"));
 	m_nBackgroundSpriteTxd.Init(GAME_PATH(settings.BGMENU_TXD));
+
+	vc_radarDiscTxd.Init("models\\ClassicHud\\ViceCity\\radardisc.txd");
 }

@@ -99,9 +99,9 @@ public:
 
 void ClassicHud::TransformHud()
 {
-	plugin::patch::RedirectCall(0x5BA8AF, HudIcons::HudTextures);
-	plugin::patch::RedirectCall(0x5BA6A4, HudIcons::FontTextures);
-	plugin::patch::RedirectCall(0x7187DB, HudIcons::FontData);
+	patch::RedirectCall(0x5BA8AF, HudIcons::HudTextures);
+	patch::RedirectCall(0x5BA6A4, HudIcons::FontTextures);
+	patch::RedirectCall(0x7187DB, HudIcons::FontData);
 
 	Money::InstallPatches();
 	Clock::InstallPatches();

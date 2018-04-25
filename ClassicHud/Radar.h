@@ -3,6 +3,7 @@
 #include <plugin.h>
 #include "Settings.h"
 #include "Utility.h"
+#include "MobileTextures.h"
 
 #include "CVector2D.h"
 #include "CSprite2d.h"
@@ -86,6 +87,21 @@ void __fastcall Radar::MyDrawRadarCircle(CSprite2d *sprite, int, CRect const &re
 		SCREEN_COORD(settings.RADAR_X), SCREEN_COORD(settings.RADAR_Y)), CRGBA(255, 255, 255, 255));
 	DrawRadarRectangle(sprite, CRect(SCREEN_COORD(settings.RADAR_X + settings.RADAR_SIZE_X), SCREEN_COORD(settings.RADAR_Y + settings.RADAR_SIZE_Y),
 		SCREEN_COORD(settings.RADAR_X), SCREEN_COORD(settings.RADAR_Y)), CRGBA(255, 255, 255, 255));
+
+	if (settings.BG_VC_SCREEN) {
+		mobileTex.vc_radarDisc.m_pTexture = mobileTex.vc_radarDiscTxd.GetTexture(0);
+
+		DrawRadarRectangle(&mobileTex.vc_radarDisc, CRect(SCREEN_COORD(settings.RADAR_X - settings.RADAR_SIZE_X + settings.VC_RADAR_OFFSET), SCREEN_COORD(settings.RADAR_Y - settings.RADAR_SIZE_Y + settings.VC_RADAR_OFFSET),
+			SCREEN_COORD(settings.RADAR_X), SCREEN_COORD(settings.RADAR_Y)), CRGBA(255, 255, 255, 255));
+		DrawRadarRectangle(&mobileTex.vc_radarDisc, CRect(SCREEN_COORD(settings.RADAR_X + settings.RADAR_SIZE_X + settings.VC_RADAR_OFFSET), SCREEN_COORD(settings.RADAR_Y - settings.RADAR_SIZE_Y + settings.VC_RADAR_OFFSET),
+			SCREEN_COORD(settings.RADAR_X), SCREEN_COORD(settings.RADAR_Y)), CRGBA(255, 255, 255, 255));
+		DrawRadarRectangle(&mobileTex.vc_radarDisc, CRect(SCREEN_COORD(settings.RADAR_X - settings.RADAR_SIZE_X + settings.VC_RADAR_OFFSET), SCREEN_COORD(settings.RADAR_Y + settings.RADAR_SIZE_Y + settings.VC_RADAR_OFFSET),
+			SCREEN_COORD(settings.RADAR_X), SCREEN_COORD(settings.RADAR_Y)), CRGBA(255, 255, 255, 255));
+		DrawRadarRectangle(&mobileTex.vc_radarDisc, CRect(SCREEN_COORD(settings.RADAR_X + settings.RADAR_SIZE_X + settings.VC_RADAR_OFFSET), SCREEN_COORD(settings.RADAR_Y + settings.RADAR_SIZE_Y + settings.VC_RADAR_OFFSET),
+			SCREEN_COORD(settings.RADAR_X), SCREEN_COORD(settings.RADAR_Y)), CRGBA(255, 255, 255, 255)); // 247, 150, 255
+
+		mobileTex.vc_radarDisc.m_pTexture = nullptr;
+	}
 }
 
 void Radar::MyTransformRadarPointToScreenSpace(CVector2D *out, CVector2D *in) {
