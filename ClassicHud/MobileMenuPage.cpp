@@ -18,18 +18,6 @@ float fPosYk = -188.0f;
 float fPosYn = -188.0f;
 float fPosYy = fPosYn + 50.0f;
 
-bool MobileMenuPage::statsOrSettingPage(int page) {
-	return page == MENUPAGE_STATS
-		|| !settings.MENU_SETTINGS_SHOW_RIGHT && (
-			page == MENUPAGE_DISPLAY_SETTINGS
-			|| page == MENUPAGE_JOYPAD_SETTINGS
-			|| page == MENUPAGE_MOUSE_SETTINGS
-			|| page == MENUPAGE_AUDIO_SETTINGS
-			|| page == MENUPAGE_USER_TRACKS_OPTIONS
-			|| page == 44 // Game Settings
-			);
-}
-
 void MobileMenuPage::MyPatch() {
 	for (int i = 0; i < 45; i++)
 		menu[i] = MenuPages[i];

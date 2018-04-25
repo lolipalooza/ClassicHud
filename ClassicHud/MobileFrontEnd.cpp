@@ -309,7 +309,7 @@ void MobileFrontEnd::DrawStandardMenu() {
 	unsigned char m_nCurrentMenuPage = FrontEndMenuManager.m_nCurrentMenuPage;
 
 	if (settings.BG_VC_SCREEN)
-		MobileFrontEnd::DrawViceCityFtEndBorders();
+		MobileFrontEnd::DrawViceCityFtEndBorders(FrontEndMenuManager.m_nCurrentMenuPage);
 
 	CFont::SetBackground(0, 0);
 	CFont::SetProp(1);
@@ -581,12 +581,14 @@ void MobileFrontEnd::DrawStandardMenu() {
                 break;
             }
 
-			bool stats_or_setting_page = MobileMenuPage::statsOrSettingPage(m_nCurrentMenuPage);
+			bool stats_or_setting_page = MobileFrontEnd::statsOrSettingPage(m_nCurrentMenuPage);
+			bool save_or_load_page = MobileFrontEnd::saveOrLoadPage(m_nCurrentMenuPage);
 			float posY = GetNewYPos(i, m_nCurrentMenuPage);
 
 			unsigned int savedAlpha;
 			float f_leftPosX = SCREEN_COORD_CENTER_X - SCREEN_COORD(settings.MENU_X / 2);
 			float fPosnXForStats = SCREEN_COORD_CENTER_X - SCREEN_COORD(settings.MENU_STATS_X / 2);
+			float fPosnXForSaveLoad = SCREEN_COORD_CENTER_X - SCREEN_COORD(settings.MENU_SAVELOAD_X / 2);
 			float f_rightPosX = SCREEN_COORD_CENTER_X - SCREEN_COORD(settings.MENU_R_X / 2);
 			float fPosY = SCREEN_COORD_CENTER_Y - SCREEN_COORD(-posY) + (0.0f / 2);
 
@@ -617,7 +619,6 @@ void MobileFrontEnd::DrawStandardMenu() {
 					CFont::SetScale(SCREEN_MULTIPLIER(settings.MENU_SIZE_X * SCREEN_COORD(690.0f) / width), SCREEN_MULTIPLIER(settings.MENU_SIZE_Y));
 			}
 
-
 			// Print left column
 			CFont::SetDropColor(CRGBA(0, 0, 0, 255));
 			if (i == FrontEndMenuManager.m_nSelectedMenuItem)
@@ -643,6 +644,20 @@ void MobileFrontEnd::DrawStandardMenu() {
 				CFont::SetFontStyle(settings.MENU_SETTINGS_FONTSTYLE);
 				CFont::SetScale(SCREEN_MULTIPLIER(settings.MENU_STATS_SIZE_X), SCREEN_MULTIPLIER(settings.MENU_STATS_SIZE_Y));
 				CFont::PrintString(fPosnXForStats, fPosY, (char*)LeftColumn);
+			}
+			else if (save_or_load_page)
+			{
+				CFont::SetDropShadowPosition(settings.MENU_SAVELOAD_SHADOW);
+				if (settings.MENU_SAVELOAD_OUTLINE != 0)
+					CFont::SetOutlinePosition(settings.MENU_SAVELOAD_OUTLINE);
+				CFont::SetAlignment(ALIGN_LEFT);
+				CFont::SetFontStyle(settings.MENU_SAVELOAD_FONTSTYLE);
+				CFont::SetScale(SCREEN_MULTIPLIER(settings.MENU_SAVELOAD_SIZE_X), SCREEN_MULTIPLIER(settings.MENU_SAVELOAD_SIZE_Y));
+				if (i == FrontEndMenuManager.m_nSelectedMenuItem)
+					CFont::SetColor(CRGBA(settings.MENU_SAVELOAD_SEL_R, settings.MENU_SAVELOAD_SEL_G, settings.MENU_SAVELOAD_SEL_B, 255));
+				else
+					CFont::SetColor(CRGBA(settings.MENU_SAVELOAD_R, settings.MENU_SAVELOAD_G, settings.MENU_SAVELOAD_B, 255));
+				CFont::PrintString(fPosnXForSaveLoad, fPosY, (char*)LeftColumn);
 			}
 			else
 				CFont::PrintString(f_leftPosX, fPosY, (char*)LeftColumn);
@@ -1839,12 +1854,14 @@ void MobileFrontEnd::TestMenuStandard(unsigned char m_nCurrentMenuPage) {
 				break;
 			}
 
-			bool stats_or_setting_page = MobileMenuPage::statsOrSettingPage(m_nCurrentMenuPage);
+			bool stats_or_setting_page = MobileFrontEnd::statsOrSettingPage(m_nCurrentMenuPage);
+			bool save_or_load_page = MobileFrontEnd::saveOrLoadPage(m_nCurrentMenuPage);
 
 			float posY = GetNewYPos(i, m_nCurrentMenuPage);
 			unsigned int savedAlpha;
 			float f_leftPosX = SCREEN_COORD_CENTER_X - SCREEN_COORD(settings.MENU_X / 2);
 			float fPosnXForStats = SCREEN_COORD_CENTER_X - SCREEN_COORD(settings.MENU_STATS_X / 2);
+			float fPosnXForSaveLoad = SCREEN_COORD_CENTER_X - SCREEN_COORD(settings.MENU_SAVELOAD_X / 2);
 			float f_rightPosX = SCREEN_COORD_CENTER_X - SCREEN_COORD(settings.MENU_R_X / 2);
 			float fPosY = SCREEN_COORD_CENTER_Y - SCREEN_COORD(-posY) + (0.0f / 2);
 
@@ -1866,16 +1883,12 @@ void MobileFrontEnd::TestMenuStandard(unsigned char m_nCurrentMenuPage) {
 					RwRenderStateSet(rwRENDERSTATEVERTEXALPHAENABLE, reinterpret_cast<void *>(savedAlpha));
 				}
 			}
-			/*if (m_nCurrentMenuPage == 0) {
-				float test_posY = SCREEN_COORD_CENTER_Y - SCREEN_COORD(-sfPosY2) + (0.0f / 2);
-				CSprite2d::DrawRect(CRect(fPosnXForStats - SCREEN_COORD(settings.MENU_RECT_X / 2), test_posY - SCREEN_COORD(settings.MENU_RECT_Y / 2), (fPosnXForStats - SCREEN_COORD(settings.MENU_RECT_X / 2)) + SCREEN_MULTIPLIER(settings.MENU_STATS_RECT_WIDTH), (test_posY - SCREEN_COORD(settings.MENU_RECT_Y / 2)) + SCREEN_MULTIPLIER(settings.MENU_RECT_HEIGHT)), CRGBA(settings.MENU_RECT_R, settings.MENU_RECT_G, settings.MENU_RECT_B, 50));
-			}*/
 
 			if (settings.BG_VC_SCREEN) {
-				CSprite2d::DrawRect(CRect(0.0f, 0.0f, settings.D_W, SCREEN_HEIGHT), CRGBA(0, 0, 0, 50));
-				CSprite2d::DrawRect(CRect(0.0f, 0.0f, SCREEN_WIDTH, settings.D_H), CRGBA(0, 0, 0, 50));
-				CSprite2d::DrawRect(CRect(SCREEN_WIDTH - settings.D_W, 0.0f, SCREEN_WIDTH, SCREEN_HEIGHT), CRGBA(0, 0, 0, 50));
-				CSprite2d::DrawRect(CRect(0.0f, SCREEN_HEIGHT - settings.D_H, SCREEN_WIDTH, SCREEN_HEIGHT), CRGBA(0, 0, 0, 50));
+				CSprite2d::DrawRect(CRect(0.0f, 0.0f, SCREEN_COORD(settings.D_W), SCREEN_HEIGHT), CRGBA(0, 0, 0, 50));
+				CSprite2d::DrawRect(CRect(0.0f, 0.0f, SCREEN_WIDTH, SCREEN_COORD(settings.D_H)), CRGBA(0, 0, 0, 50));
+				CSprite2d::DrawRect(CRect(SCREEN_WIDTH + SCREEN_COORD(-settings.D_W), 0.0f, SCREEN_WIDTH, SCREEN_HEIGHT), CRGBA(0, 0, 0, 50));
+				CSprite2d::DrawRect(CRect(0.0f, SCREEN_HEIGHT + SCREEN_COORD(-settings.D_H), SCREEN_WIDTH, SCREEN_HEIGHT), CRGBA(0, 0, 0, 50));
 			}
 
 			CFont::SetScale(SCREEN_MULTIPLIER(settings.MENU_SIZE_X), SCREEN_MULTIPLIER(settings.MENU_SIZE_Y));
@@ -1912,6 +1925,20 @@ void MobileFrontEnd::TestMenuStandard(unsigned char m_nCurrentMenuPage) {
 				CFont::SetFontStyle(settings.MENU_SETTINGS_FONTSTYLE);
 				CFont::SetScale(SCREEN_MULTIPLIER(settings.MENU_STATS_SIZE_X), SCREEN_MULTIPLIER(settings.MENU_STATS_SIZE_Y));
 				CFont::PrintString(fPosnXForStats, fPosY, (char*)LeftColumn);
+			}
+			else if (save_or_load_page)
+			{
+				CFont::SetDropShadowPosition(settings.MENU_SAVELOAD_SHADOW);
+				if (settings.MENU_SAVELOAD_OUTLINE != 0)
+					CFont::SetOutlinePosition(settings.MENU_SAVELOAD_OUTLINE);
+				CFont::SetAlignment(ALIGN_LEFT);
+				CFont::SetFontStyle(settings.MENU_SAVELOAD_FONTSTYLE);
+				CFont::SetScale(SCREEN_MULTIPLIER(settings.MENU_SAVELOAD_SIZE_X), SCREEN_MULTIPLIER(settings.MENU_SAVELOAD_SIZE_Y));
+				if (i == FrontEndMenuManager.m_nSelectedMenuItem)
+					CFont::SetColor(CRGBA(settings.MENU_SAVELOAD_SEL_R, settings.MENU_SAVELOAD_SEL_G, settings.MENU_SAVELOAD_SEL_B, 255));
+				else
+					CFont::SetColor(CRGBA(settings.MENU_SAVELOAD_R, settings.MENU_SAVELOAD_G, settings.MENU_SAVELOAD_B, 255));
+				CFont::PrintString(fPosnXForSaveLoad, fPosY, (char*)LeftColumn);
 			}
 			else
 				CFont::PrintString(f_leftPosX, fPosY, (char*)LeftColumn);
@@ -1963,8 +1990,27 @@ void MobileFrontEnd::TestMenuStandard(unsigned char m_nCurrentMenuPage) {
 	}
 }
 
+bool MobileFrontEnd::statsOrSettingPage(int page) {
+	return page == MENUPAGE_STATS
+		|| !settings.MENU_SETTINGS_SHOW_RIGHT && (
+			page == MENUPAGE_DISPLAY_SETTINGS
+			|| page == MENUPAGE_JOYPAD_SETTINGS
+			|| page == MENUPAGE_MOUSE_SETTINGS
+			|| page == MENUPAGE_AUDIO_SETTINGS
+			|| page == MENUPAGE_USER_TRACKS_OPTIONS
+			|| page == 44 // Game Settings
+			);
+}
+
+bool MobileFrontEnd::saveOrLoadPage(int page) {
+	return page == MENUPAGE_LOAD_GAME
+		|| page == MENUPAGE_GAME_SAVE
+		|| page == MENUPAGE_DELETE_GAME;
+}
+
 float MobileFrontEnd::GetNewYPos(unsigned int i, unsigned char m_nCurrentMenuPage) {
-	bool stats_or_setting_page = MobileMenuPage::statsOrSettingPage(m_nCurrentMenuPage);
+	bool stats_or_setting_page = MobileFrontEnd::statsOrSettingPage(m_nCurrentMenuPage);
+	bool save_or_load_page = MobileFrontEnd::saveOrLoadPage(m_nCurrentMenuPage);
 
 	float minPosY = -299.0f, maxPosY;
 	for (int j = 0; j < 12; j++)
@@ -1976,14 +2022,17 @@ float MobileFrontEnd::GetNewYPos(unsigned int i, unsigned char m_nCurrentMenuPag
 	float sfSpacing, sfPosY0, sfPosY1, sfPosY2, sfPosY3, sfPosY4, sfPosY5,
 		sfPosY6, sfPosY7, sfPosY8, sfPosYd, sfPosYk, sfPosYn, sfPosYy;
 
-	sfSpacing = settings.MENU_YSPACE + (stats_or_setting_page ? settings.MENU_STATS_YSPACE : 0.0f);
+	sfSpacing = settings.MENU_YSPACE
+		+ (stats_or_setting_page ? settings.MENU_STATS_YSPACE : 0.0f)
+		+ (save_or_load_page ? settings.MENU_SAVELOAD_YSPACE : 0.0f);
 	sfPosY0 = settings.MENU_Y0;
 	sfPosY1 = (!stats_or_setting_page && settings.BG_V_ALIGN_MIDDLE) ? (
 		settings.MENU_Y1 - (maxPosY - minPosY) / 2.0f
+		+ (save_or_load_page ? settings.MENU_SAVELOAD_Y_OFFSET : 0.0f)
 		) : (
-		settings.MENU_Y1
-		+ ((m_nCurrentMenuPage == MENUPAGE_MAIN_MENU) ? settings.MENU_Y1_OFFSET : 0.0f)
-		)
+			settings.MENU_Y1
+			+ ((m_nCurrentMenuPage == MENUPAGE_MAIN_MENU) ? settings.MENU_Y1_OFFSET : 0.0f)
+			)
 		+ (stats_or_setting_page ? settings.MENU_STATS_Y_OFFSET : 0.0f);
 	sfPosY2 = sfPosY1 + sfSpacing;
 	sfPosY3 = sfPosY2 + sfSpacing;
@@ -2017,36 +2066,41 @@ float MobileFrontEnd::GetNewYPos(unsigned int i, unsigned char m_nCurrentMenuPag
 
 	float posY;
 	float m_nPosnY = MenuPages[m_nCurrentMenuPage].m_aButtons[i].m_nPosnY;
-	if (m_nPosnY == fPosY0)			posY = sfPosY0;
-	else if (m_nPosnY == fPosY1)	posY = sfPosY1;
-	else if (m_nPosnY == fPosY2)	posY = sfPosY2;
-	else if (m_nPosnY == fPosY3)	posY = sfPosY3;
-	else if (m_nPosnY == fPosY4)	posY = sfPosY4;
-	else if (m_nPosnY == fPosY5)	posY = sfPosY5;
-	else if (m_nPosnY == fPosY6)	posY = sfPosY6;
-	else if (m_nPosnY == fPosY7)	posY = sfPosY7;
-	else if (m_nPosnY == fPosY8)	posY = sfPosY8;
-	else if (m_nPosnY == fPosYd)	posY = sfPosYd;
-	else if (m_nPosnY == fPosYk || m_nPosnY == fPosYn)		posY = sfPosYn;
-	else if (m_nPosnY == fPosYy)	posY = sfPosYy;
+	if (		m_nPosnY == fPosY0)							posY = sfPosY0;
+	else if (	m_nPosnY == fPosY1)							posY = sfPosY1;
+	else if (	m_nPosnY == fPosY2)							posY = sfPosY2;
+	else if (	m_nPosnY == fPosY3)							posY = sfPosY3;
+	else if (	m_nPosnY == fPosY4)							posY = sfPosY4;
+	else if (	m_nPosnY == fPosY5)							posY = sfPosY5;
+	else if (	m_nPosnY == fPosY6)							posY = sfPosY6;
+	else if (	m_nPosnY == fPosY7)							posY = sfPosY7;
+	else if (	m_nPosnY == fPosY8)							posY = sfPosY8;
+	else if (	m_nPosnY == fPosYd)							posY = sfPosYd;
+	else if (	m_nPosnY == fPosYk || m_nPosnY == fPosYn)	posY = sfPosYn;
+	else if (	m_nPosnY == fPosYy)							posY = sfPosYy;
 
 	return posY;
 }
 
-void MobileFrontEnd::DrawViceCityFtEndBorders() {
+void MobileFrontEnd::DrawViceCityFtEndBorders(int page) {
+	bool save_or_load_page = MobileFrontEnd::saveOrLoadPage(page);
 	static int transitionTime;
 	static unsigned char prevMenuPage = 0;
 	static float y_off[4], x_off[4], y_add[4], x_add[4], y_add_full[4], x_add_full[4];
-	if (prevMenuPage != FrontEndMenuManager.m_nCurrentMenuPage) {
+	static float random_rect_x[4], random_rect_y[4];
+	if (page != prevMenuPage) {
 		for (int i = 0; i < 4; i++) {
 			y_add_full[i] = y_off[i], x_add_full[i] = x_off[i];
 			x_off[i] = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / 60.0f));
 			y_off[i] = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / 60.0f));
 			y_add_full[i] -= y_off[i], x_add_full[i] -= x_off[i];
+
+			random_rect_x[i] = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / 20.0f));
+			random_rect_y[i] = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / 20.0f));
 		}
 		transitionTime = CTimer::m_snTimeInMillisecondsPauseMode;
 	}
-	prevMenuPage = FrontEndMenuManager.m_nCurrentMenuPage;
+	prevMenuPage = page;
 
 	int TIME = 200;
 	if (CTimer::m_snTimeInMillisecondsPauseMode - transitionTime <= TIME) {
@@ -2056,31 +2110,49 @@ void MobileFrontEnd::DrawViceCityFtEndBorders() {
 		}
 	}
 
+	CSprite2d rectangle;
+	
+	if (save_or_load_page)
+		rectangle.Draw(
+			SCREEN_COORD(70.0f				- random_rect_x[0]), SCREEN_COORD(200.0f			- random_rect_y[0]),
+			SCREEN_COORD(70.0f + 1200.0f	+ random_rect_x[1]), SCREEN_COORD(200.0f			- random_rect_y[1]),
+			SCREEN_COORD(70.0f				- random_rect_x[2]), SCREEN_COORD(200.0f + 562.0f	+ random_rect_y[2]),
+			SCREEN_COORD(70.0f + 1200.0f	+ random_rect_x[3]), SCREEN_COORD(200.0f + 562.0f	+ random_rect_y[3]),
+			CRGBA(33, 92, 182, 80));
+
+	else if (page == MENUPAGE_STATS)
+		rectangle.Draw(
+			SCREEN_COORD(224.0f				- random_rect_x[0]), SCREEN_COORD(340.0f			- random_rect_y[0]),
+			SCREEN_COORD(224.0f + 892.0f	+ random_rect_x[1]), SCREEN_COORD(340.0f			- random_rect_y[1]),
+			SCREEN_COORD(224.0f				- random_rect_x[2]), SCREEN_COORD(340.0f + 390.0f	+ random_rect_y[2]),
+			SCREEN_COORD(224.0f + 892.0f	+ random_rect_x[3]), SCREEN_COORD(340.0f + 390.0f	+ random_rect_y[3]),
+			CRGBA(33, 92, 182, 80));
+	
 	CSprite2d left, top, right, bottom;
+
 	left.Draw(0.0f, 0.0f,
 		settings.D_W + (x_off[0] + x_add[0]), 0.0f,
 		0.0f, SCREEN_HEIGHT,
 		settings.D_W + (x_off[1] + x_add[1]), SCREEN_HEIGHT,
-		CRGBA(0, 0, 0, 255)
-	);
+		CRGBA(0, 0, 0, 255));
+
 	top.Draw(0.0f, 0.0f,
 		SCREEN_WIDTH, 0.0f,
-		0.0f, settings.D_H + (y_off[0] + y_add[0]) - 40.0f,
-		SCREEN_WIDTH, settings.D_H + (y_off[1] + y_add[1]) - 40.0f,
-		CRGBA(0, 0, 0, 255)
-	);
-	right.Draw(SCREEN_WIDTH - settings.D_W - (x_off[2] + x_add[2]) + 20.0f, 0.0f,
+		0.0f, SCREEN_COORD(settings.D_H + (y_off[0] + y_add[0]) - 40.0f),
+		SCREEN_WIDTH, SCREEN_COORD(settings.D_H + (y_off[1] + y_add[1]) - 40.0f),
+		CRGBA(0, 0, 0, 255));
+
+	right.Draw(SCREEN_WIDTH + SCREEN_COORD(-settings.D_W - (x_off[2] + x_add[2]) + 20.0f), 0.0f,
 		SCREEN_WIDTH, 0.0f,
-		SCREEN_WIDTH - settings.D_W - (x_off[3] + x_add[3]) + 20.0f, SCREEN_HEIGHT,
+		SCREEN_WIDTH + SCREEN_COORD(-settings.D_W - (x_off[3] + x_add[3]) + 20.0f), SCREEN_HEIGHT,
 		SCREEN_WIDTH, SCREEN_HEIGHT,
-		CRGBA(0, 0, 0, 255)
-	);
-	bottom.Draw(0.0f, SCREEN_HEIGHT - settings.D_H - (y_off[2] + y_add[2]),
-		SCREEN_WIDTH, SCREEN_HEIGHT - settings.D_H - (y_off[3] + y_add[3]),
+		CRGBA(0, 0, 0, 255));
+
+	bottom.Draw(0.0f, SCREEN_HEIGHT + SCREEN_COORD(-settings.D_H - (y_off[2] + y_add[2])),
+		SCREEN_WIDTH, SCREEN_HEIGHT + SCREEN_COORD(-settings.D_H - (y_off[3] + y_add[3])),
 		0.0f, SCREEN_HEIGHT,
 		SCREEN_WIDTH, SCREEN_HEIGHT,
-		CRGBA(0, 0, 0, 255)
-	);
+		CRGBA(0, 0, 0, 255));
 
 	// Vice City Logo
 	mobileTex.m_nBackgroundSprite.m_pTexture = mobileTex.m_nBackgroundSpriteTxd.GetTexture(1);
@@ -2172,14 +2244,18 @@ void MobileFrontEnd::DrawVCSelectionRectangles(float width, float posY, int page
 			st_px + st_sx + rx4, py + sy + ry4,
 			CRGBA(settings.MENU_RECT_R, settings.MENU_RECT_G, settings.MENU_RECT_B, settings.MENU_RECT_A));
 	
-	// Settings pages
+	// Settings pages and Save/Load pages
 	else if (MenuPages[page].m_aButtons[i].m_nPosnY != posYd
 		&& (page == MENUPAGE_DISPLAY_SETTINGS
-		|| page == MENUPAGE_JOYPAD_SETTINGS
-		|| page == MENUPAGE_MOUSE_SETTINGS
-		|| page == MENUPAGE_AUDIO_SETTINGS
-		|| page == 44 // Game Settings
-		|| page == MENUPAGE_USER_TRACKS_OPTIONS))
+			|| page == MENUPAGE_JOYPAD_SETTINGS
+			|| page == MENUPAGE_MOUSE_SETTINGS
+			|| page == MENUPAGE_AUDIO_SETTINGS
+			|| page == MENUPAGE_USER_TRACKS_OPTIONS
+			|| page == 44 // Game Settings
+			|| page == MENUPAGE_LOAD_GAME
+			|| page == MENUPAGE_GAME_SAVE
+			|| page == MENUPAGE_DELETE_GAME
+			))
 		VC_sel_rect.Draw(
 			s_px + rx1, py + ry1,
 			s_px + s_sx + rx2, py + ry2,

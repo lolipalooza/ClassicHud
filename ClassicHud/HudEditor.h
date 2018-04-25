@@ -253,6 +253,17 @@ Data edit_data[] = {
 	{ "Menu Options (Stats) Sliders Size X", "MENU_OPTIONS_RIGHT", "SLIDERS_SIZE_X", 1.0f },
 	{ "Menu Options (Stats) Sliders Size Y", "MENU_OPTIONS_RIGHT", "SLIDERS_SIZE_Y", 0.02f },
 	{ "Menu Options (Opt NO) Pos Y", "MENU_OPTIONS_OK", "POS_YN", 1.0f },
+
+	{ "Save/Load Pos X", "MENU_SAVE_LOAD", "POS_X", 1.0f },
+	{ "Save/Load Pos Y (Offset)", "MENU_SAVE_LOAD", "POS_Y_OFFSET", 1.0f },
+	{ "Save/Load Y Space (Offset)", "MENU_SAVE_LOAD", "YSPACE_OFFSET", 1.0f },
+	{ "Save/Load Size X", "MENU_SAVE_LOAD", "SIZE_X", 0.01f },
+	{ "Save/Load Size Y", "MENU_SAVE_LOAD", "SIZE_Y", 0.01f },
+
+	{ "Save/Load Rectangle Pos X (Only Vice City)", "TEST_RECTANGLE", "RECT_X", 1.0f },
+	{ "Save/Load Rectangle Pos Y (Only Vice City)", "TEST_RECTANGLE", "RECT_Y", 1.0f },
+	{ "Save/Load Rectangle Width (Only Vice City)", "TEST_RECTANGLE", "RECT_W", 1.0f },
+	{ "Save/Load Rectangle Height (Only Vice City)", "TEST_RECTANGLE", "RECT_H", 1.0f },
 };
 
 class HudEditor
@@ -340,6 +351,8 @@ public:
 				else if (section == "MENU_OPTIONS_STATS")		MobileFrontEnd::TestMenuStandard(MENUPAGE_STATS);
 				else if (section == "MENU_OPTIONS_RIGHT")		MobileFrontEnd::TestMenuStandard(MENUPAGE_DISPLAY_SETTINGS);
 				else if (section == "MENU_OPTIONS_OK")			MobileFrontEnd::TestMenuStandard(MENUPAGE_SAVE_DONE_2);
+				else if (section == "MENU_SAVE_LOAD")			MobileFrontEnd::TestMenuStandard(MENUPAGE_LOAD_GAME);
+				else if (section == "TEST_RECTANGLE")			CSprite2d::DrawRect(CRect(SCREEN_COORD(settings.MENU_TEST_RECT_X), SCREEN_COORD(settings.MENU_TEST_RECT_Y), SCREEN_COORD(settings.MENU_TEST_RECT_X + settings.MENU_TEST_RECT_W), SCREEN_COORD(settings.MENU_TEST_RECT_Y + settings.MENU_TEST_RECT_H)), CRGBA(33, 92, 182, 255));
 				
 				TestMessage::Draw(SCREEN_COORD(settings.CUSTOM_X),
 					SCREEN_COORD(settings.CUSTOM_Y), settings.CUSTOM_SIZE_X, settings.CUSTOM_SIZE_Y,

@@ -473,6 +473,28 @@ void Settings::Init(int style)
 	MENU_SLIDERS_SIZE_X = iniReader.ReadFloat(section, "SLIDERS_SIZE_X", 0.0f);
 	MENU_SLIDERS_SIZE_Y = iniReader.ReadFloat(section, "SLIDERS_SIZE_Y", 0.0f);
 
+	sprintf(section, "%s_%s", prefix[style], "MENU_SAVE_LOAD");
+	MENU_SAVELOAD_FONTSTYLE = iniReader.ReadInt(section, "FONTSTYLE", 0);
+	MENU_SAVELOAD_SHADOW = iniReader.ReadInt(section, "SHADOW", 0);
+	MENU_SAVELOAD_OUTLINE = iniReader.ReadInt(section, "OUTLINE", 0);
+	MENU_SAVELOAD_R = iniReader.ReadInt(section, "RED", 0);
+	MENU_SAVELOAD_G = iniReader.ReadInt(section, "GREEN", 0);
+	MENU_SAVELOAD_B = iniReader.ReadInt(section, "BLUE", 0);
+	MENU_SAVELOAD_SEL_R = iniReader.ReadInt(section, "SEL_RED", 0);
+	MENU_SAVELOAD_SEL_G = iniReader.ReadInt(section, "SEL_GREEN", 0);
+	MENU_SAVELOAD_SEL_B = iniReader.ReadInt(section, "SEL_BLUE", 0);
+	MENU_SAVELOAD_X = iniReader.ReadFloat(section, "POS_X", 0.0f);
+	MENU_SAVELOAD_Y_OFFSET = iniReader.ReadFloat(section, "POS_Y_OFFSET", 0.0f);
+	MENU_SAVELOAD_YSPACE = iniReader.ReadFloat(section, "YSPACE_OFFSET", 0.0f);
+	MENU_SAVELOAD_SIZE_X = iniReader.ReadFloat(section, "SIZE_X", 0.0f);
+	MENU_SAVELOAD_SIZE_Y = iniReader.ReadFloat(section, "SIZE_Y", 0.0f);
+
+	sprintf(section, "%s_%s", prefix[style], "TEST_RECTANGLE");
+	MENU_TEST_RECT_X = iniReader.ReadFloat(section, "RECT_X", 0.0f);
+	MENU_TEST_RECT_Y = iniReader.ReadFloat(section, "RECT_Y", 0.0f);
+	MENU_TEST_RECT_W = iniReader.ReadFloat(section, "RECT_W", 0.0f);
+	MENU_TEST_RECT_H = iniReader.ReadFloat(section, "RECT_H", 0.0f);
+
 	sprintf(section, "%s_%s", prefix[style], "MENU_BACKGROUND");
 	BGMENU_TXD = iniReader.ReadString(section, "PATH", "404");
 	BG_STYLE = iniReader.ReadInt(section, "STYLE", 0);

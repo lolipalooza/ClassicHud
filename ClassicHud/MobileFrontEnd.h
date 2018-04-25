@@ -44,8 +44,10 @@ public:
     static void PrintBriefsText(float x, float y, char *str);
 
 	static void TestMenuStandard(unsigned char m_nCurrentMenuPage);
+	static bool statsOrSettingPage(int page);
+	static bool saveOrLoadPage(int page);
 	static float GetNewYPos(unsigned int i, unsigned char m_nCurrentMenuPage);
-	static void DrawViceCityFtEndBorders();
+	static void DrawViceCityFtEndBorders(int page);
 	static void DrawVCSelectionRectangles(float width, float posY, int page, int i);
 };
 

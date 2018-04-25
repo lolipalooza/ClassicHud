@@ -30,7 +30,6 @@ class MobileMenuPage {
 public:
     static void InstallPatches();
 	static void MyPatch();
-	static bool statsOrSettingPage(int page);
 
 public:
     static MyMenuPage PagesMenu[];
