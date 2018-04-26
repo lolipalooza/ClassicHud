@@ -49,7 +49,7 @@ public:
 	static float GetNewYPos(unsigned int i, unsigned char m_nCurrentMenuPage);
 	static void DrawViceCityFtEndBorders(int page);
 	static void DrawVCSelectionRectangles(float width, float posY, int page, int i);
-	static void DrawIIILogoOnMainMenu();
+	static void DrawLogo();
 };
 
 extern MobileFrontEnd FrontEndMobileMenuManager;

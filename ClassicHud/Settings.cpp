@@ -509,6 +509,7 @@ void Settings::Init(int style)
 	BG_V_ALIGN_MIDDLE = iniReader.ReadInt(section, "V_ALIGN_MIDDLE", 0);
 	DISPLAY_LOGO_ON_MAIN_MENU = iniReader.ReadInt(section, "DISPLAY_LOGO_ON_MAIN_MENU", 0);
 	DISPLAY_LOGO_ON_LOADING_SCREEN = iniReader.ReadInt(section, "DISPLAY_LOGO_ON_LOADING_SCREEN", 0);
+	DISPLAY_LOGO_ON_FRONT_END = iniReader.ReadInt(section, "DISPLAY_LOGO_ON_FRONT_END", 0);
 	LOGO_ID = iniReader.ReadInt(section, "LOGO_ID", 0);
 	LOGO_X = iniReader.ReadFloat(section, "LOGO_X", 0.0f);
 	LOGO_Y = iniReader.ReadFloat(section, "LOGO_Y", 0.0f);

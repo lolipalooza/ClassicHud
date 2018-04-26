@@ -619,8 +619,10 @@ void MobileFrontEnd::DrawStandardMenu() {
 					CFont::SetScale(SCREEN_MULTIPLIER(settings.MENU_SIZE_X * SCREEN_COORD(690.0f) / width), SCREEN_MULTIPLIER(settings.MENU_SIZE_Y));
 			}
 
-			if (FrontEndMenuManager.m_nCurrentMenuPage == MENUPAGE_MAIN_MENU)
-				MobileFrontEnd::DrawIIILogoOnMainMenu();
+			if (settings.DISPLAY_LOGO_ON_MAIN_MENU
+				&& FrontEndMenuManager.m_nCurrentMenuPage == MENUPAGE_MAIN_MENU
+				|| settings.DISPLAY_LOGO_ON_FRONT_END)
+				MobileFrontEnd::DrawLogo();
 
 			// Print left column
 			CFont::SetDropColor(CRGBA(0, 0, 0, 255));
@@ -2166,11 +2168,6 @@ void MobileFrontEnd::DrawViceCityFtEndBorders(int page) {
 		0.0f, SCREEN_HEIGHT,
 		SCREEN_WIDTH, SCREEN_HEIGHT,
 		CRGBA(0, 0, 0, 255));
-
-	// Vice City Logo
-	mobileTex.m_nBackgroundSprite.m_pTexture = mobileTex.m_nBackgroundSpriteTxd.GetTexture(1);
-	mobileTex.m_nBackgroundSprite.Draw(CRect(SCREEN_COORD(60.0f), SCREEN_COORD(20.0f), SCREEN_COORD(330.0f), SCREEN_COORD(330.0f)), CRGBA(255, 255, 255, 250));
-	mobileTex.m_nBackgroundSprite.m_pTexture = nullptr;
 }
 
 void MobileFrontEnd::DrawVCSelectionRectangles(float width, float posY, int page, int i) {
@@ -2286,10 +2283,8 @@ void MobileFrontEnd::DrawVCSelectionRectangles(float width, float posY, int page
 			CRGBA(settings.MENU_RECT_R, settings.MENU_RECT_G, settings.MENU_RECT_B, settings.MENU_RECT_A));
 }
 
-void MobileFrontEnd::DrawIIILogoOnMainMenu()
+void MobileFrontEnd::DrawLogo()
 {
-	if (!settings.DISPLAY_LOGO_ON_MAIN_MENU) return;
-
 	mobileTex.m_nBackgroundSprite.m_pTexture = mobileTex.m_nBackgroundSpriteTxd.GetTexture(settings.LOGO_ID);
 
 	mobileTex.m_nBackgroundSprite.Draw(CRect( SCREEN_COORD(settings.LOGO_X), SCREEN_COORD(settings.LOGO_Y),
