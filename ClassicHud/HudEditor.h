@@ -130,6 +130,11 @@ Data edit_data[] = {
 	{ "Help Text Width", "HELP_TEXT", "WIDTH", 1.0f },
 	{ "Help Text Border Size", "HELP_TEXT", "BORDER_SIZE", 1.0f },
 
+	{ "Help Text (Stat) Border Size", "HELP_TEXT_STAT", "BORDER_SIZE", 1.0f },
+	{ "Help Text (Stat) Bar Pos Y", "HELP_TEXT_STAT", "POS_Y", 1.0f },
+	{ "Help Text (Stat) Bar Size X", "HELP_TEXT_STAT", "SIZE_X", 1.0f },
+	{ "Help Text (Stat) Bar Size Y", "HELP_TEXT_STAT", "SIZE_Y", 0.5f },
+
 	{ "Radar Pos X", "RADAR", "POS_X", 1.0f },
 	{ "Radar Pos Y", "RADAR", "POS_Y", 1.0f },
 	{ "Radar Size X", "RADAR", "SIZE_X", 1.0f },
@@ -282,7 +287,7 @@ Data edit_data[] = {
 class HudEditor
 {
 public:
-	static char* ModifyValueInIni(char* section, char* key, float incr, float incr_multiplier)
+	static void ModifyValueInIni(char* section, char* key, float incr, float incr_multiplier)
 	{
 		std::string prefix[5] = { "SA_", "III_", "VC_", "LCS_", "VCS_" };
 		std::string s_section = prefix[STYLE] + (std::string)section;
@@ -309,13 +314,8 @@ public:
 		else if ((std::string)section == "WEAPON")		Weapon::InstallPatches();
 		else if ((std::string)section == "AMMO")		Weapon::InstallPatches();
 		else if ((std::string)section == "WANTED")		Wanted::InstallPatches();
-		else if ((std::string)section == "HELP_TEXT")	HelpText::InstallPatches();
+		//else if ((std::string)section == "HELP_TEXT")	HelpText::InstallPatches();
 		else if ((std::string)section == "RADAR")		Radar::InstallPatches();
-
-		char str[200];
-		_snprintf(str, sizeof(str), "section: %s ~n~key: %s ~n~value: %f ~n~incr: %f",
-			section, key, value, incr);
-		return str;
 	}
 
 	static void DrawIcons(int style) {
@@ -364,6 +364,8 @@ public:
 				else if (section == "VEHICLE")					VehicleName::Test();
 				else if (section == "SUBTITLES")				Subtitles::Test();
 				else if (section == "SUBTITLES_VITALSTATS")		Subtitles::Test_VitalStats();
+				else if (section == "HELP_TEXT")				HelpText::TestHelpText();
+				else if (section == "HELP_TEXT_STAT")			HelpText::TestHelpText_WithStats(21); // Fat
 				else if (section == "STYLED1")					StyledTexts::TestSuccessFailedMessage();
 				else if (section == "STYLED2")					StyledTexts::TestMissionTitle();
 				else if (section == "STYLED3")					StyledTexts::TestBustedWastedMessage();

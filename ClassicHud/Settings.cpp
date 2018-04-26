@@ -211,6 +211,21 @@ void Settings::Init(int style)
 	fTextBoxWidth = iniReader.ReadFloat(section, "WIDTH", 0.0f);
 	fTextBoxBorderSize = iniReader.ReadFloat(section, "BORDER_SIZE", 0.0f);
 
+	sprintf(section, "%s_%s", prefix[style], "HELP_TEXT_STAT");
+	TEXTBOX_STATBAR_R = iniReader.ReadInt(section, "BAR_R", 0);
+	TEXTBOX_STATBAR_G = iniReader.ReadInt(section, "BAR_G", 0);
+	TEXTBOX_STATBAR_B = iniReader.ReadInt(section, "BAR_B", 0);
+	TEXTBOX_STATBAR_ADD_R = iniReader.ReadInt(section, "BAR_ADD_R", 0);
+	TEXTBOX_STATBAR_ADD_G = iniReader.ReadInt(section, "BAR_ADD_G", 0);
+	TEXTBOX_STATBAR_ADD_B = iniReader.ReadInt(section, "BAR_ADD_B", 0);
+	TEXTBOX_STATBAR_SUBS_R = iniReader.ReadInt(section, "BAR_SUBS_R", 0);
+	TEXTBOX_STATBAR_SUBS_G = iniReader.ReadInt(section, "BAR_SUBS_G", 0);
+	TEXTBOX_STATBAR_SUBS_B = iniReader.ReadInt(section, "BAR_SUBS_B", 0);
+	TEXTBOX_STAT_BORDER = iniReader.ReadFloat(section, "BORDER_SIZE", 0.0f);
+	TEXTBOX_STATBAR_Y = iniReader.ReadFloat(section, "POS_Y", 0.0f);
+	TEXTBOX_STATBAR_SIZE_X = iniReader.ReadFloat(section, "SIZE_X", 0.0f);
+	TEXTBOX_STATBAR_SIZE_Y = iniReader.ReadFloat(section, "SIZE_Y", 0.0f);
+
 	sprintf(section, "%s_%s", prefix[style], "RADAR");
 	RADAR_A = iniReader.ReadInt(section, "ALPHA", 0);
 	RADAR_RANGE = iniReader.ReadFloat(section, "RANGE", 0.0f);

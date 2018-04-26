@@ -40,6 +40,8 @@ public:
 	static void InstallPatches();
 	static float GetHelpBoxXShift();
 	static void DrawHelpText();
+	static void TestHelpText();
+	static void TestHelpText_WithStats(int stat_id);
 };
 
 void HelpText::InstallPatches() {
@@ -181,7 +183,7 @@ void HelpText::DrawHelpText() {
 					CFont::SetBackgroundColor(CRGBA(0, 0, 0, (unsigned char)alpha));
 					CFont::SetColor(CRGBA(255, 255, 255, 255));
 					posX = CFont::GetStringWidth((char *)TheText.Get(g_filenameBuffer), 1, 0) + SCREEN_MULTIPLIER(GetHelpBoxXShift() + settings.fTextBoxBorderSize) + 4.0f;
-					CFont::SetWrapx(SCREEN_MULTIPLIER(164.0f) + posX + 4.0f);
+					CFont::SetWrapx(SCREEN_MULTIPLIER(164.0f) + posX + 4.0f + settings.TEXTBOX_STAT_BORDER);
 					CFont::PrintString(
 						SCREEN_COORD(GetHelpBoxXShift() + settings.fTextBoxBorderSize) + 4.0f,
 						SCREEN_COORD((150.0f - flt_8D0938) * 0.6f) + SCREEN_COORD(settings.fTextBoxPosnY),
@@ -190,38 +192,23 @@ void HelpText::DrawHelpText() {
 						progress = (float)GetGroupMembersCount(FindPlayerPed(-1)->m_pPlayerData->m_nPlayerGroup);
 					else
 						progress = GetPlayerStat(g_HelpMessageStatId);
-					if (g_pHelpMessageToPrint[0] == '+')
-					{
-						CSprite2d::DrawBarChart(
-							posX + SCREEN_COORD(15.0),
-							SCREEN_COORD((157.0f - flt_8D0938) * 0.6f) + SCREEN_COORD(settings.fTextBoxPosnY + 4.0f),
-							(unsigned short)SCREEN_MULTIPLIER(130.0f),
-							(unsigned char)SCREEN_MULTIPLIER(20.0f),
-							fmax(1.0f / StatMax * progress * 100.0f, 2.0f),
-							(unsigned char)fmax((1.0f / StatMax) * dword_BAA468 * 100.0f, 3.0f),
-							0, 0, CRGBA(255, 255, 255, 255), CRGBA(255, 255, 255, 255));
-						CFont::SetColor(CRGBA(255, 255, 255, 255));
-						CFont::PrintString(
-							posX + SCREEN_COORD(155.0),
-							SCREEN_COORD((153.0f - flt_8D0938) * 0.6f) + SCREEN_COORD(settings.fTextBoxPosnY),
-							g_pHelpMessageToPrint);
-					}
-					else
-					{
-						CSprite2d::DrawBarChart(
-							posX + SCREEN_COORD(15.0),
-							SCREEN_COORD((157.0f - flt_8D0938) * 0.6f) + SCREEN_COORD(settings.fTextBoxPosnY + 4.0f),
-							(unsigned short)SCREEN_MULTIPLIER(130.0f),
-							(unsigned char)SCREEN_MULTIPLIER(20.0f),
-							fmax(1.0f / StatMax * progress * 100.0f, 2.0f),
-							(unsigned char)fmax((1.0f / StatMax) * dword_BAA468 * 100.0f, 3.0f),
-							0, 0, CRGBA(255, 255, 255, 255), CRGBA(255, 255, 255, 255));
-						CFont::SetColor(CRGBA(255, 255, 255, 255));
-						CFont::PrintString(
-							posX + SCREEN_COORD(155.0),
-							SCREEN_COORD((153.0f - flt_8D0938) * 0.6f) + SCREEN_COORD(settings.fTextBoxPosnY),
-							g_pHelpMessageToPrint);
-					}
+
+					CSprite2d::DrawBarChart(
+						posX + SCREEN_COORD(15.0),
+						SCREEN_COORD((157.0f - flt_8D0938) * 0.6f) + SCREEN_COORD(settings.fTextBoxPosnY + 4.0f + settings.TEXTBOX_STATBAR_Y),
+						(unsigned short)SCREEN_MULTIPLIER(settings.TEXTBOX_STATBAR_SIZE_X),
+						(unsigned char)SCREEN_MULTIPLIER(settings.TEXTBOX_STATBAR_SIZE_Y),
+						fmax(1.0f / StatMax * progress * 100.0f, 2.0f),
+						(unsigned char)fmax((1.0f / StatMax) * dword_BAA468 * 100.0f, 3.0f),
+						0, 0, CRGBA(settings.TEXTBOX_STATBAR_R, settings.TEXTBOX_STATBAR_G, settings.TEXTBOX_STATBAR_B, 255),
+						(g_pHelpMessageToPrint[0] == '+')
+						? CRGBA(settings.TEXTBOX_STATBAR_ADD_R, settings.TEXTBOX_STATBAR_ADD_G, settings.TEXTBOX_STATBAR_ADD_B, 255)
+						: CRGBA(settings.TEXTBOX_STATBAR_SUBS_R, settings.TEXTBOX_STATBAR_SUBS_G, settings.TEXTBOX_STATBAR_SUBS_B, 255));
+					CFont::SetColor(CRGBA(255, 255, 255, 255));
+					CFont::PrintString(
+						posX + SCREEN_COORD(25.0f + settings.TEXTBOX_STATBAR_SIZE_X),
+						SCREEN_COORD((153.0f - flt_8D0938) * 0.6f) + SCREEN_COORD(settings.fTextBoxPosnY),
+						g_pHelpMessageToPrint);
 				}
 				else
 				{
@@ -259,4 +246,77 @@ void HelpText::DrawHelpText() {
 	}
 	else
 		g_HelpMessageState = 0;
+}
+
+void HelpText::TestHelpText() {
+	float alpha = 200.0f;
+
+	CFont::SetProp(true);
+	CFont::SetScale(SCREEN_MULTIPLIER(settings.fTextBoxFontScaleX), SCREEN_MULTIPLIER(settings.fTextBoxFontScaleY));
+	
+	CFont::SetAlignment(ALIGN_LEFT);
+	CFont::SetJustify(false);
+	if (g_fScriptTextBoxesWidth == 200.0)
+	{
+		CFont::SetWrapx(SCREEN_MULTIPLIER(settings.fTextBoxPosnX + settings.fTextBoxWidth - settings.fTextBoxBorderSize) - 4.0f);
+	}
+	else
+		CFont::SetWrapx(SCREEN_MULTIPLIER(settings.fTextBoxPosnX + (g_fScriptTextBoxesWidth - settings.fTextBoxBorderSize)) - 4.0f);
+	CFont::SetFontStyle(FONT_SUBTITLES);
+	CFont::SetBackground(true, true);
+	CFont::SetDropShadowPosition(0);
+	CFont::SetBackgroundColor(CRGBA(0, 0, 0, (unsigned char)alpha));
+	CFont::SetColor(CRGBA(255, 255, 255, 255));
+	float baseY = 0;
+	if (Camera_WidescreenOn && !Menu_WidescreenOn)
+		baseY = 56;
+	CFont::PrintString(
+		SCREEN_COORD(settings.fTextBoxPosnX + settings.fTextBoxBorderSize) + 4.0f,
+		SCREEN_COORD(((float)baseY + 150.0f - flt_8D0938) * 0.6f) + SCREEN_COORD(settings.fTextBoxPosnY),
+		(char *)TheText.Get("IE23")); // ~s~This vehicle is not required for export.
+}
+
+void HelpText::TestHelpText_WithStats(int stat_id) {
+	char stat_gxt[100];
+	float alpha = 200.0f;
+	float posX;
+	float progress = 20.0f;
+
+	CFont::SetProp(true);
+	CFont::SetScale(SCREEN_MULTIPLIER(settings.fTextBoxFontScaleX), SCREEN_MULTIPLIER(settings.fTextBoxFontScaleY));
+	if (stat_id >= 10)
+	{
+		if (stat_id >= 100)
+			sprintf(stat_gxt, "STAT%d", stat_id);
+		else
+			sprintf(stat_gxt, "STAT0%d", stat_id);
+	}
+	CFont::SetAlignment(ALIGN_LEFT);
+	CFont::SetJustify(false);
+	CFont::SetWrapx((float)RsGlobal.maximumWidth);
+	CFont::SetFontStyle(FONT_SUBTITLES);
+	CFont::SetBackground(true, true);
+	CFont::SetDropShadowPosition(0);
+	CFont::SetBackgroundColor(CRGBA(0, 0, 0, (unsigned char)alpha));
+	CFont::SetColor(CRGBA(255, 255, 255, 255));
+	posX = CFont::GetStringWidth((char *)TheText.Get(stat_gxt), 1, 0) + SCREEN_MULTIPLIER(settings.fTextBoxPosnX + settings.fTextBoxBorderSize) + 4.0f;
+	CFont::SetWrapx(SCREEN_MULTIPLIER(164.0f) + posX + 4.0f + settings.TEXTBOX_STAT_BORDER);
+	CFont::PrintString(
+		SCREEN_COORD(settings.fTextBoxPosnX + settings.fTextBoxBorderSize) + 4.0f,
+		SCREEN_COORD((150.0f - flt_8D0938) * 0.6f) + SCREEN_COORD(settings.fTextBoxPosnY),
+		(char *)TheText.Get(stat_gxt));
+	CSprite2d::DrawBarChart(
+		posX + SCREEN_COORD(15.0),
+		SCREEN_COORD((157.0f - flt_8D0938) * 0.6f) + SCREEN_COORD(settings.fTextBoxPosnY + 4.0f + settings.TEXTBOX_STATBAR_Y),
+		(unsigned short)SCREEN_MULTIPLIER(settings.TEXTBOX_STATBAR_SIZE_X),
+		(unsigned char)SCREEN_MULTIPLIER(settings.TEXTBOX_STATBAR_SIZE_Y),
+		fmax(1.0f / StatMax * progress * 100.0f, 2.0f),
+		(unsigned char)fmax((1.0f / StatMax) * dword_BAA468 * 100.0f, 3.0f),
+		0, 0, CRGBA(settings.TEXTBOX_STATBAR_R, settings.TEXTBOX_STATBAR_G, settings.TEXTBOX_STATBAR_B, 255),
+		CRGBA(settings.TEXTBOX_STATBAR_ADD_R, settings.TEXTBOX_STATBAR_ADD_G, settings.TEXTBOX_STATBAR_ADD_B, 255));
+	CFont::SetColor(CRGBA(255, 255, 255, 255));
+	CFont::PrintString(
+		posX + SCREEN_COORD(25.0f + settings.TEXTBOX_STATBAR_SIZE_X),
+		SCREEN_COORD((153.0f - flt_8D0938) * 0.6f) + SCREEN_COORD(settings.fTextBoxPosnY),
+		"+");
 }
