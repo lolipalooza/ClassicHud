@@ -41,7 +41,7 @@ public:
 	static float GetHelpBoxXShift();
 	static void DrawHelpText();
 	static void TestHelpText();
-	static void TestHelpText_WithStats(int stat_id);
+	static void TestHelpText_WithStats(int stat_id, bool inc_flag);
 };
 
 void HelpText::InstallPatches() {
@@ -276,11 +276,12 @@ void HelpText::TestHelpText() {
 		(char *)TheText.Get("IE23")); // ~s~This vehicle is not required for export.
 }
 
-void HelpText::TestHelpText_WithStats(int stat_id) {
+void HelpText::TestHelpText_WithStats(int stat_id, bool inc_flag) {
 	char stat_gxt[100];
 	float alpha = 200.0f;
 	float posX;
-	float progress = 20.0f;
+	float progress = inc_flag ? 50.0f : 40.0f;
+	float progressAdd = inc_flag ? 25.0f : 35.0f;
 
 	CFont::SetProp(true);
 	CFont::SetScale(SCREEN_MULTIPLIER(settings.fTextBoxFontScaleX), SCREEN_MULTIPLIER(settings.fTextBoxFontScaleY));
@@ -310,13 +311,14 @@ void HelpText::TestHelpText_WithStats(int stat_id) {
 		SCREEN_COORD((157.0f - flt_8D0938) * 0.6f) + SCREEN_COORD(settings.fTextBoxPosnY + 4.0f + settings.TEXTBOX_STATBAR_Y),
 		(unsigned short)SCREEN_MULTIPLIER(settings.TEXTBOX_STATBAR_SIZE_X),
 		(unsigned char)SCREEN_MULTIPLIER(settings.TEXTBOX_STATBAR_SIZE_Y),
-		fmax(1.0f / StatMax * progress * 100.0f, 2.0f),
-		(unsigned char)fmax((1.0f / StatMax) * dword_BAA468 * 100.0f, 3.0f),
+		progress, progressAdd,
 		0, 0, CRGBA(settings.TEXTBOX_STATBAR_R, settings.TEXTBOX_STATBAR_G, settings.TEXTBOX_STATBAR_B, 255),
-		CRGBA(settings.TEXTBOX_STATBAR_ADD_R, settings.TEXTBOX_STATBAR_ADD_G, settings.TEXTBOX_STATBAR_ADD_B, 255));
+		inc_flag
+		? CRGBA(settings.TEXTBOX_STATBAR_ADD_R, settings.TEXTBOX_STATBAR_ADD_G, settings.TEXTBOX_STATBAR_ADD_B, 255)
+		: CRGBA(settings.TEXTBOX_STATBAR_SUBS_R, settings.TEXTBOX_STATBAR_SUBS_G, settings.TEXTBOX_STATBAR_SUBS_B, 255));
 	CFont::SetColor(CRGBA(255, 255, 255, 255));
 	CFont::PrintString(
 		posX + SCREEN_COORD(25.0f + settings.TEXTBOX_STATBAR_SIZE_X),
 		SCREEN_COORD((153.0f - flt_8D0938) * 0.6f) + SCREEN_COORD(settings.fTextBoxPosnY),
-		"+");
+		inc_flag ? "+" : "-");
 }

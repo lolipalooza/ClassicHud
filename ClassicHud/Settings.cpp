@@ -242,10 +242,14 @@ void Settings::Init(int style)
 	STYLED1_G = iniReader.ReadInt(section, "GREEN", 0);
 	STYLED1_B = iniReader.ReadInt(section, "BLUE", 0);
 	STYLED1_Y = iniReader.ReadFloat(section, "POS_Y", 0.0f);
-	STYLED1_Y1 = iniReader.ReadFloat(section, "POS_Y1", 0.0f);
-	STYLED1_Y2 = iniReader.ReadFloat(section, "POS_Y2", 0.0f);
 	STYLED1_SIZE_X = iniReader.ReadFloat(section, "SIZE_X", 0.0f);
 	STYLED1_SIZE_Y = iniReader.ReadFloat(section, "SIZE_Y", 0.0f);
+
+	sprintf(section, "%s_%s", prefix[style], "STYLED1_2LINES_NOT_ST3");
+	STYLED1_Y2 = iniReader.ReadFloat(section, "POS_Y2", 0.0f);
+
+	sprintf(section, "%s_%s", prefix[style], "STYLED1_AND_ST4_OR_ST6");
+	STYLED1_Y1 = iniReader.ReadFloat(section, "POS_Y1", 0.0f);
 
 	sprintf(section, "%s_%s", prefix[style], "STYLED2");
 	MT_R = iniReader.ReadInt(section, "RED", 0);

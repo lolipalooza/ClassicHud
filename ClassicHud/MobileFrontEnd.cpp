@@ -2287,6 +2287,12 @@ void MobileFrontEnd::DrawLogo()
 {
 	mobileTex.m_nBackgroundSprite.m_pTexture = mobileTex.m_nBackgroundSpriteTxd.GetTexture(settings.LOGO_ID);
 
+	if (settings.LOGO_SHADOW_OFFSET != 0.0f)
+		mobileTex.m_nBackgroundSprite.Draw(CRect(
+			SCREEN_COORD(settings.LOGO_X + settings.LOGO_SHADOW_OFFSET), SCREEN_COORD(settings.LOGO_Y + settings.LOGO_SHADOW_OFFSET),
+			SCREEN_COORD(settings.LOGO_X + settings.LOGO_SIZE_X + settings.LOGO_SHADOW_OFFSET), SCREEN_COORD(settings.LOGO_Y + settings.LOGO_SIZE_Y + settings.LOGO_SHADOW_OFFSET)),
+			CRGBA(0, 0, 0, 255));
+
 	mobileTex.m_nBackgroundSprite.Draw(CRect( SCREEN_COORD(settings.LOGO_X), SCREEN_COORD(settings.LOGO_Y),
 		SCREEN_COORD(settings.LOGO_X + settings.LOGO_SIZE_X), SCREEN_COORD(settings.LOGO_Y + settings.LOGO_SIZE_Y)),
 		CRGBA(255, 255, 255, 255));

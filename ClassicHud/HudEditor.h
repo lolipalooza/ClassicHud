@@ -134,7 +134,8 @@ Data edit_data[] = {
 	{ "Help Text (Stat) Bar Pos Y", "HELP_TEXT_STAT", "POS_Y", 1.0f },
 	{ "Help Text (Stat) Bar Size X", "HELP_TEXT_STAT", "SIZE_X", 1.0f },
 	{ "Help Text (Stat) Bar Size Y", "HELP_TEXT_STAT", "SIZE_Y", 0.5f },
-
+	{ "Help Text (Stat/Decreased) (Nothing to edit)", "HELP_TEXT_STAT_DECREASE", "DUMMY", 0.0f },
+	
 	{ "Radar Pos X", "RADAR", "POS_X", 1.0f },
 	{ "Radar Pos Y", "RADAR", "POS_Y", 1.0f },
 	{ "Radar Size X", "RADAR", "SIZE_X", 1.0f },
@@ -142,11 +143,13 @@ Data edit_data[] = {
 	{ "Radar Offset (Only Vice City)", "RADAR", "VC_OFFSET", 0.5f },
 
 	{ "Styled Text 1 Pos Y", "STYLED1", "POS_Y", 2.0f },
-	{ "Styled Text 1 Offset Y1", "STYLED1", "POS_Y1", 1.0f },
-	{ "Styled Text 1 Offset Y2", "STYLED1", "POS_Y2", 1.0f },
 	{ "Styled Text 1 Size X", "STYLED1", "SIZE_X", 0.01f },
 	{ "Styled Text 1 Size Y", "STYLED1", "SIZE_Y", 0.01f },
 
+	{ "Styled Text 1 Y-Offset (Styled 1 is 2-lines long and Styled 3 is not showing)", "STYLED1_2LINES_NOT_ST3", "POS_Y2", 1.0f },
+	{ "Styled Text 1 Y-Offset (Styled 4 or 6 is showing)", "STYLED1_AND_ST4_OR_ST6", "POS_Y1", 1.0f },
+	{ "Styled Text 1 (Styled 4 or 6 is showing) (Nothing to edit)", "STYLED1_AND_ST4_OR_ST6_2", "DUMMY", 0.0f },
+		
 	{ "Mission Title Pos X", "STYLED2", "POS_X", 2.0f },
 	{ "Mission Title Pos Y", "STYLED2", "POS_Y", 2.0f },
 	{ "Mission Title Size X", "STYLED2", "SIZE_X", 0.01f },
@@ -289,6 +292,8 @@ class HudEditor
 public:
 	static void ModifyValueInIni(char* section, char* key, float incr, float incr_multiplier)
 	{
+		if ((std::string)key == "DUMMY") return;
+
 		std::string prefix[5] = { "SA_", "III_", "VC_", "LCS_", "VCS_" };
 		std::string s_section = prefix[STYLE] + (std::string)section;
 
@@ -314,30 +319,7 @@ public:
 		else if ((std::string)section == "WEAPON")		Weapon::InstallPatches();
 		else if ((std::string)section == "AMMO")		Weapon::InstallPatches();
 		else if ((std::string)section == "WANTED")		Wanted::InstallPatches();
-		//else if ((std::string)section == "HELP_TEXT")	HelpText::InstallPatches();
 		else if ((std::string)section == "RADAR")		Radar::InstallPatches();
-	}
-
-	static void DrawIcons(int style) {
-		int tex_id;
-		if (STYLE == STYLE_III)
-			mobileTex.m_nBackgroundSprite.m_pTexture = mobileTex.m_nBackgroundSpriteTxd.GetTexture(7);
-		else if (STYLE == STYLE_LCS)
-			mobileTex.m_nBackgroundSprite.m_pTexture = mobileTex.m_nBackgroundSpriteTxd.GetTexture(1);
-		else return;
-
-		if (settings.D_LOGO_SHADOW_OFFSET != 0.0f)
-			mobileTex.m_nBackgroundSprite.Draw(CRect(
-				SCREEN_COORD(settings.D_LOGO_X + settings.D_LOGO_SHADOW_OFFSET), SCREEN_COORD(settings.D_LOGO_Y + settings.D_LOGO_SHADOW_OFFSET),
-				SCREEN_COORD(settings.D_LOGO_X + settings.D_LOGO_W + settings.D_LOGO_SHADOW_OFFSET), SCREEN_COORD(settings.D_LOGO_Y + settings.D_LOGO_H + settings.D_LOGO_SHADOW_OFFSET)),
-				CRGBA(0, 0, 0, 255));
-
-		mobileTex.m_nBackgroundSprite.Draw(CRect(
-			SCREEN_COORD(settings.D_LOGO_X), SCREEN_COORD(settings.D_LOGO_Y),
-			SCREEN_COORD(settings.D_LOGO_X + settings.D_LOGO_W), SCREEN_COORD(settings.D_LOGO_Y + settings.D_LOGO_H)),
-			CRGBA(255, 255, 255, 255));
-
-		mobileTex.m_nBackgroundSprite.m_pTexture = nullptr;
 	}
 
 	HudEditor()
@@ -354,7 +336,6 @@ public:
 		static int data_size = 0;
 		for each (Data d in edit_data)
 			data_size++;
-		//sprintf(edit_mode_text, "Edit mode");
 
 
 		Events::drawingEvent += []
@@ -365,8 +346,12 @@ public:
 				else if (section == "SUBTITLES")				Subtitles::Test();
 				else if (section == "SUBTITLES_VITALSTATS")		Subtitles::Test_VitalStats();
 				else if (section == "HELP_TEXT")				HelpText::TestHelpText();
-				else if (section == "HELP_TEXT_STAT")			HelpText::TestHelpText_WithStats(21); // Fat
+				else if (section == "HELP_TEXT_STAT")			HelpText::TestHelpText_WithStats(21, true); // Fat
+				else if (section == "HELP_TEXT_STAT_DECREASE")	HelpText::TestHelpText_WithStats(21, false); // Fat
 				else if (section == "STYLED1")					StyledTexts::TestSuccessFailedMessage();
+				else if (section == "STYLED1_2LINES_NOT_ST3")	StyledTexts::TestStyled1_2Lines_And_NotSt3();
+				else if (section == "STYLED1_AND_ST4_OR_ST6")	StyledTexts::TestStyled1_And_St4OrSt6(4);
+				else if (section == "STYLED1_AND_ST4_OR_ST6_2")	StyledTexts::TestStyled1_And_St4OrSt6(6);
 				else if (section == "STYLED2")					StyledTexts::TestMissionTitle();
 				else if (section == "STYLED3")					StyledTexts::TestBustedWastedMessage();
 				else if (section == "STYLED4")					StyledTexts::TestOddJobMessage4();
@@ -390,7 +375,7 @@ public:
 				else if (section == "MENU_OPTIONS_OK")			MobileFrontEnd::TestMenuStandard(MENUPAGE_SAVE_DONE_2);
 				else if (section == "MENU_SAVE_LOAD")			MobileFrontEnd::TestMenuStandard(MENUPAGE_LOAD_GAME);
 				else if (section == "TEST_RECTANGLE")			CSprite2d::DrawRect(CRect(SCREEN_COORD(settings.MENU_TEST_RECT_X), SCREEN_COORD(settings.MENU_TEST_RECT_Y), SCREEN_COORD(settings.MENU_TEST_RECT_X + settings.MENU_TEST_RECT_W), SCREEN_COORD(settings.MENU_TEST_RECT_Y + settings.MENU_TEST_RECT_H)), CRGBA(33, 92, 182, 255));
-				else if (section == "TEMP_DATA")				HudEditor::DrawIcons(STYLE);
+				else if (section == "TEMP_DATA")				{ if (settings.DISPLAY_LOGO_ON_FRONT_END || settings.DISPLAY_LOGO_ON_LOADING_SCREEN || settings.DISPLAY_LOGO_ON_MAIN_MENU) MobileFrontEnd::DrawLogo(); }
 				else if (section == "BRIEF_MESSAGES")			FrontEndMenuManager.PrintBriefs();
 
 				TestMessage::Draw(SCREEN_COORD(settings.CUSTOM_X),

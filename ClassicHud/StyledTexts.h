@@ -17,6 +17,7 @@ public:
 	void static DrawOddJobMessage5(float x, float y, char* str);
 	void static DrawOddJobMessage6(float x, float y, char* str);
 	void static DrawOddJobMessage7(float x, float y, char* str);
+	
 	static void TestSuccessFailedMessage();
 	static void TestMissionTitle();
 	static void TestBustedWastedMessage();
@@ -24,6 +25,9 @@ public:
 	static void TestOddJobMessage5();
 	static void TestOddJobMessage6();
 	static void TestOddJobMessage7();
+
+	static void TestStyled1_2Lines_And_NotSt3();
+	static void TestStyled1_And_St4OrSt6(int st4or6_id);
 };
 
 void StyledTexts::InstallPatches() {
@@ -132,12 +136,34 @@ void StyledTexts::DrawOddJobMessage7(float x, float y, char* str)
 
 void StyledTexts::TestSuccessFailedMessage()
 {
-	float pos_y = SCREEN_COORD(settings.STYLED1_Y) + settings.STYLED1_Y2,
+	float pos_y = SCREEN_COORD(settings.STYLED1_Y),
 		pos_x = (float)(RsGlobal.maximumWidth / 2);
 	TestMessage::Draw(pos_x, pos_y, settings.STYLED1_SIZE_X, settings.STYLED1_SIZE_Y, ALIGN_CENTER,
 		RsGlobal.maximumWidth * 0.0015625f * 590.0f,
 		settings.STYLED1_SHADOW, settings.STYLED1_OUTLINE, FONT_PRICEDOWN,
 		CRGBA(settings.STYLED1_R, settings.STYLED1_G, settings.STYLED1_B, 255), (char *)TheText.Get("M_FAIL")); // MISSION FAILED!
+}
+
+void StyledTexts::TestStyled1_2Lines_And_NotSt3() {
+	float pos_y = SCREEN_COORD(settings.STYLED1_Y) + settings.STYLED1_Y2,
+		pos_x = (float)(RsGlobal.maximumWidth / 2);
+	TestMessage::Draw(pos_x, pos_y, settings.STYLED1_SIZE_X, settings.STYLED1_SIZE_Y, ALIGN_CENTER,
+		RsGlobal.maximumWidth * 0.0015625f * 590.0f,
+		settings.STYLED1_SHADOW, settings.STYLED1_OUTLINE, FONT_PRICEDOWN,
+		CRGBA(settings.STYLED1_R, settings.STYLED1_G, settings.STYLED1_B, 255), "This is 2 lines~n~message!");
+}
+
+void StyledTexts::TestStyled1_And_St4OrSt6(int st4or6_id) {
+	float pos_y = SCREEN_COORD(settings.STYLED1_Y) + settings.STYLED1_Y1,
+		pos_x = (float)(RsGlobal.maximumWidth / 2);
+	TestMessage::Draw(pos_x, pos_y, settings.STYLED1_SIZE_X, settings.STYLED1_SIZE_Y, ALIGN_CENTER,
+		RsGlobal.maximumWidth * 0.0015625f * 590.0f,
+		settings.STYLED1_SHADOW, settings.STYLED1_OUTLINE, FONT_PRICEDOWN,
+		CRGBA(settings.STYLED1_R, settings.STYLED1_G, settings.STYLED1_B, 255), (char *)TheText.Get("M_FAIL")); // MISSION FAILED!
+
+	if (st4or6_id == 4)
+		StyledTexts::TestOddJobMessage4();
+	else StyledTexts::TestOddJobMessage6();
 }
 
 void StyledTexts::TestMissionTitle()

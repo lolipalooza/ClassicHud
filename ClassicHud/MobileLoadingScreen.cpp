@@ -1,6 +1,7 @@
 #include "MobileLoadingScreen.h"
 #include "Settings.h"
 #include "MobileProgressBar.h"
+#include "MobileFrontEnd.h"
 
 #include "CLoadingScreen.h"
 #include "CSprite2d.h"
@@ -121,22 +122,8 @@ void MobileLoadingScreen::RenderSplash() {
             else
                 mobileTex.m_aSplashes[MobileLoad.m_currDisplayedSplash].Draw(CRect(SCREEN_COORD(0.0f), SCREEN_COORD(0.0f), SCREEN_COORD(0.0f) + SCREEN_WIDTH, SCREEN_COORD(0.0f) + SCREEN_HEIGHT), CRGBA(255, 255, 255, 255));
 
-			if (settings.DISPLAY_LOGO_ON_LOADING_SCREEN) {
-				mobileTex.m_nBackgroundSprite.m_pTexture = mobileTex.m_nBackgroundSpriteTxd.GetTexture(settings.LOGO_ID);
-
-				if (settings.LOGO_SHADOW_OFFSET != 0.0f)
-					mobileTex.m_nBackgroundSprite.Draw(CRect(
-						SCREEN_COORD(settings.LOGO_X + settings.LOGO_SHADOW_OFFSET), SCREEN_COORD(settings.LOGO_Y + settings.LOGO_SHADOW_OFFSET),
-						SCREEN_COORD(settings.LOGO_X + settings.LOGO_SIZE_X + settings.LOGO_SHADOW_OFFSET), SCREEN_COORD(settings.LOGO_Y + settings.LOGO_SIZE_Y + settings.LOGO_SHADOW_OFFSET)),
-						CRGBA(0, 0, 0, 255));
-
-				mobileTex.m_nBackgroundSprite.Draw(CRect(
-					SCREEN_COORD(settings.LOGO_X), SCREEN_COORD(settings.LOGO_Y),
-					SCREEN_COORD(settings.LOGO_X + settings.LOGO_SIZE_X), SCREEN_COORD(settings.LOGO_Y + settings.LOGO_SIZE_Y)),
-					CRGBA(255, 255, 255, 255));
-
-				mobileTex.m_nBackgroundSprite.m_pTexture = nullptr;
-			}
+			if (settings.DISPLAY_LOGO_ON_LOADING_SCREEN)
+				MobileFrontEnd::DrawLogo();
         }
 		MobileLoadingScreen::FadingSplash(settings.SPLASH_STYLE);
     }
