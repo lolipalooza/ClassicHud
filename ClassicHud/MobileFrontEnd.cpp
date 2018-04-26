@@ -619,6 +619,9 @@ void MobileFrontEnd::DrawStandardMenu() {
 					CFont::SetScale(SCREEN_MULTIPLIER(settings.MENU_SIZE_X * SCREEN_COORD(690.0f) / width), SCREEN_MULTIPLIER(settings.MENU_SIZE_Y));
 			}
 
+			if (FrontEndMenuManager.m_nCurrentMenuPage == MENUPAGE_MAIN_MENU)
+				MobileFrontEnd::DrawIIILogoOnMainMenu();
+
 			// Print left column
 			CFont::SetDropColor(CRGBA(0, 0, 0, 255));
 			if (i == FrontEndMenuManager.m_nSelectedMenuItem)
@@ -1579,10 +1582,14 @@ void MobileFrontEnd::DrawStatsSlider(float x, float y, unsigned short width, uns
 }
 
 void MobileFrontEnd::PrintBriefsText(float x, float y, char *str) {
-    CFont::SetOutlinePosition(2);
-    CFont::SetColor(HudColour.GetRGB(HUD_COLOUR_WHITE, 255));
-    CFont::SetScale(SCREEN_MULTIPLIER(0.9f), SCREEN_MULTIPLIER(1.7f));
-    CFont::PrintString(SCREEN_COORD_CENTER_X - SCREEN_COORD(282.0f / 2), y, str);
+	float Y_OFFSET = y*settings.BRIEF_YSPACE;
+	CFont::SetDropShadowPosition(settings.BRIEF_SHADOW);
+	if (settings.BRIEF_OUTLINE != 0)
+		CFont::SetOutlinePosition(settings.BRIEF_OUTLINE);
+	//CFont::SetCentreSize(SCREEN_MULTIPLIER(settings.BRIEF_LINEWIDTH));
+	CFont::SetColor(CRGBA(settings.BRIEF_R, settings.BRIEF_G, settings.BRIEF_B, 255));
+	CFont::SetScale(SCREEN_MULTIPLIER(settings.BRIEF_SIZE_X), SCREEN_MULTIPLIER(settings.BRIEF_SIZE_Y));
+	CFont::PrintString(SCREEN_COORD_CENTER_X - SCREEN_COORD(settings.BRIEF_X / 2), SCREEN_COORD(settings.BRIEF_Y + Y_OFFSET), str);
 }
 
 
@@ -2277,4 +2284,17 @@ void MobileFrontEnd::DrawVCSelectionRectangles(float width, float posY, int page
 			px + rx3, py + sy + ry3,
 			px + sx + rx4, py + sy + ry4,
 			CRGBA(settings.MENU_RECT_R, settings.MENU_RECT_G, settings.MENU_RECT_B, settings.MENU_RECT_A));
+}
+
+void MobileFrontEnd::DrawIIILogoOnMainMenu()
+{
+	if (!settings.DISPLAY_LOGO_ON_MAIN_MENU) return;
+
+	mobileTex.m_nBackgroundSprite.m_pTexture = mobileTex.m_nBackgroundSpriteTxd.GetTexture(settings.LOGO_ID);
+
+	mobileTex.m_nBackgroundSprite.Draw(CRect( SCREEN_COORD(settings.LOGO_X), SCREEN_COORD(settings.LOGO_Y),
+		SCREEN_COORD(settings.LOGO_X + settings.LOGO_SIZE_X), SCREEN_COORD(settings.LOGO_Y + settings.LOGO_SIZE_Y)),
+		CRGBA(255, 255, 255, 255));
+
+	mobileTex.m_nBackgroundSprite.m_pTexture = nullptr;
 }

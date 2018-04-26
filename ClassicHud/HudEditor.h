@@ -271,6 +271,12 @@ Data edit_data[] = {
 	{ "Logo Width", "TEMP_DATA", "SIZE_X", 1.0f },
 	{ "Logo Height", "TEMP_DATA", "SIZE_Y", 1.0f },
 	{ "Logo Shadow Offset", "TEMP_DATA", "SHADOW_OFFSET", 1.0f },
+
+	{ "Brief Pos X", "BRIEF_MESSAGES", "POS_X", 1.0f },
+	{ "Brief Pos Y", "BRIEF_MESSAGES", "POS_Y", 1.0f },
+	{ "Brief Y Space Between", "BRIEF_MESSAGES", "YSPACE", 0.01f },
+	{ "Brief Size X", "BRIEF_MESSAGES", "SIZE_X", 0.01f },
+	{ "Brief Size Y", "BRIEF_MESSAGES", "SIZE_Y", 0.01f },
 };
 
 class HudEditor
@@ -383,6 +389,7 @@ public:
 				else if (section == "MENU_SAVE_LOAD")			MobileFrontEnd::TestMenuStandard(MENUPAGE_LOAD_GAME);
 				else if (section == "TEST_RECTANGLE")			CSprite2d::DrawRect(CRect(SCREEN_COORD(settings.MENU_TEST_RECT_X), SCREEN_COORD(settings.MENU_TEST_RECT_Y), SCREEN_COORD(settings.MENU_TEST_RECT_X + settings.MENU_TEST_RECT_W), SCREEN_COORD(settings.MENU_TEST_RECT_Y + settings.MENU_TEST_RECT_H)), CRGBA(33, 92, 182, 255));
 				else if (section == "TEMP_DATA")				HudEditor::DrawIcons(STYLE);
+				else if (section == "BRIEF_MESSAGES")			FrontEndMenuManager.PrintBriefs();
 
 				TestMessage::Draw(SCREEN_COORD(settings.CUSTOM_X),
 					SCREEN_COORD(settings.CUSTOM_Y), settings.CUSTOM_SIZE_X, settings.CUSTOM_SIZE_Y,

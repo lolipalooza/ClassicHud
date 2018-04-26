@@ -382,13 +382,6 @@ void Settings::Init(int style)
 	LOADBAR_SIZE_X = iniReader.ReadFloat(section, "SIZE_X", 0.0f);
 	LOADBAR_SIZE_Y = iniReader.ReadFloat(section, "SIZE_Y", 0.0f);
 	LOADBAR_SHADOW = iniReader.ReadFloat(section, "SHADOW", 0.0f);
-	DISPLAY_LOGO_ON_LOADING_SCREEN = iniReader.ReadInt(section, "DISPLAY_LOGO_ON_LOADING_SCREEN", 0);
-	LOGO_ID = iniReader.ReadInt(section, "LOGO_ID", 0);
-	LOGO_X = iniReader.ReadFloat(section, "LOGO_X", 0.0f);
-	LOGO_Y = iniReader.ReadFloat(section, "LOGO_Y", 0.0f);
-	LOGO_SIZE_X = iniReader.ReadFloat(section, "LOGO_SIZE_X", 0.0f);
-	LOGO_SIZE_Y = iniReader.ReadFloat(section, "LOGO_SIZE_Y", 0.0f);
-	LOGO_SHADOW_OFFSET = iniReader.ReadFloat(section, "LOGO_SHADOW_OFFSET", 0.0f);
 
 	sprintf(section, "%s_%s", prefix[style], "MENU_TITLE");
 	MENUTITLE_R = iniReader.ReadInt(section, "RED", 0);
@@ -514,6 +507,14 @@ void Settings::Init(int style)
 	BG_VC_SCREEN = iniReader.ReadInt(section, "VC_SCREEN", 0);
 	BG_SEL_RECTS = iniReader.ReadInt(section, "SELECTION_RECTANGLES", 0);
 	BG_V_ALIGN_MIDDLE = iniReader.ReadInt(section, "V_ALIGN_MIDDLE", 0);
+	DISPLAY_LOGO_ON_MAIN_MENU = iniReader.ReadInt(section, "DISPLAY_LOGO_ON_MAIN_MENU", 0);
+	DISPLAY_LOGO_ON_LOADING_SCREEN = iniReader.ReadInt(section, "DISPLAY_LOGO_ON_LOADING_SCREEN", 0);
+	LOGO_ID = iniReader.ReadInt(section, "LOGO_ID", 0);
+	LOGO_X = iniReader.ReadFloat(section, "LOGO_X", 0.0f);
+	LOGO_Y = iniReader.ReadFloat(section, "LOGO_Y", 0.0f);
+	LOGO_SIZE_X = iniReader.ReadFloat(section, "LOGO_SIZE_X", 0.0f);
+	LOGO_SIZE_Y = iniReader.ReadFloat(section, "LOGO_SIZE_Y", 0.0f);
+	LOGO_SHADOW_OFFSET = iniReader.ReadFloat(section, "LOGO_SHADOW_OFFSET", 0.0f);
 
 	sprintf(section, "%s_%s", prefix[style], "MENU_OPTIONS");
 	D_W = iniReader.ReadFloat(section, "W", 0.0f);
@@ -525,4 +526,16 @@ void Settings::Init(int style)
 	D_LOGO_W = iniReader.ReadFloat(section, "SIZE_X", 0.0f);
 	D_LOGO_H = iniReader.ReadFloat(section, "SIZE_Y", 0.0f);
 	D_LOGO_SHADOW_OFFSET = iniReader.ReadFloat(section, "SHADOW_OFFSET", 0.0f);
+
+	sprintf(section, "%s_%s", prefix[style], "BRIEF_MESSAGES");
+	BRIEF_SHADOW = iniReader.ReadInt(section, "SHADOW", 0);
+	BRIEF_OUTLINE = iniReader.ReadInt(section, "OUTLINE", 0);
+	BRIEF_R = iniReader.ReadInt(section, "RED", 0);
+	BRIEF_G = iniReader.ReadInt(section, "GREEN", 0);
+	BRIEF_B = iniReader.ReadInt(section, "BLUE", 0);
+	BRIEF_X = iniReader.ReadFloat(section, "POS_X", 0.0f);
+	BRIEF_Y = iniReader.ReadFloat(section, "POS_Y", 0.0f);
+	BRIEF_YSPACE = iniReader.ReadFloat(section, "YSPACE", 0.0f);
+	BRIEF_SIZE_X = iniReader.ReadFloat(section, "SIZE_X", 0.0f);
+	BRIEF_SIZE_Y = iniReader.ReadFloat(section, "SIZE_Y", 0.0f);
 }
