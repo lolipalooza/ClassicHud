@@ -2248,10 +2248,10 @@ void MobileFrontEnd::DrawVCSelectionRectangles(float width, float posY, int page
 	// Stats page
 	if (page == MENUPAGE_STATS)
 		VC_sel_rect.Draw(
-			st_px + rx1, py + ry1,
-			st_px + st_sx + rx2, py + ry2,
-			st_px + rx3, py + sy + ry3,
-			st_px + st_sx + rx4, py + sy + ry4,
+			st_px			+ rx1,		py		+ ry1,
+			st_px + st_sx	+ rx2,		py		+ ry2,
+			st_px			+ rx3,		py + sy + ry3,
+			st_px + st_sx	+ rx4,		py + sy + ry4,
 			CRGBA(settings.MENU_RECT_R, settings.MENU_RECT_G, settings.MENU_RECT_B, settings.MENU_RECT_A));
 	
 	// Settings pages and Save/Load pages
@@ -2267,19 +2267,19 @@ void MobileFrontEnd::DrawVCSelectionRectangles(float width, float posY, int page
 			|| page == MENUPAGE_DELETE_GAME
 			))
 		VC_sel_rect.Draw(
-			s_px + rx1, py + ry1,
-			s_px + s_sx + rx2, py + ry2,
-			s_px + rx3, py + sy + ry3,
-			s_px + s_sx + rx4, py + sy + ry4,
+			s_px		+ rx1,		py		+ ry1,
+			s_px + s_sx + rx2,		py		+ ry2,
+			s_px		+ rx3,		py + sy + ry3,
+			s_px + s_sx + rx4,		py + sy + ry4,
 			CRGBA(settings.MENU_RECT_R, settings.MENU_RECT_G, settings.MENU_RECT_B, settings.MENU_RECT_A));
 	
 	// Normal pages
 	else
 		VC_sel_rect.Draw(
-			px + rx1, py + ry1,
-			px + sx + rx2, py + ry2,
-			px + rx3, py + sy + ry3,
-			px + sx + rx4, py + sy + ry4,
+			px		+ rx1,		py		+ ry1,
+			px + sx + rx2,		py		+ ry2,
+			px		+ rx3,		py + sy + ry3,
+			px + sx + rx4,		py + sy + ry4,
 			CRGBA(settings.MENU_RECT_R, settings.MENU_RECT_G, settings.MENU_RECT_B, settings.MENU_RECT_A));
 }
 
