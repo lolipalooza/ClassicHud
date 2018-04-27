@@ -221,8 +221,6 @@ Data edit_data[] = {
 	{ "Menu Title Pos Y", "MENU_TITLE", "POS_Y", 1.0f },
 	{ "Menu Title Size X", "MENU_TITLE", "SIZE_X", 0.01f },
 	{ "Menu Title Size Y", "MENU_TITLE", "SIZE_Y", 0.01f },
-	{ "Menu Title (Stats) Pos X", "MENU_TITLE_STATS", "STATS_X", 1.0f },
-	{ "Menu Title (Stats) Pos Y", "MENU_TITLE_STATS", "STATS_Y", 1.0f },
 
 	{ "Menu Ask Pos X", "MENU_ASK", "POS_X", 1.0f },
 	{ "Menu Ask Pos Y", "MENU_ASK", "POS_Y", 1.0f },
@@ -243,25 +241,47 @@ Data edit_data[] = {
 	{ "Menu Options Selection Rectangle Pos Y", "MENU_OPTIONS", "RECT_Y", 1.0f },
 	{ "Menu Options Selection Rectangle Width", "MENU_OPTIONS", "RECT_WIDTH", 1.0f },
 	{ "Menu Options Selection Rectangle Height", "MENU_OPTIONS", "RECT_HEIGHT", 1.0f },
-	{ "Deletethis Width", "MENU_OPTIONS", "W", 1.0f },
-	{ "Deletethis Height", "MENU_OPTIONS", "H", 1.0f },
 
+	{ "Menu Borders Width (Vice City Only)", "MENU_BORDERS", "W", 1.0f },
+	{ "Menu Borders Height (Vice City Only)", "MENU_BORDERS", "H", 1.0f },
+
+	{ "Menu Title (Stats) Pos X", "MENU_TITLE_STATS", "STATS_X", 1.0f },
+	{ "Menu Title (Stats) Pos Y", "MENU_TITLE_STATS", "STATS_Y", 1.0f },
 	{ "Menu Options (Stats) Pos X", "MENU_OPTIONS_STATS", "STATS_X", 1.0f },
-	{ "Menu Options (Stats) Pos Y Offset", "MENU_OPTIONS_STATS", "OFFSET_STATS_Y", 1.0f },
+	{ "Menu Options (Stats) Pos Y Offset", "MENU_OPTIONS_STATS", "POS_Y_OFFSET", 1.0f },
 	{ "Menu Options (Stats) Y Space Offset", "MENU_OPTIONS_STATS", "SPACE", 1.0f },
 	{ "Menu Options (Stats) Size X", "MENU_OPTIONS_STATS", "SIZE_X", 0.01f },
 	{ "Menu Options (Stats) Size Y", "MENU_OPTIONS_STATS", "SIZE_Y", 0.01f },
 	{ "Menu Options (Stats) Selection Rectangle Pos X", "MENU_OPTIONS_STATS", "RECT_X", 1.0f },
 	{ "Menu Options Selection Rectangle Width", "MENU_OPTIONS_STATS", "RECT_WIDTH", 1.0f },
 
+	{ "Stats Player Rank Pos X", "STATS_PLAYER_RANK", "POS_X", 1.0f },
+	{ "Stats Player Rank Pos Y", "STATS_PLAYER_RANK", "POS_Y", 1.0f },
+	{ "Stats Player Rank Size X", "STATS_PLAYER_RANK", "SIZE_X", 0.01f },
+	{ "Stats Player Rank Size Y", "STATS_PLAYER_RANK", "SIZE_Y", 0.01f },
+
+	{ "Stats Pos X", "MENU_STATS", "POS_X", 1.0f },
+	{ "Stats Pos Y (Offset)", "MENU_STATS", "POS_Y_OFFSET", 1.0f },
+	{ "Stats (Right) Pos X", "MENU_STATS", "RIGHT_X", 1.0f },
+	{ "Stats (Right) Pos Y", "MENU_STATS", "RIGHT_Y", 1.0f },
+	{ "Stats Y-Space", "MENU_STATS", "SPACE", 0.01f },
+	{ "Stats Size X", "MENU_STATS", "SIZE_X", 0.01f },
+	{ "Stats Size Y", "MENU_STATS", "SIZE_Y", 0.01f },
+
+	{ "Menu Settings Pos X", "MENU_SETTINGS", "POS_X", 1.0f },
+	{ "Menu Settings Pos Y Offset", "MENU_SETTINGS", "POS_Y_OFFSET", 1.0f },
+	{ "Menu Settings Y Space Offset", "MENU_SETTINGS", "SPACE", 1.0f },
+	{ "Menu Settings Size X", "MENU_SETTINGS", "SIZE_X", 0.01f },
+	{ "Menu Settings Size Y", "MENU_SETTINGS", "SIZE_Y", 0.01f },
+
 	{ "Menu Options (Right) Pos X", "MENU_OPTIONS_RIGHT", "RIGHT_X", 1.0f },
 	{ "Menu Options (Right) Size X", "MENU_OPTIONS_RIGHT", "R_SIZE_X", 0.01f },
 	{ "Menu Options (Right) Size Y", "MENU_OPTIONS_RIGHT", "R_SIZE_Y", 0.01f },
-	{ "Menu Options (Stats) Sliders Pos X", "MENU_OPTIONS_RIGHT", "SLIDERS_X", 1.0f },
-	{ "Menu Options (Stats) Sliders Pos Y Offset", "MENU_OPTIONS_RIGHT", "SLIDERS_Y", 1.0f },
-	{ "Menu Options (Stats) Sliders Size X", "MENU_OPTIONS_RIGHT", "SLIDERS_SIZE_X", 1.0f },
-	{ "Menu Options (Stats) Sliders Size Y", "MENU_OPTIONS_RIGHT", "SLIDERS_SIZE_Y", 0.02f },
-	{ "Menu Options (Opt NO) Pos Y", "MENU_OPTIONS_OK", "POS_YN", 1.0f },
+	{ "Menu Options (Right) Sliders Pos X", "MENU_OPTIONS_RIGHT", "SLIDERS_X", 1.0f },
+	{ "Menu Options (Right) Sliders Pos Y Offset", "MENU_OPTIONS_RIGHT", "SLIDERS_Y", 1.0f },
+	{ "Menu Options (Right) Sliders Size X", "MENU_OPTIONS_RIGHT", "SLIDERS_SIZE_X", 1.0f },
+	{ "Menu Options (Right) Sliders Size Y", "MENU_OPTIONS_RIGHT", "SLIDERS_SIZE_Y", 0.02f },
+	{ "Menu Options (Opt OK) Pos Y (No editable - same as NO)", "MENU_OPTIONS_OK", "DUMMY", 0.0f },
 
 	{ "Save/Load Pos X", "MENU_SAVE_LOAD", "POS_X", 1.0f },
 	{ "Save/Load Pos Y (Offset)", "MENU_SAVE_LOAD", "POS_Y_OFFSET", 1.0f },
@@ -370,14 +390,18 @@ public:
 				else if (section == "MENU_TITLE_STATS")			MobileFrontEnd::TestMenuStandard(MENUPAGE_STATS);
 				else if (section == "MENU_ASK")					MobileFrontEnd::TestMenuStandard(MENUPAGE_NEW_GAME_ASK);
 				else if (section == "MENU_OPTIONS")				MobileFrontEnd::TestMenuStandard(MENUPAGE_MAIN_MENU);
-				else if (section == "MENU_OPTIONS_STATS")		MobileFrontEnd::TestMenuStandard(MENUPAGE_STATS);
-				else if (section == "MENU_OPTIONS_RIGHT")		MobileFrontEnd::TestMenuStandard(MENUPAGE_DISPLAY_SETTINGS);
+				else if (section == "MENU_BORDERS")				MobileFrontEnd::TestViceCityFtEndBorders();
+				else if (section == "MENU_OPTIONS_STATS"
+					|| section == "STATS_PLAYER_RANK"
+					|| section == "MENU_STATS")					{ MobileFrontEnd::TestMenuStandard(MENUPAGE_STATS); MobileFrontEnd::PrintStats(); }
+				else if (section == "MENU_SETTINGS"
+					|| section == "MENU_OPTIONS_RIGHT")			MobileFrontEnd::TestMenuStandard(MENUPAGE_DISPLAY_SETTINGS);
 				else if (section == "MENU_OPTIONS_OK")			MobileFrontEnd::TestMenuStandard(MENUPAGE_SAVE_DONE_2);
 				else if (section == "MENU_SAVE_LOAD")			MobileFrontEnd::TestMenuStandard(MENUPAGE_LOAD_GAME);
 				else if (section == "TEST_RECTANGLE")			CSprite2d::DrawRect(CRect(SCREEN_COORD(settings.MENU_TEST_RECT_X), SCREEN_COORD(settings.MENU_TEST_RECT_Y), SCREEN_COORD(settings.MENU_TEST_RECT_X + settings.MENU_TEST_RECT_W), SCREEN_COORD(settings.MENU_TEST_RECT_Y + settings.MENU_TEST_RECT_H)), CRGBA(33, 92, 182, 255));
 				else if (section == "TEMP_DATA")				{ if (settings.DISPLAY_LOGO_ON_FRONT_END || settings.DISPLAY_LOGO_ON_LOADING_SCREEN || settings.DISPLAY_LOGO_ON_MAIN_MENU) MobileFrontEnd::DrawLogo(); }
 				else if (section == "BRIEF_MESSAGES")			FrontEndMenuManager.PrintBriefs();
-
+				
 				TestMessage::Draw(SCREEN_COORD(settings.CUSTOM_X),
 					SCREEN_COORD(settings.CUSTOM_Y), settings.CUSTOM_SIZE_X, settings.CUSTOM_SIZE_Y,
 					(eFontAlignment)settings.CUSTOM_ALIGN, settings.CUSTOM_LINEWIDTH,

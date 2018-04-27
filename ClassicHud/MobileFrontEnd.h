@@ -34,7 +34,8 @@ public:
     static void PrintMap();
     static void PrintLegend();
     static void PrintPlaceName();
-    static void DisplaySlider(float x, float y, float width, float height, float progress, bool bNub);
+	static void DisplaySlider(float x, float y, float width, float height, float progress, bool bNub);
+	static void DisplaySlider(float x, float y, float width, float height, float progress, bool bNub, unsigned char alpha);
 
     static void PrintStats();
     static void PrintStatsText(float x, float y, char *str);
@@ -44,10 +45,11 @@ public:
     static void PrintBriefsText(float x, float y, char *str);
 
 	static void TestMenuStandard(unsigned char m_nCurrentMenuPage);
-	static bool statsOrSettingPage(int page);
+	static bool settingPage(int page);
 	static bool saveOrLoadPage(int page);
 	static float GetNewYPos(unsigned int i, unsigned char m_nCurrentMenuPage);
 	static void DrawViceCityFtEndBorders(int page);
+	static void TestViceCityFtEndBorders();
 	static void DrawVCSelectionRectangles(float width, float posY, int page, int i);
 	static void DrawLogo();
 };

@@ -472,18 +472,58 @@ void Settings::Init(int style)
 	MENU_RECT_X = iniReader.ReadFloat(section, "RECT_X", 0.0f);
 	MENU_RECT_Y = iniReader.ReadFloat(section, "RECT_Y", 0.0f);
 	MENU_RECT_WIDTH = iniReader.ReadFloat(section, "RECT_WIDTH", 0.0f);
-	MENU_RECT_HEIGHT = iniReader.ReadFloat(section, "RECT_HEIGHT", 0.0f);
+	MENU_RECT_HEIGHT = iniReader.ReadFloat(section, "RECT_HEIGHT", 0.0f);	
+
+	sprintf(section, "%s_%s", prefix[style], "MENU_BORDERS");
+	D_W = iniReader.ReadFloat(section, "W", 0.0f);
+	D_H = iniReader.ReadFloat(section, "H", 0.0f);
 
 	sprintf(section, "%s_%s", prefix[style], "MENU_OPTIONS_STATS");
-	MENU_SETTINGS_FONTSTYLE = iniReader.ReadInt(section, "FONTSTYLE", 0);
-	MENU_SETTINGS_SHOW_RIGHT = iniReader.ReadInt(section, "SETTINGS_SHOW_RIGHT", 0);
+	MENU_STATS_FONTSTYLE = iniReader.ReadInt(section, "FONTSTYLE", 0);
 	MENU_STATS_X = iniReader.ReadFloat(section, "STATS_X", 0.0f);
-	MENU_STATS_Y_OFFSET = iniReader.ReadFloat(section, "OFFSET_STATS_Y", 0.0f);
+	MENU_STATS_Y_OFFSET = iniReader.ReadFloat(section, "POS_Y_OFFSET", 0.0f);
 	MENU_STATS_YSPACE = iniReader.ReadFloat(section, "SPACE", 0.0f);
 	MENU_STATS_SIZE_X = iniReader.ReadFloat(section, "SIZE_X", 0.0f);
 	MENU_STATS_SIZE_Y = iniReader.ReadFloat(section, "SIZE_Y", 0.0f);
 	MENU_STATS_RECT_X = iniReader.ReadFloat(section, "RECT_X", 0.0f);
 	MENU_STATS_RECT_WIDTH = iniReader.ReadFloat(section, "RECT_WIDTH", 0.0f);
+
+	sprintf(section, "%s_%s", prefix[style], "STATS_PLAYER_RANK");
+	RANK_SHADOW = iniReader.ReadInt(section, "SHADOW", 0);
+	RANK_OUTLINE = iniReader.ReadInt(section, "OUTLINE", 0);
+	RANK_R = iniReader.ReadInt(section, "RED", 0);
+	RANK_G = iniReader.ReadInt(section, "GREEN", 0);
+	RANK_B = iniReader.ReadInt(section, "BLUE", 0);
+	RANK_ALIGN = iniReader.ReadInt(section, "ALIGN", 0);
+	RANK_FONTSTYLE = iniReader.ReadInt(section, "FONTSTYLE", 0);
+	RANK_X = iniReader.ReadFloat(section, "POS_X", 0.0f);
+	RANK_Y = iniReader.ReadFloat(section, "POS_Y", 0.0f);
+	RANK_SIZE_X = iniReader.ReadFloat(section, "SIZE_X", 0.0f);
+	RANK_SIZE_Y = iniReader.ReadFloat(section, "SIZE_Y", 0.0f);
+
+	sprintf(section, "%s_%s", prefix[style], "MENU_STATS");
+	STATS_SHADOW = iniReader.ReadInt(section, "SHADOW", 0);
+	STATS_OUTLINE = iniReader.ReadInt(section, "OUTLINE", 0);
+	STATS_R = iniReader.ReadInt(section, "RED", 0);
+	STATS_G = iniReader.ReadInt(section, "GREEN", 0);
+	STATS_B = iniReader.ReadInt(section, "BLUE", 0);
+	STATS_FONTSTYLE = iniReader.ReadInt(section, "FONTSTYLE", 0);
+	STATS_X = iniReader.ReadFloat(section, "POS_X", 0.0f);
+	STATS_Y_OFFSET = iniReader.ReadFloat(section, "POS_Y_OFFSET", 0.0f);
+	STATS_R_X = iniReader.ReadFloat(section, "RIGHT_X", 0.0f);
+	STATS_R_Y = iniReader.ReadFloat(section, "RIGHT_Y", 0.0f);
+	STATS_SIZE_X = iniReader.ReadFloat(section, "SIZE_X", 0.0f);
+	STATS_SIZE_Y = iniReader.ReadFloat(section, "SIZE_Y", 0.0f);
+	STATS_YSPACE = iniReader.ReadFloat(section, "SPACE", 0.0f);
+
+	sprintf(section, "%s_%s", prefix[style], "MENU_SETTINGS");
+	MENU_SETTINGS_SHOW_RIGHT = iniReader.ReadInt(section, "SETTINGS_SHOW_RIGHT", 0);
+	MENU_SETTINGS_FONTSTYLE = iniReader.ReadInt(section, "FONTSTYLE", 0);
+	MENU_SETTINGS_X = iniReader.ReadFloat(section, "POS_X", 0.0f);
+	MENU_SETTINGS_Y_OFFSET = iniReader.ReadFloat(section, "POS_Y_OFFSET", 0.0f);
+	MENU_SETTINGS_YSPACE = iniReader.ReadFloat(section, "SPACE", 0.0f);
+	MENU_SETTINGS_SIZE_X = iniReader.ReadFloat(section, "SIZE_X", 0.0f);
+	MENU_SETTINGS_SIZE_Y = iniReader.ReadFloat(section, "SIZE_Y", 0.0f);
 
 	sprintf(section, "%s_%s", prefix[style], "MENU_OPTIONS_RIGHT");
 	MENU_R_X = iniReader.ReadFloat(section, "RIGHT_X", 0.0f);
@@ -526,6 +566,7 @@ void Settings::Init(int style)
 	BG_VC_SCREEN = iniReader.ReadInt(section, "VC_SCREEN", 0);
 	BG_SEL_RECTS = iniReader.ReadInt(section, "SELECTION_RECTANGLES", 0);
 	BG_V_ALIGN_MIDDLE = iniReader.ReadInt(section, "V_ALIGN_MIDDLE", 0);
+	BG_MAP_MASK_ID = iniReader.ReadInt(section, "MAP_MASK_ID", 0);
 	DISPLAY_LOGO_ON_MAIN_MENU = iniReader.ReadInt(section, "DISPLAY_LOGO_ON_MAIN_MENU", 0);
 	DISPLAY_LOGO_ON_LOADING_SCREEN = iniReader.ReadInt(section, "DISPLAY_LOGO_ON_LOADING_SCREEN", 0);
 	DISPLAY_LOGO_ON_FRONT_END = iniReader.ReadInt(section, "DISPLAY_LOGO_ON_FRONT_END", 0);
@@ -535,10 +576,6 @@ void Settings::Init(int style)
 	LOGO_SIZE_X = iniReader.ReadFloat(section, "LOGO_SIZE_X", 0.0f);
 	LOGO_SIZE_Y = iniReader.ReadFloat(section, "LOGO_SIZE_Y", 0.0f);
 	LOGO_SHADOW_OFFSET = iniReader.ReadFloat(section, "LOGO_SHADOW_OFFSET", 0.0f);
-
-	sprintf(section, "%s_%s", prefix[style], "MENU_OPTIONS");
-	D_W = iniReader.ReadFloat(section, "W", 0.0f);
-	D_H = iniReader.ReadFloat(section, "H", 0.0f);
 
 	sprintf(section, "%s_%s", prefix[style], "TEMP_DATA");
 	D_LOGO_X = iniReader.ReadFloat(section, "POS_X", 0.0f);
