@@ -9,3 +9,4 @@ It also comes with a Hud Editor that lets player to edit a lot of stuff in the i
 - Manage radiostation icons in audio settings.
 - Manage radar blip icons on expanded fla.
 - Manage weapons on expanded fla.
+- The another ClassicHud mod is drawing an "You are here" VC/VCS styled icon on radar screen. Find out how to do that.
