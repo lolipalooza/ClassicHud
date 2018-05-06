@@ -5,6 +5,10 @@ It also comes with a Hud Editor that lets player to edit a lot of stuff in the i
 
 # To do
 
+- Display correctly SA Health Bar when Max Health grows up (only SA).
+- Adapt radar plane.
+- Base Colours (for coloured low/high priority texts).
+- Colouring Spheres/Markers.
 - Avoid show armour when oxygen is displaying.
 - Manage radiostation icons in audio settings.
 - Manage radar blip icons on expanded fla.
