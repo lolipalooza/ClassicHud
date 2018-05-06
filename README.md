@@ -1,6 +1,9 @@
 # ClassicHud
 
 Asi plugin to transform SA Hud, interface and background menu entirely, cloning III, VC and LCS (VCS soon).
+
+# Hud Editor
+
 It also comes with a Hud Editor that lets player to edit a lot of stuff in the interface (be careful, Hud Editor is always overwriting data in classichud.dat without any undo possibility!).
 
 # To do
