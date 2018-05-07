@@ -1,7 +1,8 @@
-#ifndef __3DMARKERS
-#define __3DMARKERS
+#pragma once
 
-#include "General.h"
+#include "plugin.h"
+
+#include "CGeneral.h"
 
 // VCS colors
 #define MARKER_SET_COLOR_R	0xED
@@ -14,6 +15,10 @@
 #define MARKER_SET_COLOR_B	0xF2*/
 #define MARKER_SET_COLOR_A	0xE4
 
+#define WRAPPER __declspec(naked)
+#define EAXJMP(a) { _asm mov eax, a _asm jmp eax }
+#define WRAPARG(a) UNREFERENCED_PARAMETER(a)
+
 enum MarkerType
 {
 	MARKER_DIAMOND_0,
@@ -25,13 +30,25 @@ enum MarkerType
 	MARKER_DIAMOND_6
 };
 
+typedef unsigned char uint8;
+typedef unsigned short uint16;
+typedef signed short int16;
+typedef unsigned int uint32;
+
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
+
+#define RpClumpGetFrame(_clump) ((RwFrame *) rwObjectGetParent(_clump))
+#define rwObjectGetParent(object)           (((const RwObject *)(object))->parent)
+
 class C3dMarker
 {
 public:
-	CMatrix	m_mat;  // local space to world space transform // 0
+	CMatrix		m_mat;  // local space to world space transform // 0
 	RpAtomic	*m_pAtomic; // 72
 	RpMaterial	*m_pMaterial; // 76
-    
+
 	uint16	m_nType; // 80
 	bool	m_bIsUsed;  // has this marker been allocated this frame?    // 82
 	uint8	m_bIsUsed2;
@@ -48,8 +65,8 @@ public:
 	float	m_fCameraRange; // 116
 
 	CVector	m_normal;           // Normal of the object point at             // 120
-	// the following variables remember the last time we read the heigh of the
-	// map. Using this we don't have to do this every frame and we can still have moving markers.
+								// the following variables remember the last time we read the heigh of the
+								// map. Using this we don't have to do this every frame and we can still have moving markers.
 	uint16	m_LastMapReadX, m_LastMapReadY; // 132 / 134
 	float	m_LastMapReadResultZ; // 136
 	float	m_roofHeight; // 140
@@ -57,39 +74,36 @@ public:
 	uint32	m_OnScreenTestTime;     // time last screen check was done // 156
 
 public:
-	long double		CalculateRealSize();
-	void			Render(void);
+	long double	CalculateRealSize();
+	void Render(void);
 };
 
 class C3dMarkers
 {
 private:
-	static float				m_PosZMult;
-	static const float			m_MovingMultiplier;
-	static C3dMarker			*m_aMarkerArray;	// [32]
-	static int &NumActiveMarkers;
-	static float &m_angleDiamond;
-	static bool &IgnoreRenderLimit;
+	static float		m_PosZMult;
+	static const float	m_MovingMultiplier;
+	static C3dMarker	*m_aMarkerArray;	// [32]
+	static int			&NumActiveMarkers;
+	static bool			&IgnoreRenderLimit;
 
 private:
-	static C3dMarker*			PlaceMarker(unsigned int nIndex, unsigned short markerID, CVector& vecPos, float fSize, unsigned char red, unsigned char green, unsigned char blue, unsigned char alpha, unsigned short pulsePeriod, float pulseFraction, short rotateRate, float normalX, float normalY, float normalZ, bool checkZ);
-	static void				User3dMarkersDraw(void);
-	static void				DirectionArrowsDraw(void);
-	static RpClump				*LoadMarker(const char *name);
+	static C3dMarker*	PlaceMarker(unsigned int nIndex, unsigned short markerID, CVector& vecPos, float fSize, unsigned char red, unsigned char green, unsigned char blue, unsigned char alpha, unsigned short pulsePeriod, float pulseFraction, short rotateRate, float normalX, float normalY, float normalZ, bool checkZ);
+	static void			User3dMarkersDraw(void);
+	static void			DirectionArrowsDraw(void);
+	static RpClump		*LoadMarker(const char *name);
 
 public:
 	static RpClump				**m_pRpClumpArray;	// [7]
-	static inline float*		GetPosZMult()
-			{ return &m_PosZMult; };
-	static inline const float*	GetMovingMult()
-			{ return &m_MovingMultiplier; };
+	static inline float*		GetPosZMult() { return &m_PosZMult; };
+	static inline const float*	GetMovingMult() { return &m_MovingMultiplier; };
+	static float				&m_angleDiamond;
 
-	static void					Init(void);
-	static void					Render(void);
+	static void		Init(void);
+	static void		Render(void);
 	// Last unused param removed
-	static void					PlaceMarkerSet(unsigned int nIndex, unsigned short markerID, CVector& vecPos, float fSize, unsigned char red, unsigned char green, unsigned char blue, unsigned char alpha, unsigned short pulsePeriod, float pulseFraction);
+	static void		PlaceMarkerSet(unsigned int nIndex, unsigned short markerID, CVector& vecPos, float fSize, unsigned char red, unsigned char green, unsigned char blue, unsigned char alpha, unsigned short pulsePeriod, float pulseFraction);
+	static void		InstallPatches();
 };
 
 static_assert(sizeof(C3dMarker) == 0xA0, "Wrong size: C3DMarker");
-
-#endif

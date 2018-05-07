@@ -3,6 +3,8 @@
 #include "IniReader.h"
 #include "HudEditor.h"
 
+#include "CSpecialFX.h"
+
 #include "Money.h"
 #include "Clock.h"
 #include "HudIcons.h"
@@ -24,6 +26,8 @@
 #include "MobileLoadingScreen.h"
 #include "MobileTextures.h"
 #include "MobileFrontEnd.h"
+
+#include "3DMarkers.h"
 
 using namespace plugin;
 
@@ -87,6 +91,8 @@ public:
 				MobileTextures::Setup();
 
 				ClassicHud::TransformHud();
+
+				CSpecialFX::Init();
 			}
 		};
 	}
@@ -120,4 +126,6 @@ void ClassicHud::TransformHud()
 	MobileLoadingScreen::InstallPatches();
 	MobileMenuPage::InstallPatches();
 	MobileFrontEnd::InstallPatches();
+
+	C3dMarkers::InstallPatches();
 }

@@ -1,13 +1,14 @@
-#include "StdAfx.h"
 #include "3DMarkers.h"
 
-#include "Timer.h"
-#include "ModelInfo.h"
-#include "Streaming.h"
-#include "TxdStore.h"
-#include "Scene.h"
-#include "Camera.h"
-#include "Coronas.h"
+#include "CTimer.h"
+#include "CModelInfo.h"
+#include "CStreaming.h"
+#include "CTxdStore.h"
+#include "CScene.h"
+#include "CCamera.h"
+#include "CCoronas.h"
+
+using namespace plugin;
 
 // Static variables
 float		C3dMarkers::m_PosZMult;
@@ -26,7 +27,7 @@ C3dMarkers::Init(void)
 	C3dMarker *marker;
 
 	marker = m_aMarkerArray;
-	for(i = 0; i < 32; i++){
+	for (i = 0; i < 32; i++) {
 		marker->m_lastPosition = CVector(0, 0, 0);
 		marker->m_pAtomic = NULL;
 		marker->m_nType = 0x101;
@@ -79,29 +80,29 @@ C3dMarkers::Render(void)
 	SetAmbientColours(&markerAmbient);
 	SetDirectionalColours(&markerDirectional);
 	User3dMarkersDraw();
-	for(marker = m_aMarkerArray; marker < &m_aMarkerArray[32]; marker++){
-		if(marker->m_bIsUsed2){
-			if(marker->m_fCameraRange < 150.0f || IgnoreRenderLimit || marker->m_nType == MARKER_HOOP){
-				//if(TheCamera.IsSphereVisible_(*marker->m_mat.GetPos(), 2.0, &TheCamera.m_matInverse.matrix)){
-					marker->Render();
-					if(marker->m_nType == MARKER_ARROW)
-						CCoronas::RegisterCorona((uint32)marker, NULL,
-							marker->m_color.red, marker->m_color.green, marker->m_color.blue, 0x84,
-							*marker->m_mat.GetPos(), 1.2*marker->m_fSize, TheCamera.LODDistMultiplier * 50.0f,
-							gpCoronaTexture[1], 0, 0, 0, 0, 0.0, false, 1.5f, false, 255, false, true);
-				//}
+	for (marker = m_aMarkerArray; marker < &m_aMarkerArray[32]; marker++) {
+		if (marker->m_bIsUsed2) {
+			if (marker->m_fCameraRange < 150.0f || IgnoreRenderLimit || marker->m_nType == MARKER_HOOP) {
+				marker->Render();
+				if (marker->m_nType == MARKER_ARROW)
+					CCoronas::RegisterCorona((uint32)marker, NULL,
+						marker->m_color.red, marker->m_color.green, marker->m_color.blue, 0x84,
+						marker->m_mat.pos, 1.2f*marker->m_fSize, TheCamera.m_fLODDistMultiplier * 50.0f,
+						gpCoronaTexture[1], (eCoronaFlareType)0, 0, 0, 0, 0.0,
+						false, 1.5f, false, 255, false, true);
 			}
 			NumActiveMarkers++;
 			marker->m_bIsUsed = false;
 			marker->m_bIsUsed2 = false;
-		}else{
-			if(marker->m_pAtomic){
+		}
+		else {
+			if (marker->m_pAtomic) {
 				marker->m_nIdentifier = 0;
 				marker->m_nStartTime = 0;
 				marker->m_bIsUsed = false;
 				marker->m_bIsUsed2 = false;
 				marker->m_nType = 0x101;
-				RwFrame *f = RpAtomicGetFrame(marker->m_pAtomic);
+				RwFrame *f = (RwFrame *)marker->m_pAtomic->object.object.parent;
 				RpAtomicDestroy(marker->m_pAtomic);
 				RwFrameDestroy(f);
 				marker->m_pAtomic = NULL;
@@ -118,42 +119,48 @@ WRAPPER void C3dMarkers::User3dMarkersDraw(void) { EAXJMP(0x723240); }
 WRAPPER void C3dMarkers::DirectionArrowsDraw(void) { EAXJMP(0x7211F0); }
 
 WRAPPER C3dMarker* C3dMarkers::PlaceMarker(unsigned int nIndex, unsigned short markerID, CVector& vecPos, float fSize, unsigned char red, unsigned char green, unsigned char blue, unsigned char alpha, unsigned short pulsePeriod, float pulseFraction, short rotateRate, float normalX, float normalY, float normalZ, bool checkZ)
-	{	WRAPARG(nIndex); WRAPARG(markerID); WRAPARG(vecPos); WRAPARG(fSize); WRAPARG(red); WRAPARG(green); WRAPARG(blue); WRAPARG(alpha);
-		WRAPARG(pulsePeriod); WRAPARG(pulseFraction); WRAPARG(rotateRate); WRAPARG(normalX); WRAPARG(normalY); WRAPARG(normalZ);
-		WRAPARG(checkZ); EAXJMP(0x725120); }
+{
+	WRAPARG(nIndex); WRAPARG(markerID); WRAPARG(vecPos); WRAPARG(fSize); WRAPARG(red); WRAPARG(green); WRAPARG(blue); WRAPARG(alpha);
+	WRAPARG(pulsePeriod); WRAPARG(pulseFraction); WRAPARG(rotateRate); WRAPARG(normalX); WRAPARG(normalY); WRAPARG(normalZ);
+	WRAPARG(checkZ); EAXJMP(0x725120);
+}
 
 void C3dMarkers::PlaceMarkerSet(unsigned int nIndex, unsigned short markerID, CVector& vecPos, float fSize, unsigned char red, unsigned char green, unsigned char blue, unsigned char alpha, unsigned short pulsePeriod, float pulseFraction)
 {
-	PlaceMarker(nIndex, markerID, vecPos, fSize, red, green, blue, static_cast<unsigned char>(alpha * (1.0f/3.0f)), pulsePeriod, pulseFraction, 1, 0.0, 0.0, 0.0, false);
-	PlaceMarker(nIndex, markerID, vecPos, fSize * 0.9f, red, green, blue, static_cast<unsigned char>(alpha * (1.0f/3.0f)), pulsePeriod, pulseFraction, -1, 0.0, 0.0, 0.0, false);
+	PlaceMarker(nIndex, markerID, vecPos, fSize, red, green, blue, static_cast<unsigned char>(alpha * (1.0f / 3.0f)), pulsePeriod, pulseFraction, 1, 0.0, 0.0, 0.0, false);
+	PlaceMarker(nIndex, markerID, vecPos, fSize * 0.9f, red, green, blue, static_cast<unsigned char>(alpha * (1.0f / 3.0f)), pulsePeriod, pulseFraction, -1, 0.0, 0.0, 0.0, false);
 }
+
 
 long double C3dMarker::CalculateRealSize()
 {
-	long double		fVariable = (((m_nPulsePeriod - 1)) & ( CTimer::m_snTimeInMilliseconds /*- m_nStartTime*/ ));
-	return (2 * M_PI) * fVariable / static_cast<long double>(m_nPulsePeriod);
+	long double		fVariable = (((m_nPulsePeriod - 1)) & (CTimer::m_snTimeInMilliseconds /*- m_nStartTime*/));
+	long double		res = (2 * M_PI) * fVariable / static_cast<long double>(m_nPulsePeriod);
+	static float m_angleDiamond = *(float*)0xC7C700;
+	m_angleDiamond = (float)res;
+	return res;
 }
 
 void
 C3dMarker::Render(void)
 {
-	if(m_pAtomic == NULL)
+	if (m_pAtomic == NULL)
 		return;
-	if(m_nType == 1)
+	if (m_nType == 1)
 		RwRenderStateSet(rwRENDERSTATECULLMODE, (void*)rwCULLMODECULLNONE);
 	else
 		RwRenderStateSet(rwRENDERSTATECULLMODE, (void*)rwCULLMODECULLBACK);
 	RpMaterialSetColor(m_pMaterial, &m_color);
 	m_mat.UpdateRW();
-	CMatrix mat(m_mat.pMatrix);
+	CMatrix mat(m_mat.m_pAttachMatrix, true);
 	mat.Scale(m_fSize);
 	mat.UpdateRW();
 	RwFrameUpdateObjects(RpClumpGetFrame(m_pAtomic));
-	SetBrightMarkerColours();
+	SetBrightMarkerColours(0.0f);
 	RwRenderStateSet(rwRENDERSTATEZWRITEENABLE, (void*)FALSE);
-	if(m_nType == 3)
+	if (m_nType == 3)
 		RwRenderStateSet(rwRENDERSTATECULLMODE, (void*)rwCULLMODECULLNONE);
-	RpAtomicRender(m_pAtomic);
+	m_pAtomic->renderCallBack(m_pAtomic);
 	RwRenderStateSet(rwRENDERSTATEZWRITEENABLE, (void*)TRUE);
 	ReSetAmbientAndDirectionalColours();
 }
@@ -184,68 +191,53 @@ void __declspec(naked) EnexMarkersColorBreak()
 	}
 }
 
-static StaticPatcher	Patcher([](){
-	using namespace Memory;
+void __fastcall C3dMarker_Render(C3dMarker* pMarker, int edx0)
+{
+	pMarker->Render();
+}
 
-	InjectHook(0x7269FA, C3dMarkers::Init);
-	InjectHook(0x7250B1, &C3dMarker::Render);
-	InjectHook(0x726AE4, C3dMarkers::Render);
-	*(uint8*)0x8D5D8B = 0xD1;	// cone marker alpha
-
-	//Nop(0x585F9A, 5);	// C3dMarkers::PlaceMarkerCone in CRadar::Draw3dMarkers
+void C3dMarkers::InstallPatches()
+{
+	uint8 coneMarkerAlpha = *(uint8*)0x8D5D8B;
+	
+	patch::RedirectCall(0x7269FA, C3dMarkers::Init);
+	patch::RedirectJump(0x7250B1, C3dMarker_Render);//patch::RedirectCall(0x7250B1, C3dMarkers::Render);//patch::RedirectCall(0x7250B1, &C3dMarker::Render);
+	patch::RedirectCall(0x726AE4, C3dMarkers::Render);
+	coneMarkerAlpha = 0xD1;
+	
 	// some radar color
-	Patch<BYTE>(0x585CCB, MARKER_SET_COLOR_B);
-	Patch<BYTE>(0x585CCD, MARKER_SET_COLOR_G);
-	Patch<BYTE>(0x585CCF, MARKER_SET_COLOR_R);
+	patch::Set<BYTE>(0x585CCB, MARKER_SET_COLOR_B);
+	patch::Set<BYTE>(0x585CCD, MARKER_SET_COLOR_G);
+	patch::Set<BYTE>(0x585CCF, MARKER_SET_COLOR_R);
 
 	// Spheres colours
-	//dwFunc = 0x4810E0 + 0x2B;
-//	patch(dwFunc, MARKER_SET_COLOR_A, 4);
-//	dwFunc += 0x6;
-	Patch<BYTE>(0x4810E0 + 0x2B, MARKER_SET_COLOR_B);
-	//dwFunc += 0x2;
-	Patch<BYTE>(0x4810E0 + 0x2B + 0x2, MARKER_SET_COLOR_G);
-	//dwFunc += 0x2;
-	Patch<BYTE>(0x4810E0 + 0x2B + 0x4, MARKER_SET_COLOR_R);
-
-	/*Patch<BYTE>(0x70CD0B, 0xB4);
-	Patch<BYTE>(0x70CD0D, 0x82);
-	Patch<BYTE>(0x70CD0F, 0xED);
-	Patch<BYTE>(0x70CD58, 0xB4);
-	Patch<BYTE>(0x70CD5A, 0x82);
-	Patch<BYTE>(0x70CD5C, 0xED);
-	Patch<BYTE>(0x70CDAB, 0xB4);
-	Patch<BYTE>(0x70CDAD, 0x82);
-	Patch<BYTE>(0x70CDAF, 0xED);*/
-
+	patch::Set<BYTE>(0x4810E0 + 0x2B, MARKER_SET_COLOR_B);
+	patch::Set<BYTE>(0x4810E0 + 0x2B + 0x2, MARKER_SET_COLOR_G);
+	patch::Set<BYTE>(0x4810E0 + 0x2B + 0x4, MARKER_SET_COLOR_R);
+	
 	// Growing/shrinking 3DMarkers
-	Patch<float>(0x440F26, 0.0f);
-	InjectHook(0x72576B, &C3dMarkerSizeHack, PATCH_CALL);
-	Nop(0x725770, 1);
+	patch::Set<float>(0x440F26, 0.0f);
+	patch::RedirectCall(0x72576B, &C3dMarkerSizeHack);
+	patch::Nop(0x725770, 1);
 
 	// New style of markers
 	// What is this?
-	InjectHook(0x725BA0, &C3dMarkers::PlaceMarkerSet, PATCH_JUMP);
-
+	patch::RedirectJump(0x725BA0, &C3dMarkers::PlaceMarkerSet);
+	
 	// Enex markers RGB
-	InjectHook(0x440F38, EnexMarkersColorBreak, PATCH_JUMP);
-
+	patch::RedirectJump(0x440F38, EnexMarkersColorBreak);
+	
 	// arrow.dff as marker
-	Patch<const float*>(0x725636, C3dMarkers::GetPosZMult());
-	Patch<const float*>(0x7259A1, C3dMarkers::GetPosZMult());
+	patch::Set<const float*>(0x725636, C3dMarkers::GetPosZMult());
+	patch::Set<const float*>(0x7259A1, C3dMarkers::GetPosZMult());
 	//Patch<const float*>(0x7232C7, C3dMarkers::GetPosZMult());
-	Patch<const float*>(0x72564B, C3dMarkers::GetMovingMult());
-	Patch<const float*>(0x7259A9, C3dMarkers::GetMovingMult());
-	Nop(0x72563A, 6);
-	Nop(0x72599F, 6);
-	Nop(0x72502B, 6);
-	Nop(0x725647, 2);
-	Patch<uint8>(0x726DA6, 5);	// arrow (old cone) rotate rate
-	Patch(0x7232C1, &C3dMarkers::m_pRpClumpArray[0]);	// marker 0 (user marker)
-
-	// Arrow sizes
-//	Patch<float>(0x585DA5, 2.5f);	// Vehicles
-//	Patch<float>(0x585E4D, 1.5f);	// Peds
-//	Patch<float>(0x585F8E, 1.0f);	// Objects
-
-		});
+	patch::Set<const float*>(0x72564B, C3dMarkers::GetMovingMult());
+	patch::Set<const float*>(0x7259A9, C3dMarkers::GetMovingMult());
+	patch::Nop(0x72563A, 6);
+	patch::Nop(0x72599F, 6);
+	patch::Nop(0x72502B, 6);
+	patch::Nop(0x725647, 2);
+	patch::Set<uint8>(0x726DA6, 5);	// arrow (old cone) rotate rate
+	patch::SetPointer(0x7232C1, &C3dMarkers::m_pRpClumpArray[0]);	// marker 0 (user marker)
+	
+}
