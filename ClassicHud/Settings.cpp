@@ -595,4 +595,17 @@ void Settings::Init(int style)
 	BRIEF_YSPACE = iniReader.ReadFloat(section, "YSPACE", 0.0f);
 	BRIEF_SIZE_X = iniReader.ReadFloat(section, "SIZE_X", 0.0f);
 	BRIEF_SIZE_Y = iniReader.ReadFloat(section, "SIZE_Y", 0.0f);
+
+	sprintf(section, "%s_%s", prefix[style], "MARKERS");
+	MARKERS_R = iniReader.ReadInt(section, "RED", 0);
+	MARKERS_G = iniReader.ReadInt(section, "GREEN", 0);
+	MARKERS_B = iniReader.ReadInt(section, "BLUE", 0);
+	ENEX_R = iniReader.ReadInt(section, "ENEX_R", 0);
+	ENEX_G = iniReader.ReadInt(section, "ENEX_G", 0);
+	ENEX_B = iniReader.ReadInt(section, "ENEX_B", 0);
+	MARKERS_USE_ARROWS = iniReader.ReadInt(section, "USE_ARROWS", 0);
+	MARKERS_ROTATE = iniReader.ReadInt(section, "ROTATE", 0);
+	MARKERS_CONE_ALPHA = iniReader.ReadInt(section, "CONE_ALPHA", 255);
+	MARKERS_CONE_GLOW = iniReader.ReadInt(section, "CONE_GLOW", 0);
+	MARKERS_SIZE_CHANGE = iniReader.ReadInt(section, "SIZE_CHANGE", 0);
 }
