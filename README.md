@@ -19,3 +19,4 @@ It also comes with a Hud Editor that lets player to edit a lot of stuff in the i
 - The another ClassicHud mod is drawing an "You are here" VC/VCS styled icon on radar screen. Find out how to do that.
 - Enhance data reading from dat file, like Mobile Hud does.
 - Is there a way of drawing better radars (specially when using Limit adjusters to increase map size)? See FLA source code.
+- Adjust color (and arrow) of racing Checkpoints. Test Aerial racing checkpoints!
