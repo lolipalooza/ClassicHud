@@ -21,3 +21,4 @@ It also comes with a Hud Editor that lets player to edit a lot of stuff in the i
 - Is there a way of drawing better radars (specially when using Limit adjusters to increase map size)? See FLA source code.
 - Adjust color (and arrow) of racing Checkpoints. Test Aerial racing checkpoints! GTA III Should use coronas instead of markers in racing checkpoints.
 - Customize Panel boxes.
+- Loading screen issues.
