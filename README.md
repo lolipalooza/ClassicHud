@@ -22,3 +22,4 @@ It also comes with a Hud Editor that lets player to edit a lot of stuff in the i
 - Adjust color (and arrow) of racing Checkpoints. Test Aerial racing checkpoints! GTA III Should use coronas instead of markers in racing checkpoints.
 - Customize Panel boxes.
 - Loading screen issues.
+- Change cursor icon and fix depth.
