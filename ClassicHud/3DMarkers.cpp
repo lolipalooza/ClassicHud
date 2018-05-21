@@ -12,6 +12,19 @@
 
 using namespace plugin;
 
+RpClump *__cdecl CFileLoader__LoadAtomicFile2Return(char *filename)
+{
+	RpClump *v1; // edi
+	RwStream *v2; // esi
+
+	v1 = 0;
+	v2 = RwStreamOpen(rwSTREAMFILENAME, rwSTREAMREAD, filename);
+	if (RwStreamFindChunk(v2, 16, 0, 0))
+		v1 = RpClumpStreamRead(v2);
+	RwStreamClose(v2, 0);
+	return v1;
+}
+
 // Static variables
 float		C3dMarkers::m_PosZMult;
 const float	C3dMarkers::m_MovingMultiplier = 0.25f;
@@ -21,6 +34,22 @@ C3dMarker *C3dMarkers::m_aMarkerArray = (C3dMarker*)0xC7DD58;
 int &C3dMarkers::NumActiveMarkers = *(int*)0xC7C6D8;
 float &C3dMarkers::m_angleDiamond = *(float*)0xC7C700;
 bool &C3dMarkers::IgnoreRenderLimit = *(bool*)0xC7C704;
+
+void C3dMarkers::InitTextures()
+{
+	int slot = CTxdStore::AddTxdSlot("markers");
+	CTxdStore::LoadTxd(slot, "models\\ClassicHud\\ingame.txd");
+	CTxdStore::AddRef(slot);
+	CTxdStore::PushCurrentTxd();
+	CTxdStore::SetCurrentTxd(slot);
+	CTxdStore::PopCurrentTxd();
+}
+
+void C3dMarkers::ShutDownTextures()
+{
+	int slot = CTxdStore::FindTxdSlot("markers");
+	CTxdStore::RemoveTxdSlot(slot);
+}
 
 void
 C3dMarkers::Init(void)
@@ -56,17 +85,22 @@ C3dMarkers::Init(void)
 	memset(m_pRpClumpArray, 0, sizeof(RpClump*[7]));
 	NumActiveMarkers = 0;
 	m_angleDiamond = 0;
-	int slot = CTxdStore::FindTxdSlot("particle");
+
+	RpClump* arrow_model = (settings.MARKERS_USE_ARROWS && (std::string)settings.MARKERS_ARROW_MODEL != "") ?
+		CFileLoader__LoadAtomicFile2Return(settings.MARKERS_ARROW_MODEL) : LoadMarker("diamond_3");
+
+	int slot;
+	if ((std::string)settings.MARKERS_CYLINDER_MODEL != "")
+		slot = CTxdStore::FindTxdSlot("markers");
+	else slot = CTxdStore::FindTxdSlot("particle");
 	CTxdStore::PushCurrentTxd();
 	CTxdStore::SetCurrentTxd(slot);
-	m_pRpClumpArray[1] = LoadMarker("cylinder");
+	m_pRpClumpArray[1] = ((std::string)settings.MARKERS_CYLINDER_MODEL != "") ?
+		CFileLoader__LoadAtomicFile2Return(settings.MARKERS_CYLINDER_MODEL) : LoadMarker("cylinder");
 	m_pRpClumpArray[4] = LoadMarker("hoop");
 	m_pRpClumpArray[0] = LoadMarker("diamond_3");
 	m_pRpClumpArray[6] = m_pRpClumpArray[0];
-	if (settings.MARKERS_USE_ARROWS)
-		m_pRpClumpArray[5] = LoadMarker("arrow");
-	else
-		m_pRpClumpArray[5] = m_pRpClumpArray[0];
+	m_pRpClumpArray[5] = arrow_model;
 	CTxdStore::PopCurrentTxd();
 }
 

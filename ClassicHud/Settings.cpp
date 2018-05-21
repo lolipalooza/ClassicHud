@@ -604,6 +604,8 @@ void Settings::Init(int style)
 	ENEX_G = iniReader.ReadInt(section, "ENEX_G", 0);
 	ENEX_B = iniReader.ReadInt(section, "ENEX_B", 0);
 	MARKERS_USE_ARROWS = iniReader.ReadInt(section, "USE_ARROWS", 0);
+	MARKERS_ARROW_MODEL = iniReader.ReadString(section, "ARROW", "");
+	MARKERS_CYLINDER_MODEL = iniReader.ReadString(section, "CYLINDER", "");
 	MARKERS_ROTATE = iniReader.ReadInt(section, "ROTATE", 0);
 	MARKERS_CONE_ALPHA = iniReader.ReadInt(section, "CONE_ALPHA", 255);
 	MARKERS_CONE_GLOW = iniReader.ReadInt(section, "CONE_GLOW", 0);

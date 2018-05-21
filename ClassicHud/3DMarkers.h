@@ -104,6 +104,8 @@ public:
 	static void		Render(void);
 	// Last unused param removed
 	static void		PlaceMarkerSet(unsigned int nIndex, unsigned short markerID, CVector& vecPos, float fSize, unsigned char red, unsigned char green, unsigned char blue, unsigned char alpha, unsigned short pulsePeriod, float pulseFraction);
+	static void		InitTextures();
+	static void		ShutDownTextures();
 	static void		InstallPatches();
 };
 

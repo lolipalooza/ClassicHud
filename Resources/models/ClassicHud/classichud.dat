@@ -1089,6 +1089,8 @@ CONE_ALPHA = 255 ;209
 CONE_GLOW = 0
 ROTATE = 1
 SIZE_CHANGE = 1
+ARROW = models\ClassicHud\iii-arrow.dff
+CYLINDER = models\ClassicHud\zonecylb.dff
 
 
 
@@ -1657,6 +1659,8 @@ CONE_ALPHA = 255 ;209
 CONE_GLOW = 1
 ROTATE = 1
 SIZE_CHANGE = 1
+ARROW = models\ClassicHud\iii-arrow.dff
+CYLINDER = models\ClassicHud\zonecylb.dff
 
 
 
@@ -2213,6 +2217,8 @@ CONE_ALPHA = 209
 CONE_GLOW = 1
 ROTATE = 1
 SIZE_CHANGE = 1
+ARROW = models\ClassicHud\iii-arrow.dff
+CYLINDER = models\ClassicHud\stories-cylinder.dff
 
 
 

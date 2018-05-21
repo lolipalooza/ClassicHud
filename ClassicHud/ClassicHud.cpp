@@ -57,6 +57,9 @@ public:
 		Events::initRwEvent += Weapon::WeaponTextures;
 		Events::shutdownRwEvent += Weapon::WeaponTexturesShutdown;
 
+		Events::initRwEvent += C3dMarkers::InitTextures;
+		Events::shutdownRwEvent += C3dMarkers::ShutDownTextures;
+
 		Events::initRwEvent += [] {
 			//screen::SetBaseResolution(900.0f);
 			MobileTextures::Setup();
