@@ -6,7 +6,7 @@ Asi plugin to transform SA Hud, interface and background menu entirely, cloning 
 
 It also comes with a Hud Editor that lets player to edit a lot of stuff in the interface (be careful, Hud Editor is always overwriting data in classichud.dat without any undo possibility!).
 
-# To do
+## To do
 
 - Display correctly SA Health Bar when Max Health grows up (only SA).
 - Adapt radar plane.
